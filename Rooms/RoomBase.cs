@@ -1,6 +1,6 @@
 using MySqlConnector;
 using Dapper;
-abstract class RoomBase
+abstract class RoomBase : IRooms
 {
     public int ID { get; set; }
     public int Price { get; }
@@ -21,5 +21,21 @@ abstract class RoomBase
     public override string ToString()
     {
         return base.ToString();
+    }
+    public void RoomDescription()
+    {
+
+    }
+    public void AddRoom()
+    {
+
+    }
+    public void RemoveRoom()
+    {
+
+    }
+    public void UpdateRoom()
+    {
+
     }
 }
