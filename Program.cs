@@ -8,5 +8,6 @@ internal class Program
 
         Console.WriteLine(test.Price);
         Console.WriteLine(test.SearchForRoom(Connector.Connect()));
+
     }
 }

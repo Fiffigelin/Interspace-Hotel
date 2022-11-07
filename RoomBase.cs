@@ -7,6 +7,7 @@ abstract class RoomBase
     public int Bed { get; set; }
     public double Size { get; set; }
     public string Type { get; }
+    public int Guests { get; set; }
 
     public enum StarReview
     {
@@ -15,5 +16,10 @@ abstract class RoomBase
         threeStar,
         fourStar,
         fiveStar
+    }
+
+    public override string ToString()
+    {
+        return base.ToString();
     }
 }
