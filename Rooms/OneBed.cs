@@ -1,6 +1,6 @@
 using MySqlConnector;
 using Dapper;
-class OneBed : RoomBase
+class OneBed : RoomBase, IRooms
 {
     public string Type = "oneBed";
     public int Guests = 1;
@@ -12,8 +12,8 @@ class OneBed : RoomBase
         return checkUser;
     }
 
-    public override string ToString()
+    public void RoomDescription()
     {
-        return $"This is a simple one-bed room. No pets allowed";
+        Console.WriteLine("This is a one-bed room. Guests will find them ideal for work and leisure with a work desk, No pets allowed");
     }
 }
