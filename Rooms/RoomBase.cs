@@ -17,25 +17,4 @@ abstract class RoomBase : IRooms
         fourStar,
         fiveStar
     }
-
-    public override string ToString()
-    {
-        return base.ToString();
-    }
-    public void RoomDescription()
-    {
-
-    }
-    public void AddRoom()
-    {
-
-    }
-    public void RemoveRoom()
-    {
-
-    }
-    public void UpdateRoom()
-    {
-
-    }
 }
