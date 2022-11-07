@@ -1,6 +1,6 @@
 using MySqlConnector;
 using Dapper;
-abstract class RoomBase : IRooms
+abstract class RoomBase
 {
     public int ID { get; set; }
     public int Price { get; }
