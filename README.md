@@ -14,3 +14,8 @@ Ett system för hotel där de kan hantera bokningar och rum
     [] Checka in gäst
     [] Se vilka rum som är lediga och inte
     [] Checka ut gäst
+
+● Tankar :
+- Metod för att avgöra maxantalet gäster per rum
+- Datum vid incheckning och utcheckning
+- Uträkning för kostnaden av vistelsen
