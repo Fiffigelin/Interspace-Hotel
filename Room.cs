@@ -7,6 +7,15 @@ class Room
     public string Type { get; }
     public int Guests { get; set; }
 
+    public Room (int price, int bed, double size, string type, int guests)
+    {
+        this.Price = price;
+        this.Bed = bed;
+        this.Size = size;
+        this.Type = type;
+        this.Guests = guests;
+    }
+
     public enum StarReview
     {
         oneStar = 1,
