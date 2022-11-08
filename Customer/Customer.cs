@@ -9,7 +9,7 @@ class Customer
 
     public void SearchForCustomer(MySqlConnection connection)
     {
-        var printCustomer = connection.QuerySingle<string>($"SELECT customer.name from customer;");
+        var printCustomer = connection.Query<string>($"SELECT customer.id, customer.name from customer;").ToList();
         System.Console.WriteLine(printCustomer);
     }
 }
