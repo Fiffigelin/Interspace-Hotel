@@ -21,7 +21,9 @@ internal class Program
             Console.WriteLine(room);
         }
 
-        Customer cust = new();
+
+        List<Customer> fakeCustomer = new();
+        fakeCustomer.Add(new Customer());
         //SearchForCustomer(Connector.Connect());
     }
 

@@ -10,7 +10,17 @@ class Customer
 
     public override string ToString()
     {
-        return $"{Name}{Phonenumber}";
+        return @$"
+        Customer id: {ID}
+        Customer name: {Name}
+        Customer email: {Email}
+        Customer phonenumber: {Phonenumber}";
+    }
+    public Customer(string name, string email, string phonenumber)
+    {
+        this.Name = name;
+        this.Email = email;
+        this.Phonenumber = phonenumber;
     }
 
 }
