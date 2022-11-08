@@ -16,6 +16,8 @@ internal class Program
         // }
 
         IEnumerable<Room> printListRooms = test.TestListInterface();
+        // FÖR EN TYDLIGARE UTSKRIFT
+        Console.WriteLine("ALLA RUM");
         foreach (Room room in printListRooms)
         {
             Console.WriteLine(room);
@@ -24,12 +26,16 @@ internal class Program
         Console.WriteLine("Type in a id number 1-4.");
         string input = Console.ReadLine();
         int converter = Convert.ToInt32(input);
+        // FÖR EN TYDLIGARE UTSKRIFT
+        Console.WriteLine("RUMMET VI SÖKTE EFTER");
         Console.WriteLine(test.GetRoomByID(converter));
 
         printListRooms = test.BookingRoom(converter);
 
         // Copy paste utskrift av lediga rum
         printListRooms = test.GetAvailableRoom();
+        // FÖR EN TYDLIGARE UTSKRIFT
+        Console.WriteLine("ALLA LEDIGA RUM");
         foreach (Room room in printListRooms)
         {
             Console.WriteLine(room);
