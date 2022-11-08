@@ -8,6 +8,12 @@ class Customer
     public string Phonenumber { get; set; }
 
 
+    public Customer(string name, string email, string phonenumber)
+    {
+        this.Name = name;
+        this.Email = email;
+        this.Phonenumber = phonenumber;
+    }
     public override string ToString()
     {
         return @$"
@@ -15,12 +21,6 @@ class Customer
         Customer name: {Name}
         Customer email: {Email}
         Customer phonenumber: {Phonenumber}";
-    }
-    public Customer(string name, string email, string phonenumber)
-    {
-        this.Name = name;
-        this.Email = email;
-        this.Phonenumber = phonenumber;
     }
 
 }
