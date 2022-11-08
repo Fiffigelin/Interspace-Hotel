@@ -23,7 +23,14 @@ internal class Program
 
 
         List<Customer> fakeCustomer = new();
-        fakeCustomer.Add(new Customer());
+        fakeCustomer.Add(new Customer("Johan", "johan@exempel.com", "0700102030"));
+        fakeCustomer.Add(new Customer("Emelie", "emelie@exempel.com", "0710203040"));
+        fakeCustomer.Add(new Customer("Elin", "elin@exempel.com", "0720304050"));
+
+        foreach (Customer customer in fakeCustomer)
+        {
+            Console.WriteLine(customer);
+        }
         //SearchForCustomer(Connector.Connect());
     }
 
