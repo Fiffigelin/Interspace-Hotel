@@ -41,7 +41,6 @@ internal class Program
             Console.WriteLine(customer);
         }
     }
-
     private static void TestRooms(List<Room> fakeRooms)
     {
         Room oneBed = new(840, 1, 12, "oneBed", 1);
