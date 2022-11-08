@@ -1,19 +1,38 @@
 class RoomManagement
 {
-    public Room AddRoom()
+    Dictionary<int, Room> hotelRooms = new();
+
+    public void AddRoom(Room room)
     {
-        return;
+        hotelRooms.Add(hotelRooms.Count + 1, room);
     }
-    public Room UpdateRoom()
+    // public Room UpdateRoom()
+    // {
+    //     return;
+    // }
+    // public Room RemoveRoom()
+    // {
+    //     return;
+    // }
+    // public Room SearchRoom()
+    // {
+    //     return;
+    // }
+
+    //IEnumerable interface istället för lista.
+    public IEnumerable<Room> TestListInterface()
     {
-        return;
+        List<Room> rooms = new();
+
+        foreach (var kvp in hotelRooms)
+        {
+            rooms.Add(kvp.Value);
+        }
+
+        return rooms;
     }
-    public Room RemoveRoom()
+    public Room GetRoomByID(int id)
     {
-        return;
-    }
-    public Room SearchRoom()
-    {
-        return;
+        return hotelRooms[id];
     }
 }
