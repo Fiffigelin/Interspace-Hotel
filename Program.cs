@@ -26,6 +26,15 @@ internal class Program
         int converter = Convert.ToInt32(input);
         Console.WriteLine(test.GetRoomByID(converter));
 
+        printListRooms = test.BookingRoom(converter);
+
+        // Copy paste utskrift av lediga rum
+        printListRooms = test.GetAvailableRoom();
+        foreach (Room room in printListRooms)
+        {
+            Console.WriteLine(room);
+        }
+
         //SearchForCustomer(Connector.Connect());
     }
 

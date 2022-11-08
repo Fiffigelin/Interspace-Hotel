@@ -6,6 +6,7 @@ class Room
     public double Size { get; set; }
     public string Type { get; }
     public int Guests { get; set; }
+    public bool IsAvailable  {get; set;} = true;
 
     public Room (int price, int bed, double size, string type, int guests)
     {
