@@ -1,5 +1,7 @@
 class Room
 {
+    List<Room> oneBed = new List<Room>();
+
     public int ID { get; set; }
     public int Price { get; }
     public int Bed { get; set; }
@@ -7,7 +9,7 @@ class Room
     public string Type { get; }
     public int Guests { get; set; }
 
-    public Room (int price, int bed, double size, string type, int guests)
+    public Room(int price, int bed, double size, string type, int guests)
     {
         this.Price = price;
         this.Bed = bed;
