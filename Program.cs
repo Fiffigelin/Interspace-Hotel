@@ -6,10 +6,15 @@ internal class Program
     {
         OneBed test = new();
         Customer cust = new();
+        List<Customer> c = new();
 
         Console.WriteLine(test.Price);
         Console.WriteLine(test.SearchForRoom(Connector.Connect()));
-        cust.SearchForCustomer(Connector.Connect());
-
+        
+        c = cust.SearchForCustomer(Connector.Connect());
+        foreach (var identification in c)
+        {
+            Console.WriteLine($"{identification}");
+        }
     }
 }

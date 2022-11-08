@@ -7,9 +7,24 @@ class Customer
     public string Email {get; set;}
     public string Phonenumber {get; set;}
 
-    public void SearchForCustomer(MySqlConnection connection)
+    public override string ToString()
     {
-        var printCustomer = connection.QuerySingle<string>($"SELECT customer.name from customer;");
-        System.Console.WriteLine(printCustomer);
+        return $"{ID} {Name}";
+    }
+    public List<Customer> SearchForCustomer(MySqlConnection connection)
+    {
+        List <Customer> printList = new();
+        var sql = "SELECT * FROM customer";
+        var getCustomers = connection.Query(sql);
+
+        foreach (var customer in getCustomers)
+        {
+            printList.Add(customer.ToList());
+        }
+
+        return printList;
+
+        // var printCustomer = connection.Query($"SELECT 'customer.name' from 'customer';");
+        // System.Console.WriteLine(printCustomer);
     }
 }
