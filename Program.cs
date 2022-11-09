@@ -10,6 +10,12 @@ internal class Program
         DictionaryTest(test);
         // TestCustomers();
 
+        // GUSTAVS TIPS
+        //SqlConnect connection = kjfgkfjgkfg
+        //RoomDB roomDb = new(connection)
+        //RoomManager roomManager = new(roomDb)
+
+
         // foreach (Room room in fakeRooms)
         // {
         //     Console.WriteLine(room);

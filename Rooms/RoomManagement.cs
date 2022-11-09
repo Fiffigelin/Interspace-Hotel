@@ -38,7 +38,7 @@ class RoomManagement
 
     // En sökfunktion som skriver ut lediga rum
     // Behöver avanceras så att tidsperioden som söks hanteras
-    public IEnumerable<Room> GetAvailableRoom()
+    public IEnumerable<Room> GetAvailableRoom( )
     {
         List<Room> rooms = new();
 
