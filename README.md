@@ -23,11 +23,3 @@ Ett system för hotel där de kan hantera bokningar och rum
 - Datum-hantering?
 - ID? Behövs det i våra klasser i C#? Eller är det något vi kan importera direkt från DB?
 
-Emelies fundering. Behöver vi ha en UI och hur isf? 
-Gustav ber oss måla en lök - klarar vi oss? 
-
-ONSDAG ATT GÖRA:
-- Fixa utskrift för review ? 
-- Förbättra sökfunktion - hur?
-- Klura på datum - Prata med Gustav (DB/C#)
-- Skriva in Issues.
