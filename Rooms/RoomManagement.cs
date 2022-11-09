@@ -1,6 +1,13 @@
+using Dapper;
+using MySqlConnector;
 class RoomManagement
 {
     Dictionary<int, Room> hotelRooms = new();
+
+    public RoomManagement(RoomDB connection)
+    {
+
+    }
 
     public void CreateRoom(Room room)
     {
@@ -34,5 +41,5 @@ class RoomManagement
     //     return hotelRooms[id];
     // }
 
-    
+
 }

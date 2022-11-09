@@ -2,18 +2,24 @@
 using Dapper;
 internal class Program
 {
+    const string CONNECTIONSTRING = "Server = localhost;Database = interspace_hotel;Uid=root";
+
     private static void Main(string[] args)
     {
+        MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
+        RoomDB roomDB = new(connection);
+        RoomManagement roomManager = new(roomDB);
+
         List<Room> fakeRooms = new List<Room>();
-        RoomManagement test = new();
+
         TestRooms(fakeRooms);
-        DictionaryTest(test);
+        DictionaryTest(roomManager);
+
         // TestCustomers();
 
         // GUSTAVS TIPS
         //SqlConnect connection = kjfgkfjgkfg
         //RoomDB roomDb = new(connection)
-        //RoomManager roomManager = new(roomDb)
 
 
         // foreach (Room room in fakeRooms)
@@ -21,7 +27,7 @@ internal class Program
         //     Console.WriteLine(room);
         // }
 
-        IEnumerable<Room> printListRooms = test.TestListInterface();
+        IEnumerable<Room> printListRooms = roomManager.PrintRoom();
         // FÖR EN TYDLIGARE UTSKRIFT
         Console.WriteLine("ALLA RUM");
         foreach (Room room in printListRooms)
@@ -34,12 +40,12 @@ internal class Program
         int converter = Convert.ToInt32(input);
         // FÖR EN TYDLIGARE UTSKRIFT
         Console.WriteLine("RUMMET VI SÖKTE EFTER");
-        Console.WriteLine(test.GetRoomByID(converter));
+        Console.WriteLine(roomManager.GetRoomByID(converter));
 
-        printListRooms = test.BookingRoom(converter);
+        printListRooms = roomManager.BookingRoom(converter);
 
         // Copy paste utskrift av lediga rum
-        printListRooms = test.GetAvailableRoom();
+        printListRooms = roomManager.GetAvailableRoom();
         // FÖR EN TYDLIGARE UTSKRIFT
         Console.WriteLine("ALLA LEDIGA RUM");
         foreach (Room room in printListRooms)
@@ -82,9 +88,9 @@ internal class Program
         Room deluxe = new(3500, 2, 55, "Deluxe suite", 4);
         Room pentHouse = new(6400, 4, 150, "Penthouse suite", 6);
 
-        test.AddRoom(oneBed);
-        test.AddRoom(twoBed);
-        test.AddRoom(deluxe);
-        test.AddRoom(pentHouse);
+        test.CreateRoom(oneBed);
+        test.CreateRoom(twoBed);
+        test.CreateRoom(deluxe);
+        test.CreateRoom(pentHouse);
     }
 }
