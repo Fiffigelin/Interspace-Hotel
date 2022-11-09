@@ -6,9 +6,9 @@ class Room
     public double Size { get; set; }
     public string Type { get; }
     public int Guests { get; set; }
-    public bool IsAvailable  {get; set;} = true;
+    public bool IsAvailable { get; set; } = true;
 
-    public Room (int price, int bed, double size, string type, int guests)
+    public Room(int price, int bed, double size, string type, int guests)
     {
         this.Price = price;
         this.Bed = bed;
@@ -19,21 +19,12 @@ class Room
 
     public override string ToString()
     {
-        return 
+        return
         @$"Roomid : {ID}
         Price : {Price}
         Beds : {Bed}
         Roomsize : {Size} kvm
         Roomtype : {Type}
         Max amount guests : {Guests}";
-    }
-
-    public enum StarReview
-    {
-        oneStar = 1,
-        twoStar,
-        threeStar,
-        fourStar,
-        fiveStar
     }
 }
