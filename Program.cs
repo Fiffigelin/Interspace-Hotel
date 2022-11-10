@@ -14,7 +14,27 @@ internal class Program
 
         TestRooms(fakeRooms);
         DictionaryTest(roomManager);
-        UpdateRoom(roomDB);
+        //UpdateRoom(roomDB);
+
+
+        while (true)
+        {
+            try
+            {
+                Console.WriteLine("type in id for room");
+                string searchInput = Console.ReadLine().ToLower();
+                int roomIDSearchConvert = Convert.ToInt32(searchInput);
+
+                string searchForPerson = roomDB.FetchRoom(roomIDSearchConvert);
+                Console.WriteLine($"Found {searchForPerson}");
+                Thread.Sleep(1000);
+            }
+            catch (System.Exception)
+            {
+                Console.WriteLine("room doesn't exists in database.");
+                Thread.Sleep(1000);
+            }
+        }
 
         // TestCustomers();
 
@@ -87,10 +107,10 @@ internal class Program
     }
     private static void TestRooms(List<Room> fakeRooms)
     {
-        Room oneBed = new(840, 1, 12, "oneBed", 1);
-        Room twoBed = new(1000, 1, 24, "Twobed", 2);
-        Room deluxe = new(3500, 2, 55, "Deluxe suite", 4);
-        Room pentHouse = new(6400, 4, 150, "Penthouse suite", 6);
+        Room oneBed = new(840, 1, 12, 1);
+        Room twoBed = new(1000, 1, 24, 2);
+        Room deluxe = new(3500, 2, 55, 4);
+        Room pentHouse = new(6400, 4, 150, 6);
 
         fakeRooms.Add(oneBed);
         fakeRooms.Add(twoBed);
@@ -100,10 +120,10 @@ internal class Program
     //detta är via en dictionary interface.
     private static void DictionaryTest(RoomManagement test)
     {
-        Room oneBed = new(840, 1, 12, "oneBed", 1);
-        Room twoBed = new(1000, 1, 24, "Twobed", 2);
-        Room deluxe = new(3500, 2, 55, "Deluxe suite", 4);
-        Room pentHouse = new(6400, 4, 150, "Penthouse suite", 6);
+        Room oneBed = new(840, 1, 12, 1);
+        Room twoBed = new(1000, 1, 24, 2);
+        Room deluxe = new(3500, 2, 55, 4);
+        Room pentHouse = new(6400, 4, 150, 6);
 
         test.CreateRoom(oneBed);
         test.CreateRoom(twoBed);
