@@ -14,6 +14,7 @@ internal class Program
 
         TestRooms(fakeRooms);
         DictionaryTest(roomManager);
+        UpdateRoom(roomDB);
 
         // TestCustomers();
 
@@ -21,39 +22,55 @@ internal class Program
         //SqlConnect connection = kjfgkfjgkfg
         //RoomDB roomDb = new(connection)
 
-
         // foreach (Room room in fakeRooms)
         // {
         //     Console.WriteLine(room);
         // }
 
-        IEnumerable<Room> printListRooms = roomManager.PrintRoom();
-        // FÖR EN TYDLIGARE UTSKRIFT
-        Console.WriteLine("ALLA RUM");
-        foreach (Room room in printListRooms)
-        {
-            Console.WriteLine(room);
-        }
+        // IEnumerable<Room> printListRooms = roomManager.PrintRoom();
+        // // FÖR EN TYDLIGARE UTSKRIFT
+        // Console.WriteLine("ALLA RUM");
+        // foreach (Room room in printListRooms)
+        // {
+        //     Console.WriteLine(room);
+        // }
 
-        Console.WriteLine("Type in a id number 1-4.");
-        string input = Console.ReadLine();
-        int converter = Convert.ToInt32(input);
-        // FÖR EN TYDLIGARE UTSKRIFT
-        Console.WriteLine("RUMMET VI SÖKTE EFTER");
-        Console.WriteLine(roomManager.GetRoomByID(converter));
+        // Console.WriteLine("Type in a id number 1-4.");
+        // string input = Console.ReadLine();
+        // int converter = Convert.ToInt32(input);
+        // // FÖR EN TYDLIGARE UTSKRIFT
+        // Console.WriteLine("RUMMET VI SÖKTE EFTER");
+        // //Console.WriteLine(roomManager.GetRoomByID(converter));
 
-        printListRooms = roomManager.BookingRoom(converter);
+        // //printListRooms = roomManager.BookingRoom(converter);
 
-        // Copy paste utskrift av lediga rum
-        printListRooms = roomManager.GetAvailableRoom();
-        // FÖR EN TYDLIGARE UTSKRIFT
-        Console.WriteLine("ALLA LEDIGA RUM");
-        foreach (Room room in printListRooms)
-        {
-            Console.WriteLine(room);
-        }
+        // // Copy paste utskrift av lediga rum
+        // //printListRooms = roomManager.GetAvailableRoom();
+        // // FÖR EN TYDLIGARE UTSKRIFT
+        // Console.WriteLine("ALLA LEDIGA RUM");
+        // foreach (Room room in printListRooms)
+        // {
+        //     Console.WriteLine(room);
+        // }
 
         //SearchForCustomer(Connector.Connect());
+    }
+
+    private static void UpdateRoom(RoomDB roomDB)
+    {
+        Console.WriteLine("type in a price");
+        string inputPrice = Console.ReadLine();
+        int priceConverter = Convert.ToInt32(inputPrice);
+        Console.WriteLine("type in number of beds");
+        string inputBeds = Console.ReadLine();
+        int bedsConverter = Convert.ToInt32(inputBeds);
+        Console.WriteLine("type in size");
+        string inputSize = Console.ReadLine();
+        int sizeConverter = Convert.ToInt32(inputSize);
+        Console.WriteLine("type in id");
+        string inputID = Console.ReadLine();
+        int IDConverter = Convert.ToInt32(inputID);
+        roomDB.UpdateRoom(priceConverter, bedsConverter, sizeConverter, IDConverter);
     }
 
     private static void TestCustomers()
