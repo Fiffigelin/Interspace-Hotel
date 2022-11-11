@@ -6,6 +6,15 @@ internal class Program
 
     private static void Main(string[] args)
     {
+        // ======================= INFÖR FREDAGEN =======================
+        // ==  * Skriva om alla metoder som rör klassen Room så att    ==
+        // ==    datan lagras med en gång i databasen                  ==
+        // ==  * Skapa en tabell för bokningar i DB som innehåller     ==
+        // ==    DATUM FRÅN och DATUM TILL alternativt DURATION och    ==
+        // ==    room.id samt kund.id                                  ==
+        // ==  * Så lätta kopplingar som möjligt!                      ==
+        // ======================= INFÖR FREDAGEN =======================
+        
         MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
         RoomDB roomDB = new(connection);
         RoomManagement roomManager = new(roomDB);
