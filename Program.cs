@@ -10,10 +10,17 @@ internal class Program
         RoomDB roomDB = new(connection);
         RoomManagement roomManager = new(roomDB);
 
-        List<Room> fakeRooms = new List<Room>();
+        HotelDB hotelDB = new(connection);
+        HotelManagement hotelManager = new(hotelDB);
 
-        TestRooms(fakeRooms);
-        DictionaryTest(roomManager);
+        List<Room> fakeRooms = new List<Room>();
+        
+
+        TestRooms(fakeRooms); // Skapar Lista med fakeroom
+        DictionaryTest(roomManager); // Skapar Dictionary med fakeroom
+
+        connection.Query($"SELECT `reviews` (value)");
+
 
         // TestCustomers();
 
@@ -35,25 +42,27 @@ internal class Program
             Console.WriteLine(room);
         }
 
-        Console.WriteLine("Type in a id number 1-4.");
-        string input = Console.ReadLine();
-        int converter = Convert.ToInt32(input);
-        // FÖR EN TYDLIGARE UTSKRIFT
-        Console.WriteLine("RUMMET VI SÖKTE EFTER");
-        Console.WriteLine(roomManager.GetRoomByID(converter));
+        // Console.WriteLine("Type in a id number 1-4.");
+        // string input = Console.ReadLine();
+        // int converter = Convert.ToInt32(input);
+        // // FÖR EN TYDLIGARE UTSKRIFT
+        // Console.WriteLine("RUMMET VI SÖKTE EFTER");
+        // Console.WriteLine(roomManager.GetRoomByID(converter));
 
-        printListRooms = roomManager.BookingRoom(converter);
+        // printListRooms = roomManager.BookingRoom(converter);
 
-        // Copy paste utskrift av lediga rum
-        printListRooms = roomManager.GetAvailableRoom();
-        // FÖR EN TYDLIGARE UTSKRIFT
-        Console.WriteLine("ALLA LEDIGA RUM");
-        foreach (Room room in printListRooms)
-        {
-            Console.WriteLine(room);
-        }
+        // // Copy paste utskrift av lediga rum
+        // printListRooms = roomManager.GetAvailableRoom();
+        // // FÖR EN TYDLIGARE UTSKRIFT
+        // Console.WriteLine("ALLA LEDIGA RUM");
+        // foreach (Room room in printListRooms)
+        // {
+        //     Console.WriteLine(room);
+        // }
 
         //SearchForCustomer(Connector.Connect());
+
+
     }
 
     private static void TestCustomers()
@@ -93,4 +102,5 @@ internal class Program
         test.CreateRoom(deluxe);
         test.CreateRoom(pentHouse);
     }
+
 }
