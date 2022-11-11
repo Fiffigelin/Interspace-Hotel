@@ -13,6 +13,16 @@ class RoomDB
     public void CreateRoom(Room room)
     {
         //Do SQL Magic
-        //_sqlConnection.query osv osv..
+        //_sqlConnection.Query<Room>($"INSERT INTO room(room.price,room.beds,room.size)VALUES {} {} {}");
+    }
+    public void UpdateRoom(int roomPrice, int roomBeds, int roomSize, int ID)
+    {
+        _sqlConnection.Query<Room>($"UPDATE room SET room.price = {roomPrice},room.beds = {roomBeds},room.size = {roomSize} WHERE id = {ID}");
+    }
+    public string FetchRoom(int ID)
+    {
+        string sql = $"SELECT price, beds, size, review FROM room WHERE room.id = {ID};";
+        _sqlConnection.Query<Room>(sql);
+        return sql;
     }
 }

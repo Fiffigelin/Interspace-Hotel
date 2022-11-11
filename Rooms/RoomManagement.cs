@@ -2,16 +2,20 @@ using Dapper;
 using MySqlConnector;
 class RoomManagement
 {
-    Dictionary<int, Room> hotelRooms = new();
-
+    public RoomDB db;
     public RoomManagement(RoomDB connection)
     {
-
+        db = connection;
     }
 
-    public void CreateRoom(Room room)
+    public void CreateRoom(List<Room> roomList)
     {
-        hotelRooms.Add(hotelRooms.Count + 1, room);
+        //hotelRooms.Add(hotelRooms.Count + 1, room);
+        foreach (var room in roomList)
+        {
+            db.CreateRoom(room); 
+        }
+
     }
 
     public IEnumerable<Room> PrintRoom()
