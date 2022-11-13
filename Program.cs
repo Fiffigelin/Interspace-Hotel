@@ -7,21 +7,54 @@ internal class Program
     private static void Main(string[] args)
     {  
         MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
-        RoomDB roomDB = new(connection);
-        RoomManagement roomManager = new(roomDB);
+        // RoomDB roomDB = new(connection);
+        // RoomManagement roomManager = new(roomDB);
+
+        CustomerDB customerDB = new();
+        CustomerManagement customerManager = new(customerDB);
+
+        Console.Write("Searchword : ");
+        string search = Console.ReadLine();
+        List<Customer> cuList = customerManager.StringSearchCustomer(search);
+        if (cuList.Count <= 0)
+        {
+            System.Console.WriteLine("NOTHING HERE");
+        }
+        else
+        {
+            foreach (var item in cuList)
+            {
+                System.Console.WriteLine(item);
+            }
+        }
+
+        Console.Write("DELETE BY ID : ");
+        int id = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine(customerManager.RemoveCustomer(id));
+        
+        Customer cu = customerManager.GetCustomer(id);
+        if (cu.ID == id)
+        {
+            Console.WriteLine(cu);
+        }
+        else
+        {
+            Console.WriteLine("Customer not found");
+        }
 
         Room listRooms = new();
 
+        
         //UpdateRoom(roomDB);
 
-        int testInsert = roomDB.CreateRoom("Deluxe", 4500, 2, 64);
-        RemoveRoombyID(roomDB);
+        // int testInsert = roomDB.CreateRoom("Deluxe", 4500, 2, 64);
+        // RemoveRoombyID(roomDB);
 
-        var rooms = roomDB.GetRooms();
-        foreach (Room r in rooms)
-        {
-            Console.WriteLine(r.name + " " + r.price + " " + r.size + " " + r.beds + " " + r.guests);
-        }
+        // var rooms = roomDB.GetRooms();
+        // foreach (Room r in rooms)
+        // {
+        //     Console.WriteLine(r.name + " " + r.price + " " + r.size + " " + r.beds + " " + r.guests);
+        // }
 
         // TestCustomers();
 

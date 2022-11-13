@@ -3,23 +3,17 @@ class CustomerManagement
     // Gör en massa små metoder som kan återanvändas i denna klassens metoder.
     // Är det detta som är interfaces? GUSTAV??? 
     private CustomerDB customerDB { get; set; }
-    private CustomerManagement(CustomerDB db)
+    public CustomerManagement(CustomerDB db)
     {
         customerDB = db;
     }
 
     public Customer GetCustomer(int id)
     {
-        Customer cu = new();
-        try
-        {
-            cu = customerDB.SelectCustomer(id);
-        }
-        catch (System.Exception)
-        {
-        }
-
-        return cu;
+        Customer cu;
+        cu = customerDB.SelectCustomer(id);
+        
+         return cu;
     }
 
     public string AddCostumer(string email, string firstName, string lastName, string phonenumber)
@@ -43,7 +37,6 @@ class CustomerManagement
 
         return $"NEW CUSTOMER CREATED WITH ID : {id}";
     }
-
 
     public string ModifyCustomer(string email, string firstName, string lastName, string phonenumber, int id)
     {
@@ -78,24 +71,15 @@ class CustomerManagement
         }
     }
 
-    public string StringSearchCustomer(string search)
+    public List<Customer> StringSearchCustomer(string search)
     {
-        if (!IsEmailValid(search)) return "Invalid input for search"; // kan man skriva texten såhär? Det är söndag, ok!
-        
-        try
-        {
-            customerDB.SearchCustomerDB(search);
-        }
-        catch (System.Exception)
-        {
-        }
-
-        return "Searching...";
+        List<Customer> customerList = new(customerDB.SearchCustomerDB(search));
+        return customerList;
     }
 
     public List<Customer> PrintCustomer()
     {
-        List<Customer> customerList= new(customerDB.GetCustomers());
+        List<Customer> customerList = new(customerDB.GetCustomers());
         return customerList;
         // skapa en foreach här? Som skickar vidare till UI?
     }
@@ -115,7 +99,7 @@ class CustomerManagement
         {
             return false;
         }
-        
+
         return true;
     }
 
@@ -131,7 +115,7 @@ class CustomerManagement
 
     private bool IsCustomerListed(List<Customer> customerList)
     {
-        if(customerList.Count <= 0)
+        if (customerList.Count <= 0)
         {
             return false;
         }

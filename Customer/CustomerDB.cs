@@ -1,6 +1,7 @@
 using Dapper;
 using MySqlConnector;
 
+// FRÅGA KRISTER : vill man uppdatera de unika id:n vid en delete? Vad kan det få för konsekvenser?
 class CustomerDB
 {
     private MySqlConnection _sqlConnection;
@@ -36,13 +37,13 @@ class CustomerDB
         // https://stackoverflow.com/questions/14171794/how-to-retrieve-data-from-a-sql-server-database-in-c
         Customer cu = new();
         string sql = $@"SELECT * FROM `customer` WHERE `customer`.`id`= {id}";
-        cu.ID = id;
         MySqlCommand cmd = new MySqlCommand(sql, _sqlConnection);
         _sqlConnection.Open();
         using (MySqlDataReader reader = cmd.ExecuteReader())
         {
             while (reader.Read())
             {
+                cu.ID = Convert.ToInt32(reader["id"].ToString());
                 cu.Email = reader["email"].ToString();
                 cu.First_Name = reader["first_name"].ToString();
                 cu.Last_Name = reader["last_name"].ToString();
@@ -72,9 +73,11 @@ class CustomerDB
     public List<Customer> SearchCustomerDB(string search)
     {
         var customerList = _sqlConnection.Query<Customer>($@"
-        SELECT* FROM customer 
-        WHERE phonenumber OR email OR first_name OR last_name 
-        LIKE %{search}%").ToList();
+        SELECT * FROM customer 
+        WHERE email LIKE '%{search}%'
+        OR first_name LIKE '%{search}%'
+        OR last_name LIKE '%{search}%'
+        OR phonenumber LIKE '%{search}%'").ToList();
         
         return customerList;
     }
