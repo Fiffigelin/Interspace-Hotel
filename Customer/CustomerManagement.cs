@@ -1,21 +1,141 @@
 class CustomerManagement
 {
-    public Customer AddCostumer(string email, string firstName, string lastName, string phonnumber)
+    // Gör en massa små metoder som kan återanvändas i denna klassens metoder.
+    // Är det detta som är interfaces? GUSTAV??? 
+    private CustomerDB customerDB { get; set; }
+    private CustomerManagement(CustomerDB db)
     {
-        
-        return;
+        customerDB = db;
     }
 
-    public Customer UpdateCustomer()
+    public Customer GetCustomer(int id)
     {
-        return;
+        Customer cu = new();
+        try
+        {
+            cu = customerDB.SelectCustomer(id);
+        }
+        catch (System.Exception)
+        {
+        }
+
+        return cu;
     }
-    public Customer RemoveCustomer()
+
+    public string AddCostumer(string email, string firstName, string lastName, string phonenumber)
     {
-        return;
+        if (!IsEmailValid(email)) return "Invalid input of email";
+        if (!IsStringValid(firstName)) return "Invalid input of first name";
+        if (!IsStringValid(lastName)) return "Invalid input of last name";
+        if (!IsStringNumeric(phonenumber)) return "Invalid input of phonenumber";
+
+        Customer cu = new(email, firstName, lastName, phonenumber);
+        int id;
+        try
+        {
+            id = customerDB.InsertCustomer(cu);
+        }
+        catch (System.Exception)
+        {
+
+            return $"ERROR ADDING CUSTOMER";
+        }
+
+        return $"NEW CUSTOMER CREATED WITH ID : {id}";
     }
-    public Customer SearchCustomer()
+
+
+    public string ModifyCustomer(string email, string firstName, string lastName, string phonenumber, int id)
     {
-        return;
+        if (!IsEmailValid(email)) return "Invalid input of email";
+        if (!IsStringValid(firstName)) return "Invalid input of first name";
+        if (!IsStringValid(lastName)) return "Invalid input of last name";
+        if (!IsStringNumeric(phonenumber)) return "Invalid input of phonenumber";
+
+        Customer cu = new(email, firstName, lastName, phonenumber);
+        try
+        {
+            customerDB.UpdateCustomer(cu);
+        }
+        catch (System.Exception)
+        {
+
+            return $"ERROR MODYFYING CUSTOMER";
+        }
+
+        return $"MODIFIED CUSTOMER WITH ID : {id}";
+    }
+    public string RemoveCustomer(int id)
+    {
+        try
+        {
+            customerDB.DeleteCustomer(id);
+            return $"CUSTOMER WITH ID : {id} REMOVED";
+        }
+        catch (System.Exception)
+        {
+            return $"NO CUSTOMER FOUND WITH ID : {id}";
+        }
+    }
+
+    public string StringSearchCustomer(string search)
+    {
+        if (!IsEmailValid(search)) return "Invalid input for search"; // kan man skriva texten såhär? Det är söndag, ok!
+        
+        try
+        {
+            customerDB.SearchCustomerDB(search);
+        }
+        catch (System.Exception)
+        {
+        }
+
+        return "Searching...";
+    }
+
+    public List<Customer> PrintCustomer()
+    {
+        List<Customer> customerList= new(customerDB.GetCustomers());
+        return customerList;
+        // skapa en foreach här? Som skickar vidare till UI?
+    }
+
+    private bool IsStringNumeric(string s)
+    {
+        foreach (char c in s)
+        {
+            if (c < '0' || c > '9')
+                return false;
+        }
+        return true;
+    }
+    private bool IsEmailValid(string s)
+    {
+        if (string.IsNullOrEmpty(s) || !s.Contains("@"))
+        {
+            return false;
+        }
+        
+        return true;
+    }
+
+    private bool IsStringValid(string s)
+    {
+        if (string.IsNullOrEmpty(s))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool IsCustomerListed(List<Customer> customerList)
+    {
+        if(customerList.Count <= 0)
+        {
+            return false;
+        }
+
+        return true;
     }
 }
