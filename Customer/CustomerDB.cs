@@ -17,8 +17,8 @@ class CustomerDB
         public int InsertCustomer(Customer cu)
         {
             string sql =$@"INSERT INTO `customer` 
-            (`id`, `email`, `first_name`, `last_name`, `phonenumber`)
-            VALUES (NULL, '{cu.Email}', '{cu.First_Name}', '{cu.Last_Name}', '{cu.Phonenumber}');
+            (`email`, `first_name`, `last_name`, `phonenumber`)
+            VALUES ('{cu.Email}', '{cu.First_Name}', '{cu.Last_Name}', '{cu.Phonenumber}');
             SELECT LAST_INSERT_ID()";
 
             int id = _sqlConnection.QuerySingle<int>(sql);
@@ -31,10 +31,38 @@ class CustomerDB
             return customerList;   
         }
 
-        public List<Customer> GetSingleCustomer(int id)
+        public Customer GetSingleCustomer(int id)
         {
-            var customerList =_sqlConnection.Query<Customer>($@"SELECT * FROM `customer` WHERE `customer`.`id`= {id}").ToList();
-            return customerList;   
+            // https://stackoverflow.com/questions/14171794/how-to-retrieve-data-from-a-sql-server-database-in-c
+            Customer cu = new();
+            string sql = $@"SELECT * FROM `customer` WHERE `customer`.`id`= {id}";
+            cu.ID = id;
+            MySqlCommand cmd = new MySqlCommand(sql, _sqlConnection);
+            _sqlConnection.Open();
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    cu.Email = reader["email"].ToString();
+                    cu.First_Name = reader["first_name"].ToString();
+                    cu.Last_Name = reader["last_name"].ToString();
+                    cu.Phonenumber = reader["phonenumber"].ToString();
+                }
+                 _sqlConnection.Close();
+            }
+            return cu;
+        }
+
+        public string UpdateCustomer(Customer cu)
+        {
+            string sql = $@"UPDATE `customer` SET
+            (`email`, `first_name`, `last_name`, `phonenumber`)
+            VALUES ('{cu.Email}', '{cu.First_Name}', '{cu.Last_Name}', '{cu.Phonenumber}'
+            WHERE `id` = {cu.ID});
+            SELECT LAST_INSERT_ID()";
+
+            int id = _sqlConnection.QuerySingle<int>(sql);
+            return $"CUStOMER : {id} UPDATED";
         }
 
         public string DeleteCustomer(int id)

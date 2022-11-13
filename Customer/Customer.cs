@@ -27,6 +27,11 @@ class Customer
         Phonenumber = phonenumber;
     }
 
+    public Customer()
+    {
+
+    }
+
     public override string ToString()
     {
         return $@"
