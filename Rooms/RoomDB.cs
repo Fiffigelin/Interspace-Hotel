@@ -14,12 +14,12 @@ class RoomDB
     {
         string sql = @$"INSERT INTO room(room.name, room.price ,room.beds, room.size) VALUES ('{name}', {price}, {beds}, {size});SELECT LAST_INSERT_ID();";
         System.Console.WriteLine(sql);
-        int test = _sqlConnection.QuerySingle<int>(sql);
-        return test;
+        int create = _sqlConnection.QuerySingle<int>(sql);
+        return create;
     }
     public void UpdateRoom(int roomPrice, int roomBeds, int roomSize, int ID)
     {
-        _sqlConnection.Query<Room>($"UPDATE room SET room.price = {roomPrice},room.beds = {roomBeds},room.size = {roomSize} WHERE id = {ID}");
+        _sqlConnection.Query<Room>($"UPDATE room SET room.price = {roomPrice},room.beds = {roomBeds},room.size = {roomSize} WHERE id = {ID};");
     }
     public List<Room> GetRooms()
     {
