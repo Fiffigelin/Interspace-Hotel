@@ -5,24 +5,46 @@ internal class Program
     const string CONNECTIONSTRING = "Server = localhost;Database = interspace_hotel;Uid=root";
 
     private static void Main(string[] args)
-    {
-        // ======================= INFÖR FREDAGEN =======================
-        // ==  * Skriva om alla metoder som rör klassen Room så att    ==
-        // ==    datan lagras med en gång i databasen                  ==
-        // ==  * Skapa en tabell för bokningar i DB som innehåller     ==
-        // ==    DATUM FRÅN och DATUM TILL alternativt DURATION och    ==
-        // ==    room.id samt kund.id                                  ==
-        // ==  * Så lätta kopplingar som möjligt!                      ==
-        // ======================= INFÖR FREDAGEN =======================
-
+    {  
         MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
-        RoomDB roomDB = new(connection);
-        RoomManagement roomManager = new(roomDB);
-        HotelDB hotelDB = new(connection);
-        HotelManagement hotelManagement = new(hotelDB);
+        // RoomDB roomDB = new(connection);
+        // RoomManagement roomManager = new(roomDB);
+
+        CustomerDB customerDB = new();
+        CustomerManagement customerManager = new(customerDB);
+
+        Console.Write("Searchword : ");
+        string search = Console.ReadLine();
+        List<Customer> cuList = customerManager.StringSearchCustomer(search);
+        if (cuList.Count <= 0)
+        {
+            System.Console.WriteLine("NOTHING HERE");
+        }
+        else
+        {
+            foreach (var item in cuList)
+            {
+                System.Console.WriteLine(item);
+            }
+        }
+
+        Console.Write("DELETE BY ID : ");
+        int id = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine(customerManager.RemoveCustomer(id));
+        
+        Customer cu = customerManager.GetCustomer(id);
+        if (cu.ID == id)
+        {
+            Console.WriteLine(cu);
+        }
+        else
+        {
+            Console.WriteLine("Customer not found");
+        }
 
         Room listRooms = new();
 
+        
         //UpdateRoom(roomDB);
 
         // int testInsert = roomDB.CreateRoom("Deluxe", 4500, 2, 64);
@@ -33,13 +55,6 @@ internal class Program
         // {
         //     Console.WriteLine(r.name + " " + r.price + " " + r.size + " " + r.beds + " " + r.guests);
         // }
-
-    /* För att hantera reviews just nu
-    Console.WriteLine(hotelManagement.GetValues());
-    hotelDB.AddReview(25);
-    */
-
-
 
         // TestCustomers();
 
@@ -55,6 +70,7 @@ internal class Program
         int idRemoveConvert = Convert.ToInt32(idRemove);
         roomDB.DeleteRoom(idRemoveConvert);
     }
+
 
     private static void UpdateRoom(RoomDB roomDB)
     {

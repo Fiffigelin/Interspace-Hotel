@@ -1,49 +1,49 @@
-using Dapper;
-using MySqlConnector;
-class RoomManagement
-{
-    public RoomDB db;
-    public RoomManagement(RoomDB connection)
-    {
-        db = connection;
-    }
+// using Dapper;
+// using MySqlConnector;
+// class RoomManagement
+// {
+//     public RoomDB db;
+//     public RoomManagement(RoomDB connection)
+//     {
+//         db = connection;
+//     }
 
-    public void CreateRoom(List<Room> roomList)
-    {
-        //hotelRooms.Add(hotelRooms.Count + 1, room);
-        foreach (var room in roomList)
-        {
-            // db.CreateRoom(room); 
-        }
+//     public void CreateRoom(List<Room> roomList)
+//     {
+//         //hotelRooms.Add(hotelRooms.Count + 1, room);
+//         foreach (var room in roomList)
+//         {
+//             db.CreateRoom(room); 
+//         }
 
-    }
+//     }
 
-    // public IEnumerable<Room> PrintRoom()
-    // {
-    //     List<Room> rooms = new();
+//     public IEnumerable<Room> PrintRoom()
+//     {
+//         List<Room> rooms = new();
 
-    //     foreach (var kvp in hotelRooms)
-    //     {
-    //         rooms.Add(kvp.Value);
-    //     }
+//         foreach (var kvp in hotelRooms)
+//         {
+//             rooms.Add(kvp.Value);
+//         }
 
-    //     return rooms;
-    // }
+//         return rooms;
+//     }
 
-    public void UpdateRoom()
-    {
+//     public void UpdateRoom()
+//     {
 
-    }
+//     }
 
-    public void DeleteRoom()
-    {
+//     public void DeleteRoom()
+//     {
 
-    }
+//     }
 
-    // public Room GetRoomByID(int id)
-    // {
-    //     return hotelRooms[id];
-    // }
+//     // public Room GetRoomByID(int id)
+//     // {
+//     //     return hotelRooms[id];
+//     // }
 
 
-}
+// }
