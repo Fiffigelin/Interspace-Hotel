@@ -13,22 +13,22 @@ class RoomManagement
         //hotelRooms.Add(hotelRooms.Count + 1, room);
         foreach (var room in roomList)
         {
-            db.CreateRoom(room); 
+            // db.CreateRoom(room); 
         }
 
     }
 
-    public IEnumerable<Room> PrintRoom()
-    {
-        List<Room> rooms = new();
+    // public IEnumerable<Room> PrintRoom()
+    // {
+    //     List<Room> rooms = new();
 
-        foreach (var kvp in hotelRooms)
-        {
-            rooms.Add(kvp.Value);
-        }
+    //     foreach (var kvp in hotelRooms)
+    //     {
+    //         rooms.Add(kvp.Value);
+    //     }
 
-        return rooms;
-    }
+    //     return rooms;
+    // }
 
     public void UpdateRoom()
     {

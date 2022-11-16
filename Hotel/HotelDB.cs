@@ -10,15 +10,18 @@ class HotelDB
         _sqlConnection = connection;
     }
 
-    public void AddReview()
+    public void AddReview(int i)
     {
-        //Do SQL Magic
-        //_sqlConnection.query osv osv..
+        int sql = _sqlConnection.Execute(@$"INSERT INTO reviews (value) VALUES ('{i}')");
     }
 
-    // Om en användare ska lämna en review så görs det efter en vistelse.
-    // Efter detta får man "länken" för att kunna ge ett betyg. Betyget samlas i en ***
-    // Uträkning via en lista = samlar olika värden / antal röster. 
+    public List<Hotel> PrintReview()
+    {
+        var values = _sqlConnection.Query<Hotel>($"SELECT value FROM reviews;").ToList();
+        return values;
+    }
 
     // Ska alltid skrivas ut inför bokningen eller vart ska det synas? 
+    // Skapa nya röster genom metod för användaren. Denna ska in i UI. 
+    // Fixa felhantering. 
 }

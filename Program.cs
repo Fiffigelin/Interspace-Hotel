@@ -14,23 +14,32 @@ internal class Program
         // ==    room.id samt kund.id                                  ==
         // ==  * Så lätta kopplingar som möjligt!                      ==
         // ======================= INFÖR FREDAGEN =======================
-        
+
         MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
         RoomDB roomDB = new(connection);
         RoomManagement roomManager = new(roomDB);
+        HotelDB hotelDB = new(connection);
+        HotelManagement hotelManagement = new(hotelDB);
 
         Room listRooms = new();
 
         //UpdateRoom(roomDB);
 
-        int testInsert = roomDB.CreateRoom("Deluxe", 4500, 2, 64);
-        RemoveRoombyID(roomDB);
+        // int testInsert = roomDB.CreateRoom("Deluxe", 4500, 2, 64);
+        // RemoveRoombyID(roomDB);
 
-        var rooms = roomDB.GetRooms();
-        foreach (Room r in rooms)
-        {
-            Console.WriteLine(r.name + " " + r.price + " " + r.size + " " + r.beds + " " + r.guests);
-        }
+        // var rooms = roomDB.GetRooms();
+        // foreach (Room r in rooms)
+        // {
+        //     Console.WriteLine(r.name + " " + r.price + " " + r.size + " " + r.beds + " " + r.guests);
+        // }
+
+    /* För att hantera reviews just nu
+    Console.WriteLine(hotelManagement.GetValues());
+    hotelDB.AddReview(25);
+    */
+
+
 
         // TestCustomers();
 

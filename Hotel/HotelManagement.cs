@@ -2,13 +2,29 @@ using Dapper;
 using MySqlConnector;
 class HotelManagement
 {
-    // List<Hotel> ReviewsList = new List<Hotel>();
+    HotelDB hotelDB;
     public HotelManagement(HotelDB connection)
     {
+        hotelDB = connection;
     }
 
-     
-}
 
-// Ta bort Hotel, ta bort tillfälliga listor. Connecta med databasen. 
-// If Ja 1-5 {Detta händer} Räkna ut. Skriv ut
+    int votes = 0;
+    int i = 0;
+    int calculation = 0;
+    int totalValue = 0;
+
+    public int GetValues()
+    {
+        var reviews = hotelDB.PrintReview();
+        foreach (var value in reviews)
+        {
+            i = value.value;
+            votes++;
+            totalValue += i;
+            calculation = totalValue / votes;
+        }
+        return calculation;
+    }
+
+}
