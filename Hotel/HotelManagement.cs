@@ -28,3 +28,11 @@ class HotelManagement
     }
 
 }
+
+    /* För att hantera reviews just nu
+    Console.WriteLine(hotelManagement.GetValues());
+    hotelDB.AddReview(25);
+    */
+
+        // HotelDB hotelDB = new(connection);
+        // HotelManagement hotelManagement = new(hotelDB);
