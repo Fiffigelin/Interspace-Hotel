@@ -8,42 +8,50 @@ class RoomManagement
         db = connection;
     }
 
-    public void CreateRoom(List<Room> roomList)
-    {
-        //hotelRooms.Add(hotelRooms.Count + 1, room);
-        foreach (var room in roomList)
-        {
-            //db.CreateRoom(room); 
-        }
-
-    }
-
-    // public IEnumerable<Room> PrintRoom()
+    // public void CreateRoom(List<Room> roomList)
     // {
-    //     List<Room> rooms = new();
-
-    //     foreach (var kvp in hotelRooms)
+    //     //hotelRooms.Add(hotelRooms.Count + 1, room);
+    //     foreach (var room in roomList)
     //     {
-    //         rooms.Add(kvp.Value);
+    //         db.CreateRoom(room);
     //     }
 
-    //     return rooms;
-    // }
-
-    public void UpdateRoom()
-    {
-
-    }
-
-    public void DeleteRoom()
-    {
-
-    }
-
-    // public Room GetRoomByID(int id)
-    // {
-    //     return hotelRooms[id];
-    // }
-
-
 }
+// public void CreateRoom(List<Room> roomList)
+// {
+//     //hotelRooms.Add(hotelRooms.Count + 1, room);
+//     foreach (var room in roomList)
+//     {
+//         db.CreateRoom(room);
+//     }
+
+//     //         foreach (var kvp in hotelRooms)
+//     //         {
+//     //             rooms.Add(kvp.Value);
+//     //         }
+
+//     public IEnumerable<Room> PrintRoom()
+//     {
+//         List<Room> rooms = new();
+
+//         foreach (var kvp in hotelRooms)
+//         {
+//             rooms.Add(kvp.Value);
+//         }
+
+//         return rooms;
+//     }
+// }
+
+//     public void DeleteRoom()
+//     {
+
+//     }
+
+//     // public Room GetRoomByID(int id)
+//     // {
+//     //     return hotelRooms[id];
+//     // }
+
+
+// }

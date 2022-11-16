@@ -6,25 +6,26 @@ internal class Program
 
     private static void Main(string[] args)
     {
-        // ======================= INFÖR FREDAGEN =======================
-        // ==  * Skriva om alla metoder som rör klassen Room så att    ==
-        // ==    datan lagras med en gång i databasen                  ==
-        // ==  * Skapa en tabell för bokningar i DB som innehåller     ==
-        // ==    DATUM FRÅN och DATUM TILL alternativt DURATION och    ==
-        // ==    room.id samt kund.id                                  ==
-        // ==  * Så lätta kopplingar som möjligt!                      ==
-        // ======================= INFÖR FREDAGEN =======================
+
 
         MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
         RoomDB roomDB = new(connection);
-        RoomManagement roomManager = new(roomDB);
         EmployeeDB employeeDB = new(connection);
         EmployeeManagement empManager = new(employeeDB);
         ReservationDB reservations = new(connection);
+        Room listRooms = new();
 
         //MakeReservation(reservations);
         //UpdateReservation(reservations);
         //DeleteReservation(reservations);
+
+        //UpdateRoom(roomDB);
+        //RemoveRoombyID(roomDB);
+
+        //RoomManagement roomManager = new(roomDB);
+
+        //CreateEmployee(employer);
+
 
 
         var reservation = reservations.ListReservations();
@@ -38,8 +39,10 @@ internal class Program
         // {
         //     Console.WriteLine(employees);
         // }
+
+        //UpdateEmployee(employer);
         // //metoden ger dig val att ge input för att uppdatera namn och lösenord på ett specifikt id
-        // UpdateEmployee(employer);
+
         // //skriver ut den nya updaterade listan på personal
         // var emp1 = employer.ListEmployees();
         // foreach (Employee employees in emp1)
@@ -47,22 +50,16 @@ internal class Program
         //     Console.WriteLine(employees);
         // }
 
-        //CreateEmployee(employer);
-        //UpdateRoom(roomDB);
-        //int testInsert = roomDB.CreateRoom("Deluxe", 4500, 2, 64);
-        //RemoveRoombyID(roomDB);
-
         // var rooms = roomDB.GetRooms();
         // foreach (Room r in rooms)
         // {
         //     Console.WriteLine(r.name + " " + r.price + " " + r.size + " " + r.beds + " " + r.guests);
         // }
 
-        // TestCustomers();
-
         // GUSTAVS TIPS
         //SqlConnect connection = kjfgkfjgkfg
         //RoomDB roomDb = new(connection)
+
     }
 
     private static void DeleteReservation(ReservationDB reservations)
@@ -163,6 +160,7 @@ internal class Program
         int idRemoveConvert = Convert.ToInt32(idRemove);
         roomDB.DeleteRoom(idRemoveConvert);
     }
+
 
     private static void UpdateRoom(RoomDB roomDB)
     {
