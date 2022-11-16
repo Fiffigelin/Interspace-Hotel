@@ -1,27 +1,48 @@
 class Room
 {
-    public string name { get; set; }
-    public int price { get; }
-    public int beds { get; set; }
-    public double size { get; set; }
-    public int guests { get; set; }
+    public int ID { get; set; }
+    public string Name { get; set; }
+    public int Price { get; }
+    public int Beds { get; set; }
+    public int Size { get; set; }
+    public int Guests { get; set; }
 
-    // public Room(int price, int bed, double size, int guests)
+    public Room(string name, int price, int beds, int size, int guests)
+    {
+        Name = name;
+        Price = price;
+        Beds = beds;
+        Size = size;
+        Guests = guests;
+    }
+
+    // MATERALIZING A OBJECT FROM DB
+    public Room(int id, string name, int price, int beds, int size, int guests)
+    {
+        ID = id;
+        Name = name;
+        Price = price;
+        Beds = beds;
+        Size = size;
+        Guests = guests;
+    }
+
+    // public Room(int beds, double size, int guests, int id)
     // {
-    //     this.price = price;
-    //     this.beds = bed;
-    //     this.size = size;
-    //     this.guests = guests;
+    //     ID = id;
+    //     Beds = beds;
+    //     Size = size;
+    //     Guests = guests;
     // }
 
     public override string ToString()
     {
         return
-        @$" Room : {name}
-        Roomid :
-        Price : {price}
-        Beds : {beds}
-        Roomsize : {size} kvm
-        Max amount guests : {guests}";
+        @$" Room : {Name}
+        Roomid : {ID}
+        Price : {Price}
+        Beds : {Beds}
+        Roomsize : {Size} kvm
+        Max amount guests : {Guests}";
     }
 }
