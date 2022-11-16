@@ -9,11 +9,13 @@ class EmployeeDB
         _sqlconnection = connection;
     }
 
-    public string CreateEmployee(string name, string password)
+    public int CreateEmployee(string name, string password)
     {
         string sql = @$"INSERT INTO personal (personal.name, personal.password)VALUES ('{name}', '{password}');SELECT LAST_INSERT_ID();";
-        string createEmployee = _sqlconnection.QuerySingle<string>(sql);
-        return createEmployee;
+        // string createEmployee = _sqlconnection.QuerySingle<string>(sql);
+        // return createEmployee;
+        int id = _sqlconnection.QuerySingle<int>(sql);
+        return id;
     }
 
     public List<Employee> ListEmployees()

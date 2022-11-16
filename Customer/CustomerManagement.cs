@@ -77,11 +77,9 @@ class CustomerManagement
         return customerList;
     }
 
-    public List<Customer> PrintCustomer()
+    public List<Customer> GetAllCustomers()
     {
-        List<Customer> customerList = new(customerDB.GetCustomers());
-        return customerList;
-        // skapa en foreach här? Som skickar vidare till UI?
+        return customerDB.GetCustomers();
     }
 
     private bool IsStringNumeric(string s)
