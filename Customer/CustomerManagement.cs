@@ -10,13 +10,11 @@ class CustomerManagement
 
     public Customer GetCustomer(int id)
     {
-        Customer cu;
-        cu = customerDB.SelectCustomer(id);
-        
-         return cu;
+        Customer cu = customerDB.SelectCustomer(id);
+        return cu;
     }
 
-    public string AddCostumer(string email, string firstName, string lastName, string phonenumber)
+    public string AddCustomer(string email, string firstName, string lastName, string phonenumber)
     {
         if (!IsEmailValid(email)) return "Invalid input of email";
         if (!IsStringValid(firstName)) return "Invalid input of first name";
@@ -38,7 +36,7 @@ class CustomerManagement
         return $"NEW CUSTOMER CREATED WITH ID : {id}";
     }
 
-    public string ModifyCustomer(string email, string firstName, string lastName, string phonenumber, int id)
+    public string UpdateCustomer(string email, string firstName, string lastName, string phonenumber, int id)
     {
         if (!IsEmailValid(email)) return "Invalid input of email";
         if (!IsStringValid(firstName)) return "Invalid input of first name";
@@ -73,15 +71,12 @@ class CustomerManagement
 
     public List<Customer> StringSearchCustomer(string search)
     {
-        List<Customer> customerList = new(customerDB.SearchCustomerDB(search));
-        return customerList;
+        return customerDB.SearchCustomerDB(search);
     }
 
-    public List<Customer> PrintCustomer()
+    public List<Customer> GetAllCustomers()
     {
-        List<Customer> customerList = new(customerDB.GetCustomers());
-        return customerList;
-        // skapa en foreach här? Som skickar vidare till UI?
+        return customerDB.GetCustomers();
     }
 
     private bool IsStringNumeric(string s)
