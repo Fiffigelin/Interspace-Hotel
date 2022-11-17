@@ -36,11 +36,15 @@ class UI
     private void GuestMenu()
     {
         Console.WriteLine("Guestmenu will display here");
+        Console.WriteLine("Please press any key to proceed.");
+        Console.ReadKey(true);
     }
 
     private void EmployeeMenu()
     {
         Console.WriteLine("Employeemenu will display here");
+        Console.WriteLine("Please press any key to proceed.");
+        Console.ReadKey(true);
     }
 
     private void ExitMenu()

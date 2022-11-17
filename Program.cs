@@ -22,7 +22,10 @@ internal class Program
         // RemoveCustomer(cm); - FUNKAR
 
 
-        // Room listRooms = new();
+        // // Room listRooms = new();  EMELIE HAR TILLFÄLLIGT KOMMENTERAT UT DENNA!
+
+        UI ui = new();
+        ui.Start();
 
         //MakeReservation(reservations);
         //UpdateReservation(reservations);
