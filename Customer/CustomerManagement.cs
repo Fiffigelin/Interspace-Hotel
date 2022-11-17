@@ -10,8 +10,7 @@ class CustomerManagement
 
     public Customer GetCustomer(int id)
     {
-        Customer cu = customerDB.SelectCustomer(id);
-        return cu;
+        return customerDB.SelectCustomer(id);
     }
 
     public string AddCustomer(string email, string firstName, string lastName, string phonenumber)

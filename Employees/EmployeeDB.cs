@@ -34,4 +34,24 @@ class EmployeeDB
         string sql = (@$"DELETE FROM personal WHERE personal.id = {ID}");
     }
 
+    public Employee SelectEmployee(int id)
+    {
+        // https://stackoverflow.com/questions/14171794/how-to-retrieve-data-from-a-sql-server-database-in-c
+        Employee em = new();
+        string sql = $@"SELECT * FROM `personal` WHERE `personal`.`id`= {id}";
+        MySqlCommand cmd = new MySqlCommand(sql, _sqlconnection);
+        _sqlconnection.Open();
+        using (MySqlDataReader reader = cmd.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                em.ID = Convert.ToInt32(reader["id"].ToString());
+                em.Name = reader["name"].ToString();
+                em.Password = reader["password"].ToString();
+            }
+            _sqlconnection.Close();
+        }
+        return em;
+    }
+
 }

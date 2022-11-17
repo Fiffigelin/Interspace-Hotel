@@ -1,4 +1,4 @@
-class Reservation
+ class Reservation
 {
     public int id { get; set; }
     public int room_id { get; set; }

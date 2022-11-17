@@ -6,14 +6,23 @@ internal class Program
 
     private static void Main(string[] args)
     {
-
-
         MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
         RoomDB roomDB = new(connection);
         EmployeeDB employeeDB = new(connection);
         EmployeeManagement empManager = new(employeeDB);
         ReservationDB reservations = new(connection);
-        Room listRooms = new();
+        CustomerDB cDB = new CustomerDB();
+        CustomerManagement cm = new(cDB);
+
+        // AddCustomer(cm); - FUNKAR
+        // int id = GetCustomer(cm); - FUNKAR
+        // UpdateCustomer(cm, id); - !!!!!!FUNKAR INTE!!!!!
+        // List<Customer> customerList = cm.GetAllCustomers(); - funkar
+        // PrintCustomers(customerList); - funkar 
+        // RemoveCustomer(cm); - FUNKAR
+
+
+        // Room listRooms = new();
 
         //MakeReservation(reservations);
         //UpdateReservation(reservations);
@@ -28,11 +37,11 @@ internal class Program
 
 
 
-        var reservation = reservations.ListReservations();
-        foreach (Reservation item in reservation)
-        {
-            Console.WriteLine(item);
-        }
+        // var reservation = reservations.ListReservations();
+        // foreach (Reservation item in reservation)
+        // {
+        //     Console.WriteLine(item);
+        // }
         //Skriver ut lista på all personal i databasen med ID samt Namn
         // var emp = employer.ListEmployees();
         // foreach (Employee employees in emp)
@@ -61,7 +70,79 @@ internal class Program
         //RoomDB roomDb = new(connection)
 
     }
+    private static void AddCustomer(CustomerManagement customerM)
+    {
+        // HEADER
+        Console.WriteLine("ADD CUSTOMER");
+        Console.Write("Firstname : ");
+        string firstName = Console.ReadLine();
+        Console.Write("Lastname : ");
+        string lastName = Console.ReadLine();
+        Console.Write("Email : ");
+        string email = Console.ReadLine();
+        Console.Write("Phonenumber : ");
+        string phoneNumber = Console.ReadLine();
+        Console.WriteLine(customerM.AddCustomer(email, firstName, lastName, phoneNumber));
+    }
 
+    private static void UpdateCustomer(CustomerManagement customerM, int id)
+    {
+        // HEADER
+        Console.WriteLine("UPDATE CUSTOMER");
+        Console.Write("Firstname : ");
+        string firstName = Console.ReadLine();
+        Console.Write("Lastname : ");
+        string lastName = Console.ReadLine();
+        Console.Write("Email : ");
+        string email = Console.ReadLine();
+        Console.Write("Phonenumber : ");
+        string phoneNumber = Console.ReadLine();
+        Console.WriteLine(customerM.UpdateCustomer(email, firstName, lastName, phoneNumber, id));
+
+    }
+    private static int GetCustomer(CustomerManagement customerM)
+    {
+        // HEADER
+        int id = 0;
+        Console.WriteLine("SELECT CUSTOMER BY ID");
+        Console.Write("ID : ");
+        try
+        {
+            id = Convert.ToInt32(Console.ReadLine());
+        }
+        catch (System.Exception)
+        {
+            Console.WriteLine("WRONG INPUT");
+        }
+        Console.WriteLine(customerM.GetCustomer(id));
+        return id;
+    }
+
+    private static void PrintCustomers(List<Customer> customerList)
+    {
+        foreach (Customer information in customerList)
+        {
+            Console.WriteLine(information);
+        }
+    }
+
+    private static void RemoveCustomer(CustomerManagement customerM)
+    {
+        // HEADER
+        int id = 0;
+        Console.WriteLine("SELECT CUSTOMER BY ID");
+        Console.Write("ID : ");
+        try
+        {
+            id = Convert.ToInt32(Console.ReadLine());
+        }
+        catch (System.Exception)
+        {
+            Console.WriteLine("WRONG INPUT");
+        }
+        Console.WriteLine(customerM.RemoveCustomer(id));
+        
+    }
     private static void DeleteReservation(ReservationDB reservations)
     {
         Console.WriteLine("Ange vilken reservation du vill ta bort, ange id:et");
