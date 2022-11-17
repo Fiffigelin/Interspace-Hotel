@@ -5,13 +5,24 @@ internal class Program
     const string CONNECTIONSTRING = "Server = localhost;Database = interspace_hotel;Uid=root";
 
     private static void Main(string[] args)
-    {  
+    {
         MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
         // RoomDB roomDB = new(connection);
         // RoomManagement roomManager = new(roomDB);
 
         CustomerDB customerDB = new();
         CustomerManagement customerManager = new(customerDB);
+
+        HotelDB hotelDB = new(connection);
+        HotelManagement hotelManagement = new(hotelDB);
+
+        // USER START HERE!
+        UI ui = new UI ();
+        ui.Start();
+
+
+
+
 
         Console.Write("Searchword : ");
         string search = Console.ReadLine();
@@ -31,7 +42,7 @@ internal class Program
         Console.Write("DELETE BY ID : ");
         int id = Convert.ToInt32(Console.ReadLine());
         Console.WriteLine(customerManager.RemoveCustomer(id));
-        
+
         Customer cu = customerManager.GetCustomer(id);
         if (cu.ID == id)
         {
@@ -44,7 +55,7 @@ internal class Program
 
         Room listRooms = new();
 
-        
+
         //UpdateRoom(roomDB);
 
         // int testInsert = roomDB.CreateRoom("Deluxe", 4500, 2, 64);
