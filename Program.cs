@@ -13,7 +13,10 @@ internal class Program
         EmployeeDB employeeDB = new(connection);
         EmployeeManagement empManager = new(employeeDB);
         ReservationDB reservations = new(connection);
-        Room listRooms = new();
+        // Room listRooms = new();  EMELIE HAR TILLFÄLLIGT KOMMENTERAT UT DENNA!
+
+        UI ui = new();
+        ui.Start();
 
         //MakeReservation(reservations);
         //UpdateReservation(reservations);
