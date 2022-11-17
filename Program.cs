@@ -2,37 +2,34 @@
 using Dapper;
 internal class Program
 {
-    const string CONNECTIONSTRING = "Server = localhost;Database = interspace_hotel;Uid=root";
+    const string CONNECTIONSTRING = "Server = localhost;Database = interspace_hotel;Uid=root; Convert Zero Datetime=True";
 
     private static void Main(string[] args)
     {
-
-
         MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
         RoomDB roomDB = new(connection);
+        Room listRooms = new();
+        //RoomManagement roomManager = new(roomDB);
         EmployeeDB employeeDB = new(connection);
         EmployeeManagement empManager = new(employeeDB);
         ReservationDB reservations = new(connection);
-        Room listRooms = new();
 
         //MakeReservation(reservations);
         //UpdateReservation(reservations);
         //DeleteReservation(reservations);
 
+
         //UpdateRoom(roomDB);
         //RemoveRoombyID(roomDB);
 
-        //RoomManagement roomManager = new(roomDB);
-
+        UpdateEmployee(employeeDB);
         //CreateEmployee(employer);
 
-
-
-        var reservation = reservations.ListReservations();
-        foreach (Reservation item in reservation)
-        {
-            Console.WriteLine(item);
-        }
+        // var reservation = reservations.ListReservations();
+        // foreach (Reservation item in reservation)
+        // {
+        //     Console.WriteLine(item);
+        // }
         //Skriver ut lista på all personal i databasen med ID samt Namn
         // var emp = employer.ListEmployees();
         // foreach (Employee employees in emp)
@@ -40,7 +37,6 @@ internal class Program
         //     Console.WriteLine(employees);
         // }
 
-        //UpdateEmployee(employer);
         // //metoden ger dig val att ge input för att uppdatera namn och lösenord på ett specifikt id
 
         // //skriver ut den nya updaterade listan på personal
@@ -74,28 +70,44 @@ internal class Program
     {
         try
         {
-            Console.WriteLine("ange customer ID");
-            string customerid = Console.ReadLine();
-            int idConvert = Convert.ToInt32(customerid);
-            Console.WriteLine("Ange nya rums id du vill flytta gästen till");
+            Console.WriteLine("ange reservations ID");
+            string reservationid = Console.ReadLine();
+            int idConvert = Convert.ToInt32(reservationid);
+            Reservation reservation = reservations.GetReservationById(idConvert);
+
+            Console.WriteLine("Ange nya rums id:et du vill flytta gästen till");
             string updateRoom = Console.ReadLine();
-            int roomConvert = Convert.ToInt32(updateRoom);
+            if (!string.IsNullOrWhiteSpace(updateRoom))
+            {
+                reservation.room_id = Convert.ToInt32(updateRoom);
+            }
+
             Console.WriteLine("Ange datum ändring");
             string date = Console.ReadLine();
-            int dateConvert = Convert.ToInt32(date);
+            if (!string.IsNullOrWhiteSpace(date))
+            {
+                reservation.date_in = DateTime.Parse(date);
+            }
+
             Console.WriteLine("Ange antal dagar");
             string duration = Console.ReadLine();
-            int durationConvert = Convert.ToInt32(duration);
+            if (!string.IsNullOrWhiteSpace(duration))
+            {
+                reservation.duration = Convert.ToInt32(duration);
+            }
+
             Console.WriteLine("Ange nytt pris");
             string price = Console.ReadLine();
-            int priceConvert = Convert.ToInt32(price);
+            if (!string.IsNullOrWhiteSpace(price))
+            {
+                reservation.economy = Convert.ToInt32(price);
+            }
 
-            reservations.UpdateReservation(idConvert, roomConvert, dateConvert, durationConvert, priceConvert);
+            reservations.UpdateReservation(reservation);
         }
-        catch (System.Exception)
+        catch (System.Exception e)
         {
-
-            Console.WriteLine("Ange endast med siffror, inga tecken.");
+            Console.WriteLine(e);
         }
     }
 
@@ -108,48 +120,63 @@ internal class Program
             Console.WriteLine("Välj rummet du vill boka");
             string roomChoice = Console.ReadLine();
             int roomChoiceConvert = Convert.ToInt32(roomChoice);
+
             Console.WriteLine("Ange ditt id.");
             string customerID = Console.ReadLine();
             int customerIDConvert = Convert.ToInt32(customerID);
-            Console.WriteLine("Ange när du vill reservera rummet. Ange i siffror tex 20221125");
+
+            Console.WriteLine("Ange när du vill reservera rummet. Ange i siffror tex 2022-11-25");
             string dateInput = Console.ReadLine();
-            int dateInutConvert = Convert.ToInt32(dateInput);
+            DateTime fromDate = DateTime.Parse(dateInput);
+
+            Console.WriteLine("Du har bokat: " + fromDate);
             Console.WriteLine("Ange hur många dagar du vill stanna.");
             string duration = Console.ReadLine();
             int durationConvert = Convert.ToInt32(duration);
+
             Console.WriteLine("Ange totalsumma");
             string totalSum = Console.ReadLine();
             int totalSumConvert = Convert.ToInt32(totalSum);
             Console.WriteLine(reservations.ToString());
-            reservations.CreateRoomReservation(roomChoiceConvert, customerIDConvert, dateInutConvert, durationConvert, totalSumConvert);
-
+            int resultat = reservations.CreateRoomReservation(roomChoiceConvert, customerIDConvert, fromDate, durationConvert, totalSumConvert);
+            Console.WriteLine("Reservation gjord: " + resultat);
         }
-        catch (System.Exception)
+        catch (System.Exception e)
         {
 
-            Console.WriteLine("Ange endast med siffror, inga tecken.");
+            Console.WriteLine("Fel: " + e);
         }
     }
 
-    private static void UpdateEmployee(EmployeeDB employer)
+    private static void UpdateEmployee(EmployeeDB employeeDB)
     {
         Console.WriteLine("Vilken personal vill du uppdatera? skriv in id siffra.");
-        string employeeIDInput = Console.ReadLine();
-        int employeeIDConvert = Convert.ToInt32(employeeIDInput);
+        string id = Console.ReadLine();
+        int employeeIDConvert = Convert.ToInt32(id);
+        Employee updateEmployee = employeeDB.GetEmployeeById(employeeIDConvert);
+
         Console.WriteLine("Skriv in namn");
         string employeeName = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(employeeName))
+        {
+            updateEmployee.name = employeeName;
+        }
         Console.WriteLine("Skriv in lösenord");
         string employeePassword = Console.ReadLine();
-        employer.UpdateEmployee(employeeIDConvert, employeeName, employeePassword);
+        if (!string.IsNullOrWhiteSpace(employeePassword))
+        {
+            updateEmployee.password = employeePassword;
+        }
+        employeeDB.UpdateEmployee(updateEmployee);
     }
 
-    private static void CreateEmployee(EmployeeDB employer)
+    private static void CreateEmployee(EmployeeDB employeeDB)
     {
         Console.WriteLine("Skriv in namn");
         string nameInput = Console.ReadLine();
         Console.WriteLine("Skriv in lösenord");
         string passwordInput = Console.ReadLine();
-        var createEmployee = employer.CreateEmployee(nameInput, passwordInput);
+        var createEmployee = employeeDB.CreateEmployee(nameInput, passwordInput);
         Console.WriteLine($"Lägger in ny personal {nameInput}");
     }
 
@@ -164,18 +191,38 @@ internal class Program
 
     private static void UpdateRoom(RoomDB roomDB)
     {
-        Console.WriteLine("type in a price");
-        string inputPrice = Console.ReadLine();
-        int priceConverter = Convert.ToInt32(inputPrice);
+        Console.WriteLine("type in room id");
+        string id = Console.ReadLine();
+        int idconvert = Convert.ToInt32(id);
+        Room updateRoom = roomDB.GetRoomByid(idconvert);
+
         Console.WriteLine("type in number of beds");
-        string inputBeds = Console.ReadLine();
-        int bedsConverter = Convert.ToInt32(inputBeds);
+        string Beds = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(Beds))
+        {
+            updateRoom.beds = Convert.ToInt32(Beds);
+        }
+
+        Console.WriteLine("Type in max amount of guests");
+        string guests = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(guests))
+        {
+            updateRoom.guests = Convert.ToInt32(guests);
+        }
+
         Console.WriteLine("type in size");
-        string inputSize = Console.ReadLine();
-        int sizeConverter = Convert.ToInt32(inputSize);
-        Console.WriteLine("type in id");
-        string inputID = Console.ReadLine();
-        int IDConverter = Convert.ToInt32(inputID);
-        roomDB.UpdateRoom(priceConverter, bedsConverter, sizeConverter, IDConverter);
+        string size = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(size))
+        {
+            updateRoom.size = Convert.ToInt32(size);
+        }
+
+        Console.WriteLine("type in price");
+        string price = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(price))
+        {
+            updateRoom.price = Convert.ToInt32(price);
+        }
+        roomDB.UpdateRoom(updateRoom);
     }
 }

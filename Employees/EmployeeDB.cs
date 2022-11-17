@@ -18,18 +18,27 @@ class EmployeeDB
 
     public List<Employee> ListEmployees()
     {
-        var employees = _sqlconnection.Query<Employee>(@$"SELECT personal.id, personal.name, personal.password FROM personal;").ToList();
+        string sql = @$"SELECT personal.id, personal.name, personal.password FROM personal;";
+        var employees = _sqlconnection.Query<Employee>(sql).ToList();
         return employees;
     }
-
-    public void UpdateEmployee(int ID, string name, string password)
+    public Employee GetEmployeeById(int id)
     {
-        _sqlconnection.Query<Employee>(@$"UPDATE personal SET personal.name= '{name}', personal.password = '{password}' WHERE id = {ID};");
+        string sql = @$"SELECT * FROM personal WHERE personal.id = {id};";
+        var employee = _sqlconnection.QuerySingle<Employee>(sql);
+        return employee;
+    }
+
+    public void UpdateEmployee(Employee employee)
+    {
+        string sql = @$"UPDATE personal SET personal.name= '{employee.name}', personal.password = '{employee.password}' WHERE id = {employee.id};";
+        _sqlconnection.Query<Employee>(sql);
     }
 
     public void DeleteEmployee(int ID)
     {
         string sql = (@$"DELETE FROM personal WHERE personal.id = {ID}");
+        _sqlconnection.Query<Employee>(sql);
     }
 
 }
