@@ -30,6 +30,14 @@ internal class Program
         // RemoveCustomer(cm); - FUNKAR
 
         MakeReservation(reservations);
+
+            
+        //     @$" {roomChoiceConvert}
+        
+        // int resultat = reservations.CreateRoomReservation(roomChoiceConvert, customerIDConvert, fromDate, durationConvert, totalSumConvert);
+        //     Console.WriteLine(Reservation gjord:  + resultat);
+            
+        //     ");
         //UpdateReservation(reservations);
         //DeleteReservation(reservations);
 
@@ -207,6 +215,16 @@ internal class Program
             Console.WriteLine(reservations.ToString());
             int resultat = reservations.CreateRoomReservation(roomChoiceConvert, customerIDConvert, fromDate, durationConvert, totalSumConvert);
             Console.WriteLine("Reservation gjord: " + resultat);
+
+            Console.WriteLine($@"
+            Här är ditt kvitto på din reservation:
+            Bokat rum: {roomChoiceConvert}
+            Inceckning: {fromDate}
+            Antal bokade nätter: {duration}
+            Kostnad : {totalSumConvert}
+            Bokad av : {customerIDConvert}
+            
+            Vid kontakt gällande ändringar eller avbokning, vänligen uppge {resultat}");
         }
         catch (System.Exception e)
         {
@@ -214,7 +232,6 @@ internal class Program
             Console.WriteLine("Fel: " + e);
         }
     }
-
     private static void UpdateEmployee(EmployeeDB employeeDB)
     {
         Console.WriteLine("Vilken personal vill du uppdatera? skriv in id siffra.");
@@ -291,5 +308,4 @@ internal class Program
         }
         roomDB.UpdateRoom(updateRoom);
     }
-
 }

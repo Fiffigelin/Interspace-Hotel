@@ -8,6 +8,11 @@
     // public DateOnly FromDate { get; set; }
     public int duration { get; set; }
 
+    public Reservation()
+    {
+        
+    }
+
     public override string ToString()
     {
         return
