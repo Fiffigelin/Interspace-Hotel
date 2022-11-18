@@ -63,15 +63,15 @@ class EmployeeDB
         return em;
     }
 
-    public void UpdateCustomer(Customer cu)
-    {
-        string sql = $@"UPDATE `customer` SET
-            (`email`, `first_name`, `last_name`, `phonenumber`)
-            VALUES ('{cu.Email}', '{cu.First_Name}', '{cu.Last_Name}', '{cu.Phonenumber}'
-            WHERE `id` = {cu.ID});
-            SELECT LAST_INSERT_ID()";
+    // public void UpdateCustomer(Customer cu)
+    // {
+    //     string sql = $@"UPDATE `customer` SET
+    //         (`email`, name, `phonenumber`)
+    //         VALUES ('{cu.Email}', '{cu.Name}', '{cu.Phonenumber}'
+    //         WHERE `id` = {cu.ID});
+    //         SELECT LAST_INSERT_ID()";
 
-        var id = _sqlconnection.Query<Customer>(sql);
-    }
+    //     var id = _sqlconnection.Query<Customer>(sql);
+    // }
 
 }

@@ -9,20 +9,9 @@ class CustomerManagement
     {
         return customerDB.SelectCustomer(id);
     }
-    public int AddCustomer(string email, string firstName, string lastName, string phonenumber)
+    public int AddCustomer(Customer cust)
     {
-        bool insert = true;
-        if (!IsEmailValid(email)) insert = false;
-        if (!IsStringValid(firstName)) insert = false;
-        if (!IsStringValid(lastName)) insert = false;
-        if (!IsStringNumeric(phonenumber)) insert = false;
-
-        if (insert == true)
-        {
-            Customer cu = new(email, firstName, lastName, phonenumber);
-            return customerDB.InsertCustomer(cu);
-        }
-        return 0;
+            return customerDB.InsertCustomer(cust);
     }
 
     public string UpdateCustomer(string email, string firstName, string lastName, string phonenumber, int id)

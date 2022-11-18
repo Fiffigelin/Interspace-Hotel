@@ -27,23 +27,23 @@ class EmployeeManagement
         return $"NEW EMPLOYEE CREATED WITH ID : {id}";
     }
 
-    public string ModifyCustomer(Customer customer)
-    {
-        if (!IsStringValid(customer.First_Name)) return "Invalid input of name";
-        //if (!IsStringValid(customer.)) return "Invalid input of password";
+    // public string ModifyCustomer(Customer customer)
+    // {
+    //     if (!IsStringValid(customer.Name)) return "Invalid input of name";
+    //     //if (!IsStringValid(customer.)) return "Invalid input of password";
 
-        try
-        {
-            employeeDB.UpdateCustomer(customer);
-        }
-        catch (System.Exception)
-        {
+    //     try
+    //     {
+    //         employeeDB.UpdateCustomer(customer);
+    //     }
+    //     catch (System.Exception)
+    //     {
 
-            return $"ERROR UPDATING FAILED";
-        }
+    //         return $"ERROR UPDATING FAILED";
+    //     }
 
-        return $"UPDATING EMPLOYEE WITH ID : {customer.ID}";
-    }
+    //     return $"UPDATING EMPLOYEE WITH ID : {customer.ID}";
+    // }
     public string RemoveEmployee(int id)
     {
         try

@@ -18,8 +18,8 @@ class CustomerDB
     public int InsertCustomer(Customer cu)
     {
         string sql = $@"INSERT INTO `customer` 
-            (`email`, `first_name`, `last_name`, `phonenumber`)
-            VALUES ('{cu.Email}', '{cu.First_Name}', '{cu.Last_Name}', '{cu.Phonenumber}');
+            (`email`, `name`, `phonenumber`)
+            VALUES ('{cu.Email}', '{cu.Name}', '{cu.Phonenumber}');
             SELECT LAST_INSERT_ID()";
 
         int id = _sqlConnection.QuerySingle<int>(sql);
@@ -45,8 +45,7 @@ class CustomerDB
             {
                 cu.ID = Convert.ToInt32(reader["id"].ToString());
                 cu.Email = reader["email"].ToString();
-                cu.First_Name = reader["first_name"].ToString();
-                cu.Last_Name = reader["last_name"].ToString();
+                cu.Name = reader["name"].ToString();
                 cu.Phonenumber = reader["phonenumber"].ToString();
             }
             _sqlConnection.Close();
@@ -56,10 +55,10 @@ class CustomerDB
 
     public void UpdateCustomer(Customer cu)
     {
-        string sql = $@"UPDATE `customer` SET
-            (`email`, `first_name`, `last_name`, `phonenumber`)
-            VALUES ('{cu.Email}', '{cu.First_Name}', '{cu.Last_Name}', '{cu.Phonenumber}'
-            WHERE `id` = {cu.ID});
+        string sql = $@"UPDATE customer SET
+            (email, name, phonenumber)
+            VALUES ('{cu.Email}', '{cu.Name}', '{cu.Phonenumber}'
+            WHERE id = {cu.ID});
             SELECT LAST_INSERT_ID()";
 
         int id = _sqlConnection.QuerySingle<int>(sql);
