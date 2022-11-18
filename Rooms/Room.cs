@@ -1,28 +1,27 @@
 class Room
 {
-    public int id { get; set; }
     public string name { get; set; }
-    public int price { get; set; }
+    public int price { get; }
     public int beds { get; set; }
     public double size { get; set; }
     public int guests { get; set; }
 
-    // public Room(int price, int bed, double size, int guests)
+    // public Room(int beds, double size, int guests, int id)
     // {
-    //     this.price = price;
-    //     this.beds = bed;
-    //     this.size = size;
-    //     this.guests = guests;
+    //     ID = id;
+    //     Beds = beds;
+    //     Size = size;
+    //     Guests = guests;
     // }
 
     public override string ToString()
     {
         return
-        @$" Room : {name}
-        Roomid :
-        Price : {price}
-        Beds : {beds}
-        Roomsize : {size} kvm
-        Max amount guests : {guests}";
+        @$" Room : {Name}
+        Roomid : {ID}
+        Price : {Price}
+        Beds : {Beds}
+        Roomsize : {Size} kvm
+        Max amount guests : {Guests}";
     }
 }

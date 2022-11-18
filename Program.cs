@@ -8,11 +8,26 @@ internal class Program
     {
         MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
         RoomDB roomDB = new(connection);
-        Room listRooms = new();
         //RoomManagement roomManager = new(roomDB);
         EmployeeDB employeeDB = new(connection);
         EmployeeManagement empManager = new(employeeDB);
         ReservationDB reservations = new(connection);
+
+        CustomerDB cDB = new CustomerDB();
+        CustomerManagement cm = new(cDB);
+
+        // AddCustomer(cm); - FUNKAR
+        // int id = GetCustomer(cm); - FUNKAR
+        // UpdateCustomer(cm, id); - !!!!!!FUNKAR INTE!!!!!
+        // List<Customer> customerList = cm.GetAllCustomers(); - funkar
+        // PrintCustomers(customerList); - funkar 
+        // RemoveCustomer(cm); - FUNKAR
+
+
+        // // Room listRooms = new();  EMELIE HAR TILLFÄLLIGT KOMMENTERAT UT DENNA!
+
+        UI ui = new();
+        ui.Start();
 
         //MakeReservation(reservations);
         //UpdateReservation(reservations);
@@ -36,26 +51,79 @@ internal class Program
         // {
         //     Console.WriteLine(employees);
         // }
+    }
 
-        // //metoden ger dig val att ge input för att uppdatera namn och lösenord på ett specifikt id
+    private static void AddCustomer(CustomerManagement customerM)
+    {
+        // HEADER
+        Console.WriteLine("ADD CUSTOMER");
+        Console.Write("Firstname : ");
+        string firstName = Console.ReadLine();
+        Console.Write("Lastname : ");
+        string lastName = Console.ReadLine();
+        Console.Write("Email : ");
+        string email = Console.ReadLine();
+        Console.Write("Phonenumber : ");
+        string phoneNumber = Console.ReadLine();
+        Console.WriteLine(customerM.AddCustomer(email, firstName, lastName, phoneNumber));
+    }
 
-        // //skriver ut den nya updaterade listan på personal
-        // var emp1 = employer.ListEmployees();
-        // foreach (Employee employees in emp1)
-        // {
-        //     Console.WriteLine(employees);
-        // }
+    private static void UpdateCustomer(CustomerManagement customerM, int id)
+    {
+        // HEADER
+        Console.WriteLine("UPDATE CUSTOMER");
+        Console.Write("Firstname : ");
+        string firstName = Console.ReadLine();
+        Console.Write("Lastname : ");
+        string lastName = Console.ReadLine();
+        Console.Write("Email : ");
+        string email = Console.ReadLine();
+        Console.Write("Phonenumber : ");
+        string phoneNumber = Console.ReadLine();
+        Console.WriteLine(customerM.UpdateCustomer(email, firstName, lastName, phoneNumber, id));
+    }
 
-        // var rooms = roomDB.GetRooms();
-        // foreach (Room r in rooms)
-        // {
-        //     Console.WriteLine(r.name + " " + r.price + " " + r.size + " " + r.beds + " " + r.guests);
-        // }
+    private static int GetCustomer(CustomerManagement customerM)
+    {
+        // HEADER
+        int id = 0;
+        Console.WriteLine("SELECT CUSTOMER BY ID");
+        Console.Write("ID : ");
+        try
+        {
+            id = Convert.ToInt32(Console.ReadLine());
+        }
+        catch (System.Exception)
+        {
+            Console.WriteLine("WRONG INPUT");
+        }
+        Console.WriteLine(customerM.GetCustomer(id));
+        return id;
+    }
 
-        // GUSTAVS TIPS
-        //SqlConnect connection = kjfgkfjgkfg
-        //RoomDB roomDb = new(connection)
+    private static void PrintCustomers(List<Customer> customerList)
+    {
+        foreach (Customer information in customerList)
+        {
+            Console.WriteLine(information);
+        }
+    }
 
+    private static void RemoveCustomer(CustomerManagement customerM)
+    {
+        // HEADER
+        int id = 0;
+        Console.WriteLine("SELECT CUSTOMER BY ID");
+        Console.Write("ID : ");
+        try
+        {
+            id = Convert.ToInt32(Console.ReadLine());
+        }
+        catch (System.Exception)
+        {
+            Console.WriteLine("WRONG INPUT");
+        }
+        Console.WriteLine(customerM.RemoveCustomer(id));
     }
 
     private static void DeleteReservation(ReservationDB reservations)
@@ -188,7 +256,6 @@ internal class Program
         roomDB.DeleteRoom(idRemoveConvert);
     }
 
-
     private static void UpdateRoom(RoomDB roomDB)
     {
         Console.WriteLine("type in room id");
@@ -225,4 +292,5 @@ internal class Program
         }
         roomDB.UpdateRoom(updateRoom);
     }
+
 }

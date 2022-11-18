@@ -9,11 +9,13 @@ class EmployeeDB
         _sqlconnection = connection;
     }
 
-    public string CreateEmployee(string name, string password)
+    public int CreateEmployee(string name, string password)
     {
         string sql = @$"INSERT INTO personal (personal.name, personal.password)VALUES ('{name}', '{password}');SELECT LAST_INSERT_ID();";
-        string createEmployee = _sqlconnection.QuerySingle<string>(sql);
-        return createEmployee;
+        // string createEmployee = _sqlconnection.QuerySingle<string>(sql);
+        // return createEmployee;
+        int id = _sqlconnection.QuerySingle<int>(sql);
+        return id;
     }
 
     public List<Employee> ListEmployees()
@@ -39,6 +41,26 @@ class EmployeeDB
     {
         string sql = (@$"DELETE FROM personal WHERE personal.id = {ID}");
         _sqlconnection.Query<Employee>(sql);
+    }
+
+    public Employee SelectEmployee(int id)
+    {
+        // https://stackoverflow.com/questions/14171794/how-to-retrieve-data-from-a-sql-server-database-in-c
+        Employee em = new();
+        string sql = $@"SELECT * FROM `personal` WHERE `personal`.`id`= {id}";
+        MySqlCommand cmd = new MySqlCommand(sql, _sqlconnection);
+        _sqlconnection.Open();
+        using (MySqlDataReader reader = cmd.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                em.ID = Convert.ToInt32(reader["id"].ToString());
+                em.Name = reader["name"].ToString();
+                em.Password = reader["password"].ToString();
+            }
+            _sqlconnection.Close();
+        }
+        return em;
     }
 
 }
