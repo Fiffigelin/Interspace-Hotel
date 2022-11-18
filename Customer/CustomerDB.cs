@@ -77,7 +77,7 @@ class CustomerDB
         WHERE email LIKE '%{search}%'
         OR first_name LIKE '%{search}%'
         OR last_name LIKE '%{search}%'
-        OR phonenumber LIKE '%{search}%'").ToList();  
+        OR phonenumber LIKE '%{search}%'").ToList();
         return customerList;
     }
 }

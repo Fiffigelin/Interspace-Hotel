@@ -1,7 +1,8 @@
 class Room
 {
+    public int id { get; set; }
     public string name { get; set; }
-    public int price { get; }
+    public int price { get; set; }
     public int beds { get; set; }
     public double size { get; set; }
     public int guests { get; set; }
@@ -17,11 +18,11 @@ class Room
     public override string ToString()
     {
         return
-        @$" Room : {Name}
-        Roomid : {ID}
-        Price : {Price}
-        Beds : {Beds}
-        Roomsize : {Size} kvm
-        Max amount guests : {Guests}";
+        @$" Room : {name}
+        Roomid : {id}
+        Price : {price}
+        Beds : {beds}
+        Roomsize : {size} kvm
+        Max amount guests : {guests}";
     }
 }

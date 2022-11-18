@@ -16,28 +16,27 @@ internal class Program
         CustomerDB cDB = new CustomerDB();
         CustomerManagement cm = new(cDB);
 
-        // AddCustomer(cm); - FUNKAR
-        // int id = GetCustomer(cm); - FUNKAR
-        // UpdateCustomer(cm, id); - !!!!!!FUNKAR INTE!!!!!
         // List<Customer> customerList = cm.GetAllCustomers(); - funkar
         // PrintCustomers(customerList); - funkar 
-        // RemoveCustomer(cm); - FUNKAR
-
 
         // // Room listRooms = new();  EMELIE HAR TILLFÄLLIGT KOMMENTERAT UT DENNA!
 
-        UI ui = new();
-        ui.Start();
+        // UI ui = new();
+        // ui.Start();
 
-        //MakeReservation(reservations);
+        // AddCustomer(cm); - FUNKAR
+        // UpdateCustomer(cm, id); - !!!!!!FUNKAR INTE!!!!!
+        // int id = GetCustomer(cm); - FUNKAR
+        // RemoveCustomer(cm); - FUNKAR
+
+        MakeReservation(reservations);
         //UpdateReservation(reservations);
         //DeleteReservation(reservations);
-
 
         //UpdateRoom(roomDB);
         //RemoveRoombyID(roomDB);
 
-        UpdateEmployee(employeeDB);
+        //UpdateEmployee(employeeDB);
         //CreateEmployee(employer);
 
         // var reservation = reservations.ListReservations();

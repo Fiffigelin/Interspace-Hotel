@@ -27,14 +27,14 @@ class EmployeeManagement
         return $"NEW EMPLOYEE CREATED WITH ID : {id}";
     }
 
-    public string ModifyCustomer(string name, string password, int id)
+    public string ModifyCustomer(Customer customer)
     {
-        if (!IsStringValid(name)) return "Invalid input of name";
-        if (!IsStringValid(password)) return "Invalid input of password";
+        if (!IsStringValid(customer.First_Name)) return "Invalid input of name";
+        //if (!IsStringValid(customer.)) return "Invalid input of password";
 
         try
         {
-            employeeDB.UpdateEmployee(id, name, password);
+            employeeDB.UpdateCustomer(customer);
         }
         catch (System.Exception)
         {
@@ -42,7 +42,7 @@ class EmployeeManagement
             return $"ERROR UPDATING FAILED";
         }
 
-        return $"UPDATING EMPLOYEE WITH ID : {id}";
+        return $"UPDATING EMPLOYEE WITH ID : {customer.ID}";
     }
     public string RemoveEmployee(int id)
     {

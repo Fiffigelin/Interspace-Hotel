@@ -33,7 +33,7 @@ class EmployeeDB
 
     public void UpdateEmployee(Employee employee)
     {
-        string sql = @$"UPDATE personal SET personal.name= '{employee.name}', personal.password = '{employee.password}' WHERE id = {employee.id};";
+        string sql = @$"UPDATE personal SET personal.name = '{employee.name}', personal.password = '{employee.password}' WHERE id = {employee.id};";
         _sqlconnection.Query<Employee>(sql);
     }
 
@@ -54,13 +54,24 @@ class EmployeeDB
         {
             while (reader.Read())
             {
-                em.ID = Convert.ToInt32(reader["id"].ToString());
-                em.Name = reader["name"].ToString();
-                em.Password = reader["password"].ToString();
+                em.id = Convert.ToInt32(reader["id"].ToString());
+                em.name = reader["name"].ToString();
+                em.password = reader["password"].ToString();
             }
             _sqlconnection.Close();
         }
         return em;
+    }
+
+    public void UpdateCustomer(Customer cu)
+    {
+        string sql = $@"UPDATE `customer` SET
+            (`email`, `first_name`, `last_name`, `phonenumber`)
+            VALUES ('{cu.Email}', '{cu.First_Name}', '{cu.Last_Name}', '{cu.Phonenumber}'
+            WHERE `id` = {cu.ID});
+            SELECT LAST_INSERT_ID()";
+
+        var id = _sqlconnection.Query<Customer>(sql);
     }
 
 }

@@ -10,13 +10,10 @@ class CustomerManagement
 
     public Customer GetCustomer(int id)
     {
-        Customer cu;
-        cu = customerDB.SelectCustomer(id);
-        
-         return cu;
+        return customerDB.SelectCustomer(id);
     }
 
-    public string AddCostumer(string email, string firstName, string lastName, string phonenumber)
+    public string AddCustomer(string email, string firstName, string lastName, string phonenumber)
     {
         if (!IsEmailValid(email)) return "Invalid input of email";
         if (!IsStringValid(firstName)) return "Invalid input of first name";
@@ -38,26 +35,30 @@ class CustomerManagement
         return $"NEW CUSTOMER CREATED WITH ID : {id}";
     }
 
-    public string ModifyCustomer(string email, string firstName, string lastName, string phonenumber, int id)
+    public string UpdateCustomer(string email, string firstName, string lastName, string phonenumber, int id)
     {
         if (!IsEmailValid(email)) return "Invalid input of email";
         if (!IsStringValid(firstName)) return "Invalid input of first name";
         if (!IsStringValid(lastName)) return "Invalid input of last name";
         if (!IsStringNumeric(phonenumber)) return "Invalid input of phonenumber";
 
-        Customer cu = new(email, firstName, lastName, phonenumber);
-        try
-        {
-            customerDB.UpdateCustomer(cu);
-        }
-        catch (System.Exception)
-        {
+        // Customer cu = new(email, firstName, lastName, phonenumber);
+        // try
+        // {
+        //     Customer cu;
+        //     cu = customerDB.SelectCustomer(id);
 
-            return $"ERROR MODYFYING CUSTOMER";
-        }
+        //     return cu;
+        // }
+        // catch (System.Exception)
+        // {
+
+        //     return $"ERROR MODYFYING CUSTOMER";
+        // }
 
         return $"MODIFIED CUSTOMER WITH ID : {id}";
     }
+
     public string RemoveCustomer(int id)
     {
         try
@@ -73,15 +74,12 @@ class CustomerManagement
 
     public List<Customer> StringSearchCustomer(string search)
     {
-        List<Customer> customerList = new(customerDB.SearchCustomerDB(search));
-        return customerList;
+        return customerDB.SearchCustomerDB(search);
     }
 
-    public List<Customer> PrintCustomer()
+    public List<Customer> GetAllCustomers()
     {
-        List<Customer> customerList = new(customerDB.GetCustomers());
-        return customerList;
-        // skapa en foreach här? Som skickar vidare till UI?
+        return customerDB.GetCustomers();
     }
 
     private bool IsStringNumeric(string s)
