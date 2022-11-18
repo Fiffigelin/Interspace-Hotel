@@ -56,9 +56,6 @@ internal class Program
         // int id = GetCustomer(cm); - FUNKAR
         // RemoveCustomer(cm); - FUNKAR
 
-<<<<<<< HEAD
-        // MakeReservation(reservations);
-=======
         MakeReservation(reservations);
 
             
@@ -68,7 +65,6 @@ internal class Program
         //     Console.WriteLine(Reservation gjord:  + resultat);
             
         //     ");
->>>>>>> bb611c53ee393effdfe5ec822a972228f4a1ba10
         //UpdateReservation(reservations);
         //DeleteReservation(reservations);
 
@@ -259,33 +255,6 @@ internal class Program
         //skulle även behövas en form av validering som kollar ifall rummet är ledigt eller ej.
         try
         {
-<<<<<<< HEAD
-            // Console.WriteLine("Välj rummet du vill boka");
-            // string roomChoice = Console.ReadLine();
-            // int roomChoiceConvert = Convert.ToInt32(roomChoice);
-
-            // Console.WriteLine("Ange ditt id.");
-            // string customerID = Console.ReadLine();
-            // int customerIDConvert = Convert.ToInt32(customerID);
-
-            Console.WriteLine("Choose time-span. Ex 2022-11-25");
-            Console.Write("Start date :  ");
-            string dateInput = Console.ReadLine();
-            DateTime fromDate = DateTime.Parse(dateInput);
-
-            // Console.WriteLine("Du har bokat: " + fromDate);
-            Console.Write("How many nights : ");
-            string duration = Console.ReadLine();
-            int durationConvert = Convert.ToInt32(duration);
-
-            Console.Write("Price : ");
-            string totalSum = Console.ReadLine();
-            int totalSumConvert = Convert.ToInt32(totalSum);
-            Console.WriteLine(reservations.ToString());
-            int resultat = reservations.CreateRoomReservation(roomID, customerID, fromDate, durationConvert, totalSumConvert);
-            Console.WriteLine("Reservationid : " + resultat);
-            Console.ReadKey();
-=======
             Console.WriteLine("Choose the room you would like to book:");
             string roomChoice = Console.ReadLine();
             int roomChoiceConvert = Convert.ToInt32(roomChoice);
@@ -319,7 +288,6 @@ internal class Program
             Booked by : {customerIDConvert}
             
             With contact needed for changes or cancellation, please state {resultat}");
->>>>>>> bb611c53ee393effdfe5ec822a972228f4a1ba10
         }
         catch (System.Exception e)
         {
@@ -403,14 +371,4 @@ internal class Program
         }
         roomDB.UpdateRoom(updateRoom);
     }
-<<<<<<< HEAD
-    private static void ExitMenu()
-    {
-        Console.WriteLine("Please press any key to exit.");
-        Console.ReadKey(true);
-        Environment.Exit(0);
-    }
-
-=======
->>>>>>> bb611c53ee393effdfe5ec822a972228f4a1ba10
 }
