@@ -45,6 +45,7 @@ internal class Program
                     int search = BookingRoom();
                     List<Room> roomList = roomDB.SearchRoomDB(search);
                     int roomID = PrintSearchedRooms(roomList);
+<<<<<<< HEAD
                     //Testa om det går att ta bort cust = new();
                     //Måste en kund vara ny? Kan ju finnas i DB :)
                     //Fråga om kund är ny, om ja skapa ny, annars sök upp i databas.
@@ -60,12 +61,66 @@ internal class Program
                 case 1:
                     //Enda exit, alla andra är return
                     ExitMenu();
+=======
+                    int customerID = AddCustomer(custManager);
+                    MakeReservation(reservations);
+                    break;
+
+                case 1:
+                    //ExitMenu();
+>>>>>>> 1313d160603aafd08b141cebf4f36b05e08d9278
                     break;
 
                 default:
                     break;
             }
         }
+<<<<<<< HEAD
+=======
+
+        // List<Customer> customerList = cm.GetAllCustomers(); - funkar
+        // PrintCustomers(customerList); - funkar 
+
+        // // Room listRooms = new();  EMELIE HAR TILLFÄLLIGT KOMMENTERAT UT DENNA!
+
+        // UI ui = new();
+        // ui.Start();
+
+        // AddCustomer(cm); - FUNKAR
+        // UpdateCustomer(cm, id); - !!!!!!FUNKAR INTE!!!!!
+        // int id = GetCustomer(cm); - FUNKAR
+        // RemoveCustomer(cm); - FUNKAR
+
+        //MakeReservation(reservations);
+
+
+        //     @$" {roomChoiceConvert}
+
+        // int resultat = reservations.CreateRoomReservation(roomChoiceConvert, customerIDConvert, fromDate, durationConvert, totalSumConvert);
+        //     Console.WriteLine(Reservation gjord:  + resultat);
+
+        //     ");
+        //UpdateReservation(reservations);
+        //DeleteReservation(reservations);
+
+        //UpdateRoom(roomDB);
+        //RemoveRoombyID(roomDB);
+
+        //UpdateEmployee(employeeDB);
+        //CreateEmployee(employer);
+
+        // var reservation = reservations.ListReservations();
+        // foreach (Reservation item in reservation)
+        // {
+        //     Console.WriteLine(item);
+        // }
+        //Skriver ut lista på all personal i databasen med ID samt Namn
+        // var emp = employer.ListEmployees();
+        // foreach (Employee employees in emp)
+        // {
+        //     Console.WriteLine(employees);
+        // }
+>>>>>>> 1313d160603aafd08b141cebf4f36b05e08d9278
     }
     private static int BookingRoom()
     {
@@ -244,12 +299,17 @@ internal class Program
         }
     }
 
+<<<<<<< HEAD
     private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, int roomID, Customer cust)
+=======
+    private static void MakeReservation(ReservationDB reservations)
+>>>>>>> 1313d160603aafd08b141cebf4f36b05e08d9278
     {
         //Behöver ses över med felhantering då det finns mycket ReadLines samt punkt2. då det just nu kräver användaren att ange ett ID.
         //skulle även behövas en form av validering som kollar ifall rummet är ledigt eller ej.
         try
         {
+<<<<<<< HEAD
             // Console.WriteLine("Välj rummet du vill boka");
             // string roomChoice = Console.ReadLine();
             // int roomChoiceConvert = Convert.ToInt32(roomChoice);
@@ -280,6 +340,41 @@ internal class Program
             Console.WriteLine("Reservationid : " + resultat);
             Console.ReadLine();
             Thread.Sleep(3000);
+=======
+            Console.WriteLine("Choose the room you would like to book:");
+            string roomChoice = Console.ReadLine();
+            int roomChoiceConvert = Convert.ToInt32(roomChoice);
+
+            Console.WriteLine("Please state your ID:");
+            string customerId = Console.ReadLine();
+            int customerIDConvert = Convert.ToInt32(customerId);
+
+            Console.WriteLine("Please state when you would like to reserve the room. Write like this 2022-11-25");
+            string dateInput = Console.ReadLine();
+            DateTime fromDate = DateTime.Parse(dateInput);
+
+            Console.WriteLine("You have booked: " + fromDate);
+            Console.WriteLine("Please state how many nights you would like to stay:");
+            string duration = Console.ReadLine();
+            int durationConvert = Convert.ToInt32(duration);
+
+            Console.WriteLine("Ange totalsumma - ÄNDRA DENNA ");
+            string totalSum = Console.ReadLine();
+            int totalSumConvert = Convert.ToInt32(totalSum);
+            Console.WriteLine(reservations.ToString());
+            int result = reservations.CreateRoomReservation(roomChoiceConvert, customerIDConvert, fromDate, durationConvert, totalSumConvert);
+            Console.WriteLine("Reservation went succesfully: " + result);
+
+            Console.WriteLine($@"
+            Here is your receipt to your reservation:
+            Booked room : {roomChoiceConvert}
+            Check-in date: {fromDate}
+            Durations of nights: {duration}
+            Total costs : {totalSumConvert}
+            Booked by : {customerIDConvert}
+            
+            With contact needed for changes or cancellation, please state {result}");
+>>>>>>> 1313d160603aafd08b141cebf4f36b05e08d9278
         }
         catch (System.Exception e)
         {
@@ -363,6 +458,7 @@ internal class Program
         }
         roomDB.UpdateRoom(updateRoom);
     }
+<<<<<<< HEAD
     private static void ExitMenu()
     {
         Console.WriteLine("Please press any key to exit.");
@@ -399,4 +495,6 @@ internal class Program
         return true;
     }
 
+=======
+>>>>>>> 1313d160603aafd08b141cebf4f36b05e08d9278
 }
