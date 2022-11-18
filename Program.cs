@@ -31,11 +31,11 @@ internal class Program
                     List<Room> roomList = roomDB.SearchRoomDB(search);
                     int roomID = PrintSearchedRooms(roomList);
                     int customerID = AddCustomer(custManager);
-                    MakeReservation(reservations, roomID, customerID);
+                    MakeReservation(reservations);
                     break;
 
                 case 1:
-                    ExitMenu();
+                    //ExitMenu();
                     break;
 
                 default:
@@ -56,14 +56,14 @@ internal class Program
         // int id = GetCustomer(cm); - FUNKAR
         // RemoveCustomer(cm); - FUNKAR
 
-        MakeReservation(reservations);
+        //MakeReservation(reservations);
 
-            
+
         //     @$" {roomChoiceConvert}
-        
+
         // int resultat = reservations.CreateRoomReservation(roomChoiceConvert, customerIDConvert, fromDate, durationConvert, totalSumConvert);
         //     Console.WriteLine(Reservation gjord:  + resultat);
-            
+
         //     ");
         //UpdateReservation(reservations);
         //DeleteReservation(reservations);
@@ -109,7 +109,7 @@ internal class Program
     }
     private static int AddCustomer(CustomerManagement customerM)
     {
-        int id= 0;
+        int id = 0;
         while (true)
         {
             Console.Clear();
@@ -249,7 +249,7 @@ internal class Program
         }
     }
 
-    private static void MakeReservation(ReservationDB reservations, int roomID, int customerID)
+    private static void MakeReservation(ReservationDB reservations)
     {
         //Behöver ses över med felhantering då det finns mycket ReadLines samt punkt2. då det just nu kräver användaren att ange ett ID.
         //skulle även behövas en form av validering som kollar ifall rummet är ledigt eller ej.
@@ -260,8 +260,8 @@ internal class Program
             int roomChoiceConvert = Convert.ToInt32(roomChoice);
 
             Console.WriteLine("Please state your ID:");
-            string customerID = Console.ReadLine();
-            int customerIDConvert = Convert.ToInt32(customerID);
+            string customerId = Console.ReadLine();
+            int customerIDConvert = Convert.ToInt32(customerId);
 
             Console.WriteLine("Please state when you would like to reserve the room. Write like this 2022-11-25");
             string dateInput = Console.ReadLine();
@@ -276,8 +276,8 @@ internal class Program
             string totalSum = Console.ReadLine();
             int totalSumConvert = Convert.ToInt32(totalSum);
             Console.WriteLine(reservations.ToString());
-            int resultat = reservations.CreateRoomReservation(roomChoiceConvert, customerIDConvert, fromDate, durationConvert, totalSumConvert);
-            Console.WriteLine("Reservation went succesfully: " + resultat);
+            int result = reservations.CreateRoomReservation(roomChoiceConvert, customerIDConvert, fromDate, durationConvert, totalSumConvert);
+            Console.WriteLine("Reservation went succesfully: " + result);
 
             Console.WriteLine($@"
             Here is your receipt to your reservation:
@@ -287,7 +287,7 @@ internal class Program
             Total costs : {totalSumConvert}
             Booked by : {customerIDConvert}
             
-            With contact needed for changes or cancellation, please state {resultat}");
+            With contact needed for changes or cancellation, please state {result}");
         }
         catch (System.Exception e)
         {
