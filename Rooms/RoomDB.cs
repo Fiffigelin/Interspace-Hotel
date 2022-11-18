@@ -39,4 +39,17 @@ class RoomDB
         string sql = $"DELETE FROM room WHERE room.id = {ID}";
         _sqlConnection.Query<Room>(sql);
     }
+
+
+    // TILLFÄLLIG
+    public List<Room> SearchRoomDB(string search)
+    {
+        var customerList = _sqlConnection.Query<Room>($@"
+        SELECT * FROM room 
+        WHERE name LIKE '%{search}%'
+        OR price LIKE '%{search}%'
+        OR beds LIKE '%{search}%'
+        OR size LIKE '%{search}%'").ToList();
+        return customerList;
+    }
 }

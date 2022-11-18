@@ -1,38 +1,28 @@
 class CustomerManagement
 {
-    // Gör en massa små metoder som kan återanvändas i denna klassens metoder.
-    // Är det detta som är interfaces? GUSTAV??? 
     private CustomerDB customerDB { get; set; }
     public CustomerManagement(CustomerDB db)
     {
         customerDB = db;
     }
-
     public Customer GetCustomer(int id)
     {
         return customerDB.SelectCustomer(id);
     }
-
-    public string AddCustomer(string email, string firstName, string lastName, string phonenumber)
+    public int AddCustomer(string email, string firstName, string lastName, string phonenumber)
     {
-        if (!IsEmailValid(email)) return "Invalid input of email";
-        if (!IsStringValid(firstName)) return "Invalid input of first name";
-        if (!IsStringValid(lastName)) return "Invalid input of last name";
-        if (!IsStringNumeric(phonenumber)) return "Invalid input of phonenumber";
+        bool insert = true;
+        if (!IsEmailValid(email)) insert = false;
+        if (!IsStringValid(firstName)) insert = false;
+        if (!IsStringValid(lastName)) insert = false;
+        if (!IsStringNumeric(phonenumber)) insert = false;
 
-        Customer cu = new(email, firstName, lastName, phonenumber);
-        int id;
-        try
+        if (insert == true)
         {
-            id = customerDB.InsertCustomer(cu);
+            Customer cu = new(email, firstName, lastName, phonenumber);
+            return customerDB.InsertCustomer(cu);
         }
-        catch (System.Exception)
-        {
-
-            return $"ERROR ADDING CUSTOMER";
-        }
-
-        return $"NEW CUSTOMER CREATED WITH ID : {id}";
+        return 0;
     }
 
     public string UpdateCustomer(string email, string firstName, string lastName, string phonenumber, int id)
@@ -58,7 +48,6 @@ class CustomerManagement
 
         return $"MODIFIED CUSTOMER WITH ID : {id}";
     }
-
     public string RemoveCustomer(int id)
     {
         try
@@ -71,7 +60,6 @@ class CustomerManagement
             return $"NO CUSTOMER FOUND WITH ID : {id}";
         }
     }
-
     public List<Customer> StringSearchCustomer(string search)
     {
         return customerDB.SearchCustomerDB(search);

@@ -14,7 +14,34 @@ internal class Program
         ReservationDB reservations = new(connection);
 
         CustomerDB cDB = new CustomerDB();
-        CustomerManagement cm = new(cDB);
+        CustomerManagement custManager = new(cDB);
+
+        while (true)
+        {
+            string prompt = @"
+            Welcome to Interspace Hotel ADMIN";
+            string[] options = { "Booking", "Exit" };
+            Menu mainMenu = new Menu(prompt, options);
+            int selectedIndex = mainMenu.Run();
+
+            switch (selectedIndex)
+            {
+                case 0:
+                    string search = BookingRoom();
+                    List<Room> roomList = roomDB.SearchRoomDB(search);
+                    int roomID = PrintSearchedRooms(roomList);
+                    int customerID = AddCustomer(custManager);
+                    MakeReservation(reservations, roomID, customerID);
+                    break;
+
+                case 1:
+                    ExitMenu();
+                    break;
+
+                default:
+                    break;
+            }
+        }
 
         // List<Customer> customerList = cm.GetAllCustomers(); - funkar
         // PrintCustomers(customerList); - funkar 
@@ -29,7 +56,7 @@ internal class Program
         // int id = GetCustomer(cm); - FUNKAR
         // RemoveCustomer(cm); - FUNKAR
 
-        MakeReservation(reservations);
+        // MakeReservation(reservations);
         //UpdateReservation(reservations);
         //DeleteReservation(reservations);
 
@@ -51,20 +78,56 @@ internal class Program
         //     Console.WriteLine(employees);
         // }
     }
-
-    private static void AddCustomer(CustomerManagement customerM)
+    private static string BookingRoom()
     {
-        // HEADER
-        Console.WriteLine("ADD CUSTOMER");
-        Console.Write("Firstname : ");
-        string firstName = Console.ReadLine();
-        Console.Write("Lastname : ");
-        string lastName = Console.ReadLine();
-        Console.Write("Email : ");
-        string email = Console.ReadLine();
-        Console.Write("Phonenumber : ");
-        string phoneNumber = Console.ReadLine();
-        Console.WriteLine(customerM.AddCustomer(email, firstName, lastName, phoneNumber));
+        Console.Clear();
+        Console.WriteLine("----: : INTERSPACE HOTEL : :----");
+        Console.WriteLine($"Psst, nicer header here :)\n");
+        Console.Write("Number of guests : ");
+        string guests = Console.ReadLine();
+        return guests;
+    }
+    private static int PrintSearchedRooms(List<Room> roomList)
+    {
+        Console.Clear();
+        Console.WriteLine("----: : INTERSPACE HOTEL : :----");
+        Console.WriteLine($"Psst, nicer header here :)\n");
+        foreach (Room singleroom in roomList)
+        {
+            Console.WriteLine(singleroom);
+        }
+        Console.Write($"\nChoose rooms-id to book : ");
+        return Convert.ToInt32(Console.ReadLine());
+    }
+    private static int AddCustomer(CustomerManagement customerM)
+    {
+        int id= 0;
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("----: : INTERSPACE HOTEL : :----");
+            Console.WriteLine($"Psst, nicer header here :)\n");
+            Console.Write("Firstname : ");
+            string firstName = Console.ReadLine();
+            Console.Write("Lastname : ");
+            string lastName = Console.ReadLine();
+            Console.Write("Email : ");
+            string email = Console.ReadLine();
+            Console.Write("Phonenumber : ");
+            string phoneNumber = Console.ReadLine();
+            try
+            {
+                id = customerM.AddCustomer(email, firstName, lastName, phoneNumber);
+                Console.WriteLine("Registration succeeded");
+            }
+            catch (System.Exception)
+            {
+                Console.WriteLine("Registration failed");
+                Thread.Sleep(1000);
+            }
+            return id;
+        }
+
     }
 
     private static void UpdateCustomer(CustomerManagement customerM, int id)
@@ -178,40 +241,42 @@ internal class Program
         }
     }
 
-    private static void MakeReservation(ReservationDB reservations)
+    private static void MakeReservation(ReservationDB reservations, int roomID, int customerID)
     {
         //Behöver ses över med felhantering då det finns mycket ReadLines samt punkt2. då det just nu kräver användaren att ange ett ID.
         //skulle även behövas en form av validering som kollar ifall rummet är ledigt eller ej.
         try
         {
-            Console.WriteLine("Välj rummet du vill boka");
-            string roomChoice = Console.ReadLine();
-            int roomChoiceConvert = Convert.ToInt32(roomChoice);
+            // Console.WriteLine("Välj rummet du vill boka");
+            // string roomChoice = Console.ReadLine();
+            // int roomChoiceConvert = Convert.ToInt32(roomChoice);
 
-            Console.WriteLine("Ange ditt id.");
-            string customerID = Console.ReadLine();
-            int customerIDConvert = Convert.ToInt32(customerID);
+            // Console.WriteLine("Ange ditt id.");
+            // string customerID = Console.ReadLine();
+            // int customerIDConvert = Convert.ToInt32(customerID);
 
-            Console.WriteLine("Ange när du vill reservera rummet. Ange i siffror tex 2022-11-25");
+            Console.WriteLine("Choose time-span. Ex 2022-11-25");
+            Console.Write("Start date :  ");
             string dateInput = Console.ReadLine();
             DateTime fromDate = DateTime.Parse(dateInput);
 
-            Console.WriteLine("Du har bokat: " + fromDate);
-            Console.WriteLine("Ange hur många dagar du vill stanna.");
+            // Console.WriteLine("Du har bokat: " + fromDate);
+            Console.Write("How many nights : ");
             string duration = Console.ReadLine();
             int durationConvert = Convert.ToInt32(duration);
 
-            Console.WriteLine("Ange totalsumma");
+            Console.Write("Price : ");
             string totalSum = Console.ReadLine();
             int totalSumConvert = Convert.ToInt32(totalSum);
             Console.WriteLine(reservations.ToString());
-            int resultat = reservations.CreateRoomReservation(roomChoiceConvert, customerIDConvert, fromDate, durationConvert, totalSumConvert);
-            Console.WriteLine("Reservation gjord: " + resultat);
+            int resultat = reservations.CreateRoomReservation(roomID, customerID, fromDate, durationConvert, totalSumConvert);
+            Console.WriteLine("Reservationid : " + resultat);
+            Console.ReadKey();
         }
         catch (System.Exception e)
         {
 
-            Console.WriteLine("Fel: " + e);
+            Console.WriteLine("Error: " + e);
         }
     }
 
@@ -290,6 +355,12 @@ internal class Program
             updateRoom.price = Convert.ToInt32(price);
         }
         roomDB.UpdateRoom(updateRoom);
+    }
+    private static void ExitMenu()
+    {
+        Console.WriteLine("Please press any key to exit.");
+        Console.ReadKey(true);
+        Environment.Exit(0);
     }
 
 }
