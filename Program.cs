@@ -67,10 +67,10 @@ internal class Program
     }
     private static (int, string, string) BookingRoom()
     {
-        int guests;
         Console.Clear();
         Console.WriteLine("----: : INTERSPACE HOTEL : :----");
         Console.WriteLine($"Psst, nicer header here :)\n");
+        // FELHANTERING AV DATUM
         Console.Write("Start date for your stay : ");
         string startDate = Console.ReadLine();
         Console.Write("End date for your stay : ");
@@ -88,10 +88,8 @@ internal class Program
         Console.WriteLine($"Psst, nicer header here :)\n");
         if (roomList.Count >= 1)
         {
-            foreach (Room singleroom in roomList)
-            {
-                Console.WriteLine(singleroom);
-            }
+            TableUI table = new();
+            table.PrintRooms(roomList);
             Console.Write($"\nChoose rooms-id to book : ");
             return Convert.ToInt32(Console.ReadLine());
         }
@@ -172,10 +170,9 @@ internal class Program
 
     private static void PrintCustomers(List<Customer> customerList)
     {
-        foreach (Customer information in customerList)
-        {
-            Console.WriteLine(information);
-        }
+       TableUI table = new();
+       table.PrintCustomers(customerList);
+       Console.ReadLine();
     }
 
     private static void RemoveCustomer(CustomerManagement customerM)
@@ -314,16 +311,10 @@ internal class Program
             Console.WriteLine(cust); //skapa en snyggare utskrift där inte id visas
             int reservationID = reservations.CreateRoomReservation(roomID, customerID, dateTime, duration, totalSumConvert);
 
-            Console.WriteLine($@"
-            Here is your receipt to your reservation:
-            Booked room : {roomID}
-            Check-in date: {dateTime}
-            Durations of nights: {duration}
-            Total costs : {totalSumConvert}
-            Booked by : {cust.Name}
-            
-            With contact needed for changes or cancellation, please state {reservationID}");
-            Console.ReadKey();
+            Console.WriteLine("Here is your receipt to your reservation");
+            TableUI table = new();
+            table.PrintReceipt(roomID, dateTime, duration, totalSumConvert, cust, reservationID);
+            Console.ReadLine();
         }
         catch (System.Exception e)
         {
