@@ -51,14 +51,15 @@ class RoomDB
 
     public List<Room> GetAvailableRooms(string datefrom, string dateto)
     {
-        string sql = $@"SELECT * FROM room WHERE room.id IN 
-        (SELECT reservation.room_id FROM reservation WHERE 
-        {datefrom} < reservation.date_in AND {datefrom} >= (reservation.date_in + reservation.duration)
-        AND {dateto} <= reservation.date_in AND {dateto} > (reservation.date_in + reservation.duration))
-        UNION
-        SELECT * FROM room 
-        WHERE room.id NOT IN
-        (SELECT reservation.room_id FROM reservation)";
+        string sql = $@"SELECT * FROM room 
+                    WHERE room.id IN
+                    (SELECT reservation.room_id FROM reservation WHERE 
+                    ('2022-11-21' < reservation.date_in AND '2022-11-30' <= reservation.date_in)
+                    OR ('2022-11-21' >= (reservation.date_in + reservation.duration) AND '2022-11-30' > (reservation.date_in + reservation.duration)))
+                    UNION
+                    SELECT * FROM room 
+                    WHERE room.id NOT IN
+                    (SELECT reservation.room_id FROM reservation)";
         var availablerooms = _sqlConnection.Query<Room>(sql).ToList();
         return availablerooms;
     }
