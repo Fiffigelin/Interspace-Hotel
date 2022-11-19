@@ -49,13 +49,13 @@ class RoomDB
         return availablerooms;
     }
 
-    public List<Room> GetAvailableRooms(string datefrom, string dateto)
+    public List<Room> GetAvailableRooms(string startDate, string endDate)
     {
         string sql = $@"SELECT * FROM room 
                     WHERE room.id IN
                     (SELECT reservation.room_id FROM reservation WHERE 
-                    ('2022-11-21' < reservation.date_in AND '2022-11-30' <= reservation.date_in)
-                    OR ('2022-11-21' >= (reservation.date_in + reservation.duration) AND '2022-11-30' > (reservation.date_in + reservation.duration)))
+                    ('{startDate}' < reservation.date_in AND '{endDate}' <= reservation.date_in)
+                    OR ('{startDate}' >= (reservation.date_in + reservation.duration) AND '{endDate}' > (reservation.date_in + reservation.duration)))
                     UNION
                     SELECT * FROM room 
                     WHERE room.id NOT IN
