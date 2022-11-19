@@ -40,16 +40,35 @@ class RoomDB
         _sqlConnection.Query<Room>(sql);
     }
 
+    public List<Room> GetAvailableRooms()
+    {
+        string sql = $@"SELECT * FROM room 
+        WHERE room.id NOT IN
+        (SELECT reservation.room_id FROM reservation)";
+        var availablerooms = _sqlConnection.Query<Room>(sql).ToList();
+        return availablerooms;
+    }
+
+    public List<Room> GetAvailableRooms(string startDate, string endDate)
+    {
+        string sql = $@"SELECT * FROM room 
+                    WHERE room.id IN
+                    (SELECT reservation.room_id FROM reservation WHERE 
+                    ('{startDate}' < reservation.date_in AND '{endDate}' <= reservation.date_in)
+                    OR ('{startDate}' >= (reservation.date_in + reservation.duration) AND '{endDate}' > (reservation.date_in + reservation.duration)))
+                    UNION
+                    SELECT * FROM room 
+                    WHERE room.id NOT IN
+                    (SELECT reservation.room_id FROM reservation)";
+        var availablerooms = _sqlConnection.Query<Room>(sql).ToList();
+        return availablerooms;
+    }
 
     // TILLFÄLLIG
-    public List<Room> SearchRoomDB(string search)
+    public List<Room> SearchRoomDB(int search)
     {
         var customerList = _sqlConnection.Query<Room>($@"
-        SELECT * FROM room 
-        WHERE name LIKE '%{search}%'
-        OR price LIKE '%{search}%'
-        OR beds LIKE '%{search}%'
-        OR size LIKE '%{search}%'").ToList();
+        SELECT * FROM room WHERE guests >= '{search}'").ToList();
         return customerList;
-    }
+    } // gör om till en int
 }

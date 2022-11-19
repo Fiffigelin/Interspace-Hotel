@@ -4,26 +4,23 @@ class Customer
 {
     public int ID { get; set; }
     public string Email { get; set; }
-    public string First_Name { get; set; }
-    public string Last_Name { get; set; }
+    public string Name { get; set; }
     public string Phonenumber { get; set; }
 
     // CREATING A OBJECT
-    public Customer(string email, string firstname, string lastname, string phonenumber)
+    public Customer(string email, string name, string phonenumber)
     {
         Email = email;
-        First_Name = firstname;
-        Last_Name = lastname;
+        Name = name;
         Phonenumber = phonenumber;
     }
 
     // MATERALIZING A OBJECT FROM DB
-    public Customer(int id, string email, string first_name, string last_name, string phonenumber)
+    public Customer(int id, string email, string name, string phonenumber)
     {
         ID = id;
         Email = email;
-        First_Name = first_name;
-        Last_Name = last_name;
+        Name = name;
         Phonenumber = phonenumber;
     }
 
@@ -37,8 +34,7 @@ class Customer
         return $@"
             ID          : {ID}
             Email       : {Email}
-            First name  : {First_Name}
-            Last name   : {Last_Name}
+            Name        : {Name}
             Phonenumber : {Phonenumber}";
     }
 
