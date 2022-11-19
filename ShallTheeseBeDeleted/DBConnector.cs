@@ -1,12 +1,12 @@
 using MySqlConnector;
 using Dapper;
-class DBConnector
-{
-    public static MySqlConnection Connect()
-    {
-        MySqlConnection connection = new MySqlConnection("Server = localhost;Database = interspace_hotel;Uid=root");
-        return connection;
-    }
+// class DBConnector
+// {
+//     // public static MySqlConnection Connect()
+//     {
+//         MySqlConnection connection = new MySqlConnection("Server = localhost;Database = interspace_hotel;Uid=root");
+//         return connection;
+//     }
 
     // public void SearchForCustomer()
     // {
@@ -20,4 +20,4 @@ class DBConnector
     //         }
     //     }
     // }
-}
+// }

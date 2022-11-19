@@ -12,10 +12,13 @@ internal class Program
         EmployeeDB employeeDB = new(connection);
         EmployeeManagement empManager = new(employeeDB);
         ReservationDB reservations = new(connection);
+        HotelDB hotelDB = new HotelDB(connection);
+        HotelManagement hotelM = new(hotelDB);
 
         CustomerDB cDB = new CustomerDB();
         CustomerManagement custManager = new(cDB);
 
+Console.WriteLine(hotelM.GetValues());
         while (true)
         {
             string prompt = @"
