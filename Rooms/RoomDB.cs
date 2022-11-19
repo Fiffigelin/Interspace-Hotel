@@ -53,7 +53,7 @@ class RoomDB
     {
         string sql = $@"SELECT * FROM room WHERE room.id IN 
         (SELECT reservation.room_id FROM reservation WHERE 
-        {datefrom} < reservation.date_in AND {datefrom} => (reservation.date_in + reservation.duration)
+        {datefrom} < reservation.date_in AND {datefrom} >= (reservation.date_in + reservation.duration)
         AND {dateto} <= reservation.date_in AND {dateto} > (reservation.date_in + reservation.duration))
         UNION
         SELECT * FROM room 

@@ -39,11 +39,9 @@ internal class Program
             switch (selectedIndex)
             {
                 case 0:
-                    //Uppdatera till sök med datum.
-                    //Detta medför att man får räkna ut antal dagar från start datum till slut datum.
-                    //Önskvärt att filtrera sökning efteråt på antal rum kanske. Men det är nog overkill i detta fall. 
-                    int search = BookingRoom();
-                    List<Room> roomList = roomDB.SearchRoomDB(search);
+                    // UPDATE : fixa så man kan minimera sökningen ännu mer med ex, beds, guests
+                    var search = BookingRoom();
+                    List<Room> roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
                     int roomID = PrintSearchedRooms(roomList);
                     //Testa om det går att ta bort cust = new();
                     //Måste en kund vara ny? Kan ju finnas i DB :)
@@ -54,7 +52,7 @@ internal class Program
                     //Uppdatera metoden nedan att ta följande indata med:
                     // - Start datum
                     // - Längd på bokning
-                    MakeReservation(custManager, reservations, roomID, cust);
+                    MakeReservation(custManager, reservations, roomID, cust, search.Item2, search.Item1);
                     break;
 
                 case 1:
@@ -67,15 +65,21 @@ internal class Program
             }
         }
     }
-    private static int BookingRoom()
+    private static (int, string, string) BookingRoom()
     {
         int guests;
         Console.Clear();
         Console.WriteLine("----: : INTERSPACE HOTEL : :----");
         Console.WriteLine($"Psst, nicer header here :)\n");
-        Console.Write("Number of guests : ");
-        guests = Convert.ToInt32(Console.ReadLine());
-        return guests;
+        Console.Write("Start date for your stay : ");
+        string startDate = Console.ReadLine();
+        Console.Write("End date for your stay : ");
+        string endDate = Console.ReadLine();
+
+        DateOnly sD = DateOnly.Parse(startDate);
+        DateOnly eD = DateOnly.Parse(endDate);
+        int duration = (eD.DayNumber - sD.DayNumber);
+        return (duration, startDate, endDate);
     }
     private static int PrintSearchedRooms(List<Room> roomList)
     {
@@ -288,6 +292,38 @@ internal class Program
             Booked by : {customerID}
             
             With contact needed for changes or cancellation, please state {resultat}");
+        }
+        catch (System.Exception e)
+        {
+
+            Console.WriteLine("Error: " + e);
+        }
+    }
+
+    private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, int roomID, Customer cust, string startDate, int duration)
+    {
+        try
+        {
+            DateTime dateTime = Convert.ToDateTime(startDate);
+            // Detta skall ske automatiskt. Skapa en funktion som räknar ut kostnaden beroende på antal nätter, gästantal och valt rum
+            Console.Write("Price : ");
+            string totalSum = Console.ReadLine();
+            int totalSumConvert = Convert.ToInt32(totalSum);
+
+            int customerID = custM.AddCustomer(cust);
+            Console.WriteLine(cust); //skapa en snyggare utskrift där inte id visas
+            int reservationID = reservations.CreateRoomReservation(roomID, customerID, dateTime, duration, totalSumConvert);
+
+            Console.WriteLine($@"
+            Here is your receipt to your reservation:
+            Booked room : {roomID}
+            Check-in date: {dateTime}
+            Durations of nights: {duration}
+            Total costs : {totalSumConvert}
+            Booked by : {cust.Name}
+            
+            With contact needed for changes or cancellation, please state {reservationID}");
+            Console.ReadKey();
         }
         catch (System.Exception e)
         {
