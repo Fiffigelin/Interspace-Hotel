@@ -22,7 +22,7 @@ class CustomerManagement
     {
         return customerDB.UpdateCustomer(customer);
     }
-    public void RemoveCustomer(int id)
+    public void DeleteCustomer(int id)
     {
         customerDB.DeleteCustomer(id);
     }

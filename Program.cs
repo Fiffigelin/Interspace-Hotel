@@ -177,6 +177,11 @@ internal class Program
                     break;
 
                 case 2:
+                    customerList = custManager.StringSearchCustomer(SearchCustomer());
+                    PrintCustomers(customerList);
+                    customer = custManager.GetCustomer(ChooseCustomer());
+                    custManager.DeleteCustomer(customer.ID);
+                    RemoveCustomer(customer.ID);
                     break;
 
                 case 3:
@@ -417,7 +422,7 @@ internal class Program
                 firstName = Console.ReadLine();
                 Console.Write("Lastname : ");
                 lastName = Console.ReadLine();
-            } while (!IsStringValid(firstName) && !IsStringValid(lastName));
+            } while (string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName));
             do
             {
                 Console.Write("Email : ");
@@ -446,7 +451,7 @@ internal class Program
         } while (!IsStringNumeric(stringCustomer));
         return Convert.ToInt32(stringCustomer);
     }
-    private static Customer UpdateCustomer(Customer customer, int id)
+    private static Customer UpdateCustomer(Customer customer, int id) // DENNA ÄR KNAS! TITTA PÅ DEN!
     {
         string firstName;
         string lastName;
@@ -465,8 +470,12 @@ internal class Program
                 {
                     customer.Name = (firstName + " " + lastName);
                 }
-            } while (string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName)
-                    || !string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName));
+            } while (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName)
+                    || string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName)
+                    || !string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName)
+                    || string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName));
+            // DENNA ÄR JÄTTE KNAS! MAN SKA ALLTSÅ KOMMA UR LOOPEN,
+            // OM : Båda variablerna är tomma
 
             do
             {
@@ -506,22 +515,6 @@ internal class Program
         } while (string.IsNullOrEmpty(search));
         return search;
     }
-    private static int GetCustomer(CustomerManagement customerM) // MODIFIERA!!
-    {
-        int id = 0;
-        Console.WriteLine("SELECT CUSTOMER BY ID");
-        Console.Write("ID : ");
-        try
-        {
-            id = Convert.ToInt32(Console.ReadLine());
-        }
-        catch (System.Exception)
-        {
-            Console.WriteLine("WRONG INPUT");
-        }
-        Console.WriteLine(customerM.GetCustomer(id));
-        return id;
-    }
     private static void PrintCustomers(List<Customer> customerList)
     {
         Header();
@@ -529,20 +522,11 @@ internal class Program
         table.PrintCustomers(customerList);
         Console.ReadLine();
     }
-    private static void RemoveCustomer(CustomerManagement customerM) // MODIFIERA!! 
+    private static void RemoveCustomer(int removeID) 
     {
-        int id = 0;
-        Console.WriteLine("SELECT CUSTOMER BY ID");
-        Console.Write("ID : ");
-        try
-        {
-            id = Convert.ToInt32(Console.ReadLine());
-        }
-        catch (System.Exception)
-        {
-            Console.WriteLine("WRONG INPUT");
-        }
-        // Console.WriteLine(customerM.RemoveCustomer(id));
+        reservationDB.DeleteReservation(removeID);
+        Console.WriteLine($"Customer with ID : {removeID} has been deleted");
+        Console.ReadKey();
     }
     private static string SearchReservation()
     {
@@ -754,15 +738,6 @@ internal class Program
     private static bool IsEmailValid(string s)
     {
         if (string.IsNullOrEmpty(s) || !s.Contains("@"))
-        {
-            return false;
-        }
-
-        return true;
-    }
-    private static bool IsStringValid(string s)
-    {
-        if (string.IsNullOrEmpty(s))
         {
             return false;
         }
