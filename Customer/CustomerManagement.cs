@@ -15,7 +15,7 @@ class CustomerManagement
     }
     public int AddCustomer(Customer cust)
     {
-            return customerDB.InsertCustomer(cust);
+        return customerDB.InsertCustomer(cust);
     }
 
     public string UpdateCustomer(string email, string firstName, string lastName, string phonenumber, int id)

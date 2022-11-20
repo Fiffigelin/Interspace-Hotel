@@ -159,7 +159,11 @@ internal class Program
             switch (selectedIndex)
             {
                 case 0:
-
+                    customer = AddCustomer();
+                    int custID = custManager.AddCustomer(customer);
+                    customerList.Add(custManager.GetCustomer(custID));
+                    PrintCustomers(customerList);
+                    CustomerAddedSuccess(custID);
                     break;
 
                 case 1:
@@ -169,13 +173,7 @@ internal class Program
                     break;
 
                 case 3:
-                    break;
-
-                case 4:
-                    break;
-
-                default:
-                    break;
+                    return;
             }
         }
     }
@@ -417,6 +415,11 @@ internal class Program
             } while (!IsStringNumeric(phoneNumber));
             return new(email, firstName + " " + lastName, phoneNumber);
         }
+    }
+    private static void CustomerAddedSuccess(int ID)
+    {
+        Console.WriteLine($"Customer added with ID : {ID}");
+        Console.ReadLine();
     }
     private static void UpdateCustomer(CustomerManagement customerM, int id)
     {
