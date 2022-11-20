@@ -181,6 +181,7 @@ internal class Program
     {
         while (true)
         {
+            Header();
             string prompt = "";
             string[] options = { "Add room", "Update room", "Remove room", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
@@ -215,6 +216,7 @@ internal class Program
     {
         while (true)
         {
+            Header();
             string prompt = "";
             string[] options = { "Add employee", "Update employee", "Remove employee", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
@@ -260,6 +262,7 @@ internal class Program
 
         while (!isSDCorrect)
         {
+            Header();
             Console.Write("Start date for your stay [YYYY-MM-DD] : ");
             startDate = Console.ReadLine()!;
 
@@ -309,7 +312,7 @@ internal class Program
         int duration = (eD.DayNumber - sD.DayNumber);
         return (duration, startDate, endDate);
     }
-    public static int ChooseRoom()
+    public static int ChooseRoom() // NO HEADER!!
     {
         string stringRoom = string.Empty;
         do
@@ -326,11 +329,16 @@ internal class Program
     }
     private static void SearchRooms()
     {
-        Console.Write("Search room : ");
-        string search = Console.ReadLine();
+        string search = string.Empty;
+        do
+        {
+            Header();
+            Console.Write("Search room : ");
+            search = Console.ReadLine();
+        } while (string.IsNullOrEmpty(search));
         custManager.StringSearchCustomer(search);
     }
-    private static void UpdateRoom(RoomDB roomDB)
+    private static void UpdateRoom(RoomDB roomDB) // MODIFIERA!!
     {
         Console.WriteLine("type in room id");
         string id = Console.ReadLine();
@@ -379,7 +387,7 @@ internal class Program
             Console.WriteLine("No rooms found");
         }
     }
-    private static void RemoveRoombyID(RoomDB roomDB)
+    private static void RemoveRoombyID(RoomDB roomDB) // NO HEADER!!
     {
         Console.WriteLine("Please state the ID of the room you would like to delete:");
         string idRemove = Console.ReadLine();
@@ -416,12 +424,12 @@ internal class Program
             return new(email, firstName + " " + lastName, phoneNumber);
         }
     }
-    private static void CustomerAddedSuccess(int ID)
+    private static void CustomerAddedSuccess(int ID) // NO HEADER!!
     {
         Console.WriteLine($"Customer added with ID : {ID}");
         Console.ReadLine();
     }
-    private static void UpdateCustomer(CustomerManagement customerM, int id)
+    private static void UpdateCustomer(CustomerManagement customerM, int id) // MODIFIERA!!
     {
         Console.WriteLine("UPDATE CUSTOMER");
         Console.Write("Firstname : ");
@@ -434,7 +442,7 @@ internal class Program
         string phoneNumber = Console.ReadLine();
         Console.WriteLine(customerM.UpdateCustomer(email, firstName, lastName, phoneNumber, id));
     }
-    private static int GetCustomer(CustomerManagement customerM)
+    private static int GetCustomer(CustomerManagement customerM) // MODIFIERA!!
     {
         int id = 0;
         Console.WriteLine("SELECT CUSTOMER BY ID");
@@ -452,11 +460,12 @@ internal class Program
     }
     private static void PrintCustomers(List<Customer> customerList)
     {
+        Header();
         TableUI table = new();
         table.PrintCustomers(customerList);
         Console.ReadLine();
     }
-    private static void RemoveCustomer(CustomerManagement customerM)
+    private static void RemoveCustomer(CustomerManagement customerM) // MODIFIERA!! 
     {
         int id = 0;
         Console.WriteLine("SELECT CUSTOMER BY ID");
@@ -476,6 +485,7 @@ internal class Program
         string search = string.Empty;
         do
         {
+            Header();
             Console.Write("Search reservation : ");
             search = Console.ReadLine();
         } while (string.IsNullOrEmpty(search));
@@ -483,17 +493,18 @@ internal class Program
     }
     private static void PrintReservations(List<Reservation> reservationsList)
     {
+        Header();
         TableUI table = new();
         table.PrintReservations(reservationList);
         Console.ReadLine();
     }
-    private static void DeleteReservation(int removeID)
+    private static void DeleteReservation(int removeID) // NO HEADER!!
     {
         reservations.DeleteReservation(removeID);
         Console.WriteLine($"Reservation with ID : {removeID} has been deleted");
         Console.ReadKey();
     }
-    private static int ChooseReservationID()
+    private static int ChooseReservationID() // NO HEADER!!
     {
         string input = String.Empty;
         do
@@ -511,10 +522,9 @@ internal class Program
         string endDate = String.Empty;
         string pattern = @"\d{4}(-)\d{2}(-)\d{2}";
 
-        Header();
-
         while (!isSDCorrect)
         {
+            Header();
             Console.Write("Start date for your stay : ");
             startDate = Console.ReadLine();
 
@@ -559,6 +569,7 @@ internal class Program
     {
         while (true)
         {
+            Header();
             DateTime sD = DateTime.Parse(startDate);
             string stringRoom = string.Empty;
             do
@@ -586,6 +597,7 @@ internal class Program
     {
         try
         {
+            Header();
             int customerID = custM.AddCustomer(cust);
             reserv.customer_id = customerID;
             reserv.id = reservations.CreateRoomReservation(reserv);
@@ -602,7 +614,7 @@ internal class Program
             Console.ReadKey();
         }
     }
-    private static void UpdateEmployee(EmployeeDB employeeDB)
+    private static void UpdateEmployee(EmployeeDB employeeDB) // MODIFIERA!!
     {
         Console.WriteLine("Which employee would you like to update? Write the number ID by number, ex 1.");
         string id = Console.ReadLine();
@@ -623,7 +635,7 @@ internal class Program
         }
         employeeDB.UpdateEmployee(updateEmployee);
     }
-    private static void CreateEmployee(EmployeeDB employeeDB)
+    private static void CreateEmployee(EmployeeDB employeeDB) // MODIFIERA!!
     {
         Console.WriteLine("Enter name");
         string nameInput = Console.ReadLine();
@@ -646,7 +658,7 @@ internal class Program
             {
                 Console.WriteLine("Correct");
                 isPWCorrect = true;
-                Thread.Sleep(2000);
+                Thread.Sleep(1300);
             }
             else
             {
