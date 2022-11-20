@@ -94,7 +94,7 @@ internal class Program
     {
 
     }
-    public static void ReservationsMenu()
+    public static void ReservationsMenu() // FUNKAR!! 
     {
         while (true)
         {
@@ -148,7 +148,7 @@ internal class Program
             }
         }
     }
-    public static void CustomersMenu()
+    public static void CustomersMenu() // UPDATE CUSTOMER FUNGERAR EJ!!
     {
         int custID = 0;
         while (true)
@@ -169,6 +169,7 @@ internal class Program
                     break;
 
                 case 1:
+                    // FUNKAR EJ!!!
                     customerList = custManager.StringSearchCustomer(SearchCustomer());
                     PrintCustomers(customerList);
                     customer = UpdateCustomer(customer, ChooseCustomer());
@@ -195,29 +196,29 @@ internal class Program
         {
             Header();
             string prompt = "";
-            string[] options = { "Add room", "Update room", "Remove room", "Exit" };
+            string[] options = { "Add room", "Update room", "Print rooms", "Remove room", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
             switch (selectedIndex)
             {
-                case 0:
+                case 0: // add
 
                     break;
 
-                case 1:
+                case 1: // update
                     SearchRooms();
 
                     break;
 
-                case 2:
+                case 2: // print
                     break;
 
-                case 3:
+                case 3: // remove
                     break;
 
-                case 4:
-                    break;
+                case 4: // exit
+                    return;
 
                 default:
                     break;
@@ -257,8 +258,54 @@ internal class Program
             }
         }
     }
-    private static void AddRoom() // Tomt
+    private static List<Room> AddRoom(Room room) // Tomt
     {
+        string input = string.Empty;
+        while (true)
+        {
+            Header();
+            string prompt = "";
+            string[] options = { "Singleroom", "Familyroom", "Deluxeroom", "Penthouse" };
+            Menu roomNames = new Menu(prompt, options);
+            int selectedIndex = roomNames.Run();
+            switch (selectedIndex)
+            {
+                case 0:
+                    room.name = "Singleroom";
+                    room.beds = 1;
+                    room.guests = 1;
+                    room.size = 24;
+                    room.price = 800;
+                    break;
+                case 1:
+                    room.name = "Familyroom";
+                    room.beds = 4;
+                    room.guests = 4;
+                    room.size = 65;
+                    room.price = 2200;
+                    break;
+                case 2:
+                    room.name = "Deluxeroom";
+                    room.beds = 3;
+                    room.guests = 3;
+                    room.size = 120;
+                    room.price = 5000;
+                    break;
+                case 3:
+                    room.name = "Penthouse";
+                    room.beds = 2;
+                    room.guests = 9;
+                    room.size = 155;
+                    room.price = 9999;
+                    break;
+                default:
+                    break;
+            }
+            Console.WriteLine($"New {room.name} added");
+            List<Room> outputList = new();
+            outputList.Add(room);
+            return outputList;
+        }
     }
     private static (int, string, string) BookingRoom()
     {
@@ -522,7 +569,7 @@ internal class Program
         table.PrintCustomers(customerList);
         Console.ReadLine();
     }
-    private static void RemoveCustomer(int removeID) 
+    private static void RemoveCustomer(int removeID)
     {
         reservationDB.DeleteReservation(removeID);
         Console.WriteLine($"Customer with ID : {removeID} has been deleted");
@@ -734,6 +781,10 @@ internal class Program
                 Console.Write("Sorry, that is not correct. ");
             }
         }
+    }
+    private static void CalculateReservationPrice() // EJ PÅBÖRJAD!
+    {
+
     }
     private static bool IsEmailValid(string s)
     {
