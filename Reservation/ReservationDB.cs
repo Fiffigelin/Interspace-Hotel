@@ -42,4 +42,15 @@ class ReservationDB
         _sqlconnection.Query<Reservation>(sql);
     }
 
+    public List<Reservation> SearchReservationByString(string search)
+    {
+        var reservationList = _sqlconnection.Query<Reservation>($@"
+        SELECT * FROM customer 
+        WHERE id LIKE '%{search}%'
+        OR room_id LIKE '%{search}%'
+        OR customer_id LIKE '%{search}%'
+        OR date_in LIKE '%{search}%'
+        OR duration LIKE '%{search}%'").ToList();
+        return reservationList;
+    }
 }

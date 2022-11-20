@@ -23,12 +23,12 @@ internal class Program
 
     private static void Main(string[] args)
     {
-        Console.WriteLine(hotelM.GetValues());
+        // Console.WriteLine(hotelM.GetValues()); // HAR INTE REVIEWS I DB
         while (true)
         {
             string prompt = @"
             Welcome to Interspace Hotel ADMIN";
-            string[] options = { "Booking", "Exit" };
+            string[] options = { "Guest", "Employee", "Exit"};
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
             //Vårt mål är att vi strävar mot att ha två ingångar, personal eller gäst
@@ -65,6 +65,7 @@ internal class Program
     {
         while (true)
         {
+            Header();
             string prompt = @"
         Welcome to Interspace Hotel ADMIN";
             string[] options = { "Reservations", "Customers", "Room", "Employees", "Exit" };
@@ -101,6 +102,7 @@ internal class Program
     {
         while (true)
         {
+            Header();
             string prompt = @"
         Welcome to Interspace Hotel ADMIN";
             string[] options = { "Add reservation", "Update reservation", "Remove reservation", "Exit" };
@@ -121,16 +123,15 @@ internal class Program
                     MakeReservation(custManager, reservations, customer, search.Item2, search.Item1);
                     break;
 
-                case 1:
+                case 1: // update reservation
+                    reservationList = reservations.SearchReservationByString(SearchReservation());
+                    PrintReservations(reservationList);
                     break;
 
-                case 2:
+                case 2: // remove reservation
                     break;
 
-                case 3:
-                    break;
-
-                case 4:
+                case 3: // return to main()
                     return;
 
                 default:
@@ -142,6 +143,7 @@ internal class Program
     {
         while (true)
         {
+            Header();
             string prompt = @"
         Welcome to Interspace Hotel";
             string[] options = { "Add guest", "Update guest", "Remove guest", "Exit" };
@@ -175,6 +177,7 @@ internal class Program
     {
         while (true)
         {
+            Header();
             string prompt = @"
         Welcome to Interspace Hotel ADMIN";
             string[] options = { "Add room", "Update room", "Remove room", "Exit" };
@@ -210,6 +213,8 @@ internal class Program
     {
         while (true)
         {
+            Header();
+
             string prompt = @"
         Welcome to Interspace Hotel ADMIN";
             string[] options = { "Add employee", "Update employee", "Remove employee", "Exit" };
@@ -241,7 +246,7 @@ internal class Program
     }
     private static void AddRoom() // Tomt
     {
-
+        Header();
     }
     private static (int, string, string) BookingRoom()
     {
@@ -251,9 +256,7 @@ internal class Program
         string endDate = String.Empty;
         string pattern = @"\d{4}(-)\d{2}(-)\d{2}";
 
-        Console.Clear();
-        Console.WriteLine("----: : INTERSPACE HOTEL : :----");
-        Console.WriteLine($"Psst, nicer header here :)\n");
+        Header();
         
         while (!isSDCorrect)
         {
@@ -295,15 +298,14 @@ internal class Program
     }
     private static void SearchRooms()
     {
-        Console.Clear();
-        Console.WriteLine("----: : INTERSPACE HOTEL : :----");
-        Console.WriteLine($"Psst, nicer header here :)\n");
+        Header();
         Console.Write("Search room : ");
         string search = Console.ReadLine();
         custManager.StringSearchCustomer(search);
     }
     private static void UpdateRoom(RoomDB roomDB)
     {
+        Header();
         Console.WriteLine("type in room id");
         string id = Console.ReadLine();
         int idconvert = Convert.ToInt32(id);
@@ -340,9 +342,7 @@ internal class Program
     }
     private static int PrintSearchedRooms(List<Room> roomList)
     {
-        Console.Clear();
-        Console.WriteLine("----: : INTERSPACE HOTEL : :----");
-        Console.WriteLine($"Psst, nicer header here :)\n");
+        Header();
         if (roomList.Count >= 1)
         {
             TableUI table = new();
@@ -356,6 +356,7 @@ internal class Program
     }
     private static void RemoveRoombyID(RoomDB roomDB)
     {
+        Header();
         Console.WriteLine("Please state the ID of the room you would like to delete:");
         string idRemove = Console.ReadLine();
         int idRemoveConvert = Convert.ToInt32(idRemove);
@@ -366,13 +367,11 @@ internal class Program
         int id = 0;
         while (true)
         {
+            Header();
             string firstName;
             string lastName;
             string email;
             string phoneNumber;
-            Console.Clear();
-            Console.WriteLine("----: : INTERSPACE HOTEL : :----");
-            Console.WriteLine($"Psst, nicer header here :)\n");
             do
             {
                 Console.Write("Firstname : ");
@@ -395,7 +394,7 @@ internal class Program
     }
     private static void UpdateCustomer(CustomerManagement customerM, int id)
     {
-        // HEADER
+        Header();
         Console.WriteLine("UPDATE CUSTOMER");
         Console.Write("Firstname : ");
         string firstName = Console.ReadLine();
@@ -409,7 +408,7 @@ internal class Program
     }
     private static int GetCustomer(CustomerManagement customerM)
     {
-        // HEADER
+        Header();
         int id = 0;
         Console.WriteLine("SELECT CUSTOMER BY ID");
         Console.Write("ID : ");
@@ -432,7 +431,7 @@ internal class Program
     }
     private static void RemoveCustomer(CustomerManagement customerM)
     {
-        // HEADER
+        Header();
         int id = 0;
         Console.WriteLine("SELECT CUSTOMER BY ID");
         Console.Write("ID : ");
@@ -446,8 +445,23 @@ internal class Program
         }
         Console.WriteLine(customerM.RemoveCustomer(id));
     }
+    private static string SearchReservation()
+    {
+        while (true)
+        {
+            Header();
+            Console.Write("Search reservation : ");
+        }
+    }
+    private static void PrintReservations(List<Reservation> reservationsList)
+    {
+        TableUI table = new();
+        table.PrintReservations(reservationList);
+        Console.ReadLine();
+    }
     private static void DeleteReservation(ReservationDB reservations)
     {
+        Header();
         Console.WriteLine("Please state wich reservation you would like to delete, specify by ID.");
         string deleteReservation = Console.ReadLine();
         int deleteConvert = Convert.ToInt32(deleteReservation);
@@ -457,6 +471,7 @@ internal class Program
     {
         try
         {
+            Header();
             Console.WriteLine("Please state reservation ID:");
             string reservationid = Console.ReadLine();
             int idConvert = Convert.ToInt32(reservationid);
@@ -501,6 +516,7 @@ internal class Program
     {
         try
         {
+            Header();
             Console.Write($"\nChoose rooms-id to book : ");
             int roomID = Convert.ToInt32(Console.ReadLine());
             DateTime dateTime = Convert.ToDateTime(startDate);
@@ -531,6 +547,7 @@ internal class Program
     }
     private static void UpdateEmployee(EmployeeDB employeeDB)
     {
+        Header();
         Console.WriteLine("Which employee would you like to update? Write the number ID by number, ex 1.");
         string id = Console.ReadLine();
         int employeeIDConvert = Convert.ToInt32(id);
@@ -552,6 +569,7 @@ internal class Program
     }
     private static void CreateEmployee(EmployeeDB employeeDB)
     {
+        Header();
         Console.WriteLine("Enter name");
         string nameInput = Console.ReadLine();
         Console.WriteLine("Enter password");
@@ -585,6 +603,12 @@ internal class Program
                 return false;
         }
         return true;
+    }
+    private static void Header()
+    {
+        Console.Clear();
+        Console.WriteLine("----: : INTERSPACE HOTEL : :----");
+        Console.WriteLine($"Psst, nicer header here :)\n");
     }
     private static void ExitMenu()
     {
