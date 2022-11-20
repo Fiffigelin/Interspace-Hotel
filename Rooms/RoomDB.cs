@@ -71,4 +71,17 @@ class RoomDB
         SELECT * FROM room WHERE guests >= '{search}'").ToList();
         return customerList;
     } // gör om till en int
+
+    //SearchCustomerByString
+    public List<Room> SearchRoomByString(string search)
+    {
+        var roomList = _sqlConnection.Query<Room>($@"
+        SELECT * FROM customer 
+        WHERE id LIKE '%{search}%'
+        OR room LIKE '%{search}%'
+        OR price LIKE '%{search}%'
+        OR beds LIKE '%{search}%'
+        OR size LIKE '%{search}%'").ToList();
+        return roomList;
+    }
 }

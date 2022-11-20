@@ -17,8 +17,8 @@ class CustomerDB
 
     public int InsertCustomer(Customer cu)
     {
-        string sql = $@"INSERT INTO `customer` 
-            (`email`, `name`, `phonenumber`)
+        string sql = $@"INSERT INTO customer 
+            (email, name, phonenumber)
             VALUES ('{cu.Email}', '{cu.Name}', '{cu.Phonenumber}');
             SELECT LAST_INSERT_ID()";
 
@@ -28,7 +28,7 @@ class CustomerDB
 
     public List<Customer> GetCustomers()
     {
-        var customerList = _sqlConnection.Query<Customer>($@"SELECT * FROM `customer`").ToList();
+        var customerList = _sqlConnection.Query<Customer>($@"SELECT * FROM customer").ToList();
         return customerList;
     }
 
@@ -36,7 +36,7 @@ class CustomerDB
     {
         // https://stackoverflow.com/questions/14171794/how-to-retrieve-data-from-a-sql-server-database-in-c
         Customer cu = new();
-        string sql = $@"SELECT * FROM `customer` WHERE `customer`.`id`= {id}";
+        string sql = $@"SELECT * FROM customer WHERE customer.id= {id}";
         MySqlCommand cmd = new MySqlCommand(sql, _sqlConnection);
         _sqlConnection.Open();
         using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -66,7 +66,7 @@ class CustomerDB
 
     public void DeleteCustomer(int id)
     {
-        int deleteID = _sqlConnection.Execute($@"DELETE FROM `customer` WHERE `customer`.`id` = {id}");
+        int deleteID = _sqlConnection.Execute($@"DELETE FROM customer WHERE customer.id = {id}");
     }
 
     public List<Customer> SearchCustomerDB(string search)
@@ -74,8 +74,7 @@ class CustomerDB
         var customerList = _sqlConnection.Query<Customer>($@"
         SELECT * FROM customer 
         WHERE email LIKE '%{search}%'
-        OR first_name LIKE '%{search}%'
-        OR last_name LIKE '%{search}%'
+        OR name LIKE '%{search}%'
         OR phonenumber LIKE '%{search}%'").ToList();
         return customerList;
     }
