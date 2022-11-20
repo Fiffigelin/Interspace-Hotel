@@ -11,8 +11,8 @@ internal class Program
     //RoomManagement roomManager = new(roomDB);
     public static EmployeeDB employeeDB = new(connection);
     public static EmployeeManagement empManager = new(employeeDB);
-    public static Reservation reserv = new();
-    public static ReservationDB reservations = new(connection);
+    public static Reservation reservation = new();
+    public static ReservationDB reservationDB = new(connection);
     public static HotelDB hotelDB = new HotelDB(connection);
     public static HotelManagement hotelM = new(hotelDB);
     public static Customer customer = new();
@@ -112,28 +112,29 @@ internal class Program
                     PrintSearchedRooms(roomList);
                     room = roomDB.GetRoomByid(ChooseRoom());
                     customer = AddCustomer();
-                    reserv = new(customer, room, search.Item2, search.Item1);
-                    MakeReservation(custManager, reservations, customer, room, reserv);
+                    reservation = new(customer, room, search.Item2, search.Item1);
+                    MakeReservation(custManager, reservationDB, customer, room, reservation);
                     break;
 
                 case 1: // update reservation
-                    reservationList = reservations.SearchReservationByString(SearchReservation());
-                    reservationList = reservations.SelectReservations(reservationList);
+                    reservationList = reservationDB.SearchReservationByString(SearchReservation());
+                    reservationList = reservationDB.SelectReservations(reservationList);
                     PrintReservations(reservationList);
                     int updateID = ChooseReservationID();
                     int custID = custManager.GetIDFromReservation(updateID);
-                    var update = UpdateReservationInfo();
+                    reservation = reservationDB.GetReservationById(updateID);
+                    var update = UpdateReservationInfo(reservation); // ändra till updateCustomer
                     roomList = roomDB.GetAvailableRooms(update.Item2, update.Item3);
                     PrintSearchedRooms(roomList);
                     customer = custManager.GetCustomerFromReservationID(updateID);
                     Console.ReadLine();
-                    reserv = reservations.GetReservationById(updateID);
-                    UpdateReservation(reservations, reserv, customer, update.Item2, update.Item1, updateID);
+                    reservation = reservationDB.GetReservationById(updateID);
+                    UpdateReservation(reservationDB, reservation, customer, update.Item2, updateID);
                     break;
 
                 case 2: // remove reservation
-                    reservationList = reservations.SearchReservationByString(SearchReservation());
-                    reservationList = reservations.SelectReservations(reservationList);
+                    reservationList = reservationDB.SearchReservationByString(SearchReservation());
+                    reservationList = reservationDB.SelectReservations(reservationList);
                     PrintReservations(reservationList);
                     int removeID = ChooseReservationID();
                     DeleteReservation(removeID);
@@ -149,6 +150,7 @@ internal class Program
     }
     public static void CustomersMenu()
     {
+        int custID = 0;
         while (true)
         {
             string prompt = "";
@@ -160,13 +162,18 @@ internal class Program
             {
                 case 0:
                     customer = AddCustomer();
-                    int custID = custManager.AddCustomer(customer);
+                    custID = custManager.AddCustomer(customer);
                     customerList.Add(custManager.GetCustomer(custID));
                     PrintCustomers(customerList);
                     CustomerAddedSuccess(custID);
                     break;
 
                 case 1:
+                    customerList = custManager.StringSearchCustomer(SearchCustomer());
+                    PrintCustomers(customerList);
+                    customer = UpdateCustomer(customer, ChooseCustomer());
+                    custID = custManager.UpdateCustomer(customer);
+                    UpdateCustomerSuccess(custID);
                     break;
 
                 case 2:
@@ -317,7 +324,7 @@ internal class Program
         string stringRoom = string.Empty;
         do
         {
-            Console.Write($"\nChoose rooms-id to book : ");
+            Console.Write($"\nChoose room by ID: ");
             stringRoom = Console.ReadLine();
         } while (!IsStringNumeric(stringRoom));
         return Convert.ToInt32(stringRoom);
@@ -429,18 +436,75 @@ internal class Program
         Console.WriteLine($"Customer added with ID : {ID}");
         Console.ReadLine();
     }
-    private static void UpdateCustomer(CustomerManagement customerM, int id) // MODIFIERA!!
+    public static int ChooseCustomer() // NO HEADER!!
     {
-        Console.WriteLine("UPDATE CUSTOMER");
-        Console.Write("Firstname : ");
-        string firstName = Console.ReadLine();
-        Console.Write("Lastname : ");
-        string lastName = Console.ReadLine();
-        Console.Write("Email : ");
-        string email = Console.ReadLine();
-        Console.Write("Phonenumber : ");
-        string phoneNumber = Console.ReadLine();
-        Console.WriteLine(customerM.UpdateCustomer(email, firstName, lastName, phoneNumber, id));
+        string stringCustomer = string.Empty;
+        do
+        {
+            Console.Write($"\nChoose customer by ID : ");
+            stringCustomer = Console.ReadLine();
+        } while (!IsStringNumeric(stringCustomer));
+        return Convert.ToInt32(stringCustomer);
+    }
+    private static Customer UpdateCustomer(Customer customer, int id)
+    {
+        string firstName;
+        string lastName;
+        string email;
+        string phoneNumber;
+        while (true)
+        {
+            Header();
+            do
+            {
+                Console.Write("Firstname : ");
+                firstName = Console.ReadLine();
+                Console.Write("Lastname : ");
+                lastName = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName))
+                {
+                    customer.Name = (firstName + " " + lastName);
+                }
+            } while (string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName)
+                    || !string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName));
+
+            do
+            {
+                Console.Write("Email : ");
+                email = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(email) && IsEmailValid(email))
+                {
+                    customer.Email = email;
+                }
+            } while (string.IsNullOrWhiteSpace(email) || !IsEmailValid(email));
+
+            do
+            {
+                Console.Write("Phonenumber : ");
+                phoneNumber = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(phoneNumber) && IsStringNumeric(phoneNumber))
+                {
+                    customer.Phonenumber = phoneNumber;
+                }
+            } while (string.IsNullOrWhiteSpace(phoneNumber) || !IsStringNumeric(phoneNumber));
+            return customer;
+        }
+    }
+    public static void UpdateCustomerSuccess(int ID) // NO HEADER!!
+    {
+        Console.WriteLine($"Customer added with ID : {ID}");
+        Console.ReadLine();
+    }
+    private static string SearchCustomer()
+    {
+        string search = string.Empty;
+        do
+        {
+            Header();
+            Console.Write("Search customer : ");
+            search = Console.ReadLine();
+        } while (string.IsNullOrEmpty(search));
+        return search;
     }
     private static int GetCustomer(CustomerManagement customerM) // MODIFIERA!!
     {
@@ -478,7 +542,7 @@ internal class Program
         {
             Console.WriteLine("WRONG INPUT");
         }
-        Console.WriteLine(customerM.RemoveCustomer(id));
+        // Console.WriteLine(customerM.RemoveCustomer(id));
     }
     private static string SearchReservation()
     {
@@ -500,7 +564,7 @@ internal class Program
     }
     private static void DeleteReservation(int removeID) // NO HEADER!!
     {
-        reservations.DeleteReservation(removeID);
+        reservationDB.DeleteReservation(removeID);
         Console.WriteLine($"Reservation with ID : {removeID} has been deleted");
         Console.ReadKey();
     }
@@ -514,12 +578,14 @@ internal class Program
         } while (!IsStringNumeric(input));
         return Convert.ToInt32(input);
     }
-    private static (int, string, string) UpdateReservationInfo()
+    private static (Reservation, string, string) UpdateReservationInfo(Reservation reservation)
     {
         bool isSDCorrect = false;
         bool isEDCorrect = false;
         string startDate = String.Empty;
         string endDate = String.Empty;
+        string updatedStartDate = string.Empty;
+        string updatedEndDate = string.Empty;
         string pattern = @"\d{4}(-)\d{2}(-)\d{2}";
 
         while (!isSDCorrect)
@@ -531,6 +597,15 @@ internal class Program
             MatchCollection matches = Regex.Matches(startDate, pattern);
             int match = matches.Count;
             if (match == 1)
+            {
+                isSDCorrect = true;
+                if (!string.IsNullOrWhiteSpace(startDate))
+                {
+                    DateTime updateStartDate = Convert.ToDateTime(startDate);
+                    reservation.date_in = updateStartDate;
+                }
+            }
+            else if (string.IsNullOrEmpty(startDate))
             {
                 isSDCorrect = true;
             }
@@ -553,6 +628,15 @@ internal class Program
             if (match == 1)
             {
                 isEDCorrect = true;
+                if (!string.IsNullOrWhiteSpace(startDate))
+                {
+                    DateTime updateEndDate = Convert.ToDateTime(endDate);
+                    reservation.date_in = updateEndDate;
+                }
+            }
+            else if (string.IsNullOrEmpty(endDate))
+            {
+                isSDCorrect = true;
             }
             else
             {
@@ -563,9 +647,10 @@ internal class Program
         DateOnly sD = DateOnly.Parse(startDate);
         DateOnly eD = DateOnly.Parse(endDate);
         int duration = (eD.DayNumber - sD.DayNumber);
-        return (duration, startDate, endDate);
+        reservation.duration = duration;
+        return (reservation, startDate, endDate);
     }
-    private static void UpdateReservation(ReservationDB reservations, Reservation reserv, Customer customer, string startDate, int duration, int reservationID)
+    private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, int reservationID)
     {
         while (true)
         {
@@ -583,12 +668,12 @@ internal class Program
             string totalSum = Console.ReadLine();
             int totalSumConvert = Convert.ToInt32(totalSum);
 
-            reserv = new(reservationID, roomID, customer.ID, totalSumConvert, sD, duration);
-            reservations.UpdateReservation(reserv);
+            reservation = new(reservationID, roomID, customer.ID, totalSumConvert, sD, reservation.duration);
+            reservations.UpdateReservation(reservation);
 
             Console.WriteLine("Here is your receipt to your reservation");
             TableUI table = new();
-            table.PrintUpdatedReceipt(reserv, customer);
+            table.PrintUpdatedReceipt(reservation, customer);
             Console.ReadLine();
             return;
         }
