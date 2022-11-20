@@ -3,22 +3,20 @@ using Dapper;
 internal class Program
 {
     const string CONNECTIONSTRING = "Server = localhost;Database = interspace_hotel;Uid=root; Convert Zero Datetime=True";
+    public static MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
+    public static RoomDB roomDB = new(connection);
+    //RoomManagement roomManager = new(roomDB);
+    public static EmployeeDB employeeDB = new(connection);
+    public static EmployeeManagement empManager = new(employeeDB);
+    public static ReservationDB reservations = new(connection);
+    public static HotelDB hotelDB = new HotelDB(connection);
+    public static HotelManagement hotelM = new(hotelDB);
+    public static Customer cust = new();
+    public static CustomerDB cDB = new CustomerDB();
+    public static CustomerManagement custManager = new(cDB);
 
     private static void Main(string[] args)
     {
-        MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
-        RoomDB roomDB = new(connection);
-        //RoomManagement roomManager = new(roomDB);
-        EmployeeDB employeeDB = new(connection);
-        EmployeeManagement empManager = new(employeeDB);
-        ReservationDB reservations = new(connection);
-        HotelDB hotelDB = new HotelDB(connection);
-        HotelManagement hotelM = new(hotelDB);
-
-        Customer cust = new();
-        CustomerDB cDB = new CustomerDB();
-        CustomerManagement custManager = new(cDB);
-
         Console.WriteLine(hotelM.GetValues());
         while (true)
         {
@@ -46,15 +44,10 @@ internal class Program
                     var search = BookingRoom();
                     List<Room> roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
                     int roomID = PrintSearchedRooms(roomList);
-                    //Testa om det går att ta bort cust = new();
-                    //Måste en kund vara ny? Kan ju finnas i DB :)
+                    //Måste en kund vara ny? Kan ju finnas i DB :) Gör en sökning av customers, finns email eller telefonnummer
+                    // läggs inte kunden in som ny kund.
                     //Fråga om kund är ny, om ja skapa ny, annars sök upp i databas.
-                    cust = new();
                     cust = AddCustomer();
-                    //Om sökning utav datum redan är besämt innan metoden nedan. 
-                    //Uppdatera metoden nedan att ta följande indata med:
-                    // - Start datum
-                    // - Längd på bokning
                     MakeReservation(custManager, reservations, roomID, cust, search.Item2, search.Item1);
                     break;
 
@@ -70,32 +63,178 @@ internal class Program
     }
     public static void EmployeeUI()
     {
-        // Customers, Bookings, Rooms, Employees sen menyerna ovan.
-        string prompt = @"
-        Welcome to Interspace Hotel ADMIN";
-        string[] options = { "Bookings","Customers","Room","Employees","Exit" };
-        Menu mainMenu = new Menu(prompt, options);
-        int selectedIndex = mainMenu.Run();
-
-        switch (selectedIndex)
+        while (true)
         {
-            case 0:
-            break;
+            string prompt = @"
+        Welcome to Interspace Hotel ADMIN";
+            string[] options = { "Bookings", "Customers", "Room", "Employees", "Exit" };
+            Menu mainMenu = new Menu(prompt, options);
+            int selectedIndex = mainMenu.Run();
 
-            case 1:
-            break;
+            switch (selectedIndex)
+            {
+                case 0:
+                    BookingsMenu();
+                    break;
 
-            case 2:
-            break;
+                case 1:
+                    CustomersMenu();
+                    break;
 
-            case 3:
-            break;
+                case 2:
+                    RoomMenu();
+                    break;
 
-            case 4:
-            break;
-            
-            default:
-            break;
+                case 3:
+                    EmployeeMenu();
+                    break;
+
+                case 4:
+                    return;
+
+                default:
+                    break;
+            }
+        }
+    }
+    public static void BookingsMenu()
+    {
+        while (true)
+        {
+            string prompt = @"
+        Welcome to Interspace Hotel ADMIN";
+            string[] options = { "Add booking", "Update booking", "Remove update", "Exit" };
+            Menu mainMenu = new Menu(prompt, options);
+            int selectedIndex = mainMenu.Run();
+
+            switch (selectedIndex)
+            {
+                case 0:
+                    // UPDATE : fixa så man kan minimera sökningen ännu mer med ex, beds, guests
+                    var search = BookingRoom();
+                    List<Room> roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
+                    int roomID = PrintSearchedRooms(roomList);
+                    //Måste en kund vara ny? Kan ju finnas i DB :) Gör en sökning av customers, finns email eller telefonnummer
+                    // läggs inte kunden in som ny kund.
+                    //Fråga om kund är ny, om ja skapa ny, annars sök upp i databas.
+                    cust = AddCustomer();
+                    MakeReservation(custManager, reservations, roomID, cust, search.Item2, search.Item1);
+                    break;
+
+                case 1:
+                    break;
+
+                case 2:
+                    break;
+
+                case 3:
+                    break;
+
+                case 4:
+                    return;
+
+                default:
+                    break;
+            }
+        }
+    }
+    public static void CustomersMenu()
+    {
+        while (true)
+        {
+            string prompt = @"
+        Welcome to Interspace Hotel ADMIN";
+            string[] options = { "Add guest", "Update guest", "Remove guest", "Exit" };
+            Menu mainMenu = new Menu(prompt, options);
+            int selectedIndex = mainMenu.Run();
+
+            switch (selectedIndex)
+            {
+                case 0:
+
+                    break;
+
+                case 1:
+                    break;
+
+                case 2:
+                    break;
+
+                case 3:
+                    break;
+
+                case 4:
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+    public static void RoomMenu()
+    {
+        while (true)
+        {
+            string prompt = @"
+        Welcome to Interspace Hotel ADMIN";
+            string[] options = { "Add room", "Update room", "Remove room", "Exit" };
+            Menu mainMenu = new Menu(prompt, options);
+            int selectedIndex = mainMenu.Run();
+
+            switch (selectedIndex)
+            {
+                case 0:
+
+                    break;
+
+                case 1:
+                    break;
+
+                case 2:
+                    break;
+
+                case 3:
+                    break;
+
+                case 4:
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+    public static void EmployeeMenu()
+    {
+        while (true)
+        {
+            string prompt = @"
+        Welcome to Interspace Hotel ADMIN";
+            string[] options = { "Add employee", "Update employee", "Remove employee", "Exit" };
+            Menu mainMenu = new Menu(prompt, options);
+            int selectedIndex = mainMenu.Run();
+
+            switch (selectedIndex)
+            {
+                case 0:
+
+                    break;
+
+                case 1:
+                    break;
+
+                case 2:
+                    break;
+
+                case 3:
+                    break;
+
+                case 4:
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
     private static (int, string, string) BookingRoom()
