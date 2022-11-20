@@ -45,12 +45,17 @@ class ReservationDB
     public List<Reservation> SearchReservationByString(string search)
     {
         var reservationList = _sqlconnection.Query<Reservation>($@"
-        SELECT * FROM customer 
-        WHERE id LIKE '%{search}%'
-        OR room_id LIKE '%{search}%'
-        OR customer_id LIKE '%{search}%'
-        OR date_in LIKE '%{search}%'
-        OR duration LIKE '%{search}%'").ToList();
+        SELECT * FROM reservation
+        LEFT JOIN customer
+        ON reservation.customer_id = customer.id
+        LEFT JOIN room
+        ON reservation.room_id = room.id
+        WHERE customer.name LIKE '%{search}%'
+        OR customer.id LIKE '%{search}%'
+        OR customer.email LIKE '%{search}%'
+        OR customer.phonenumber LIKE '%{search}%'
+        OR room.name LIKE '%{search}%'
+        OR room.id LIKE '%{search}%'").ToList();
         return reservationList;
     }
 }

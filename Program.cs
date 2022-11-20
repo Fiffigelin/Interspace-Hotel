@@ -39,24 +39,16 @@ internal class Program
             //Dvs innan de kommer in i switch med menyval. Hellre fler menyval än att man behöver gå djupt ner i undermenyer.
             switch (selectedIndex)
             {
-                case 0:
-                    // UPDATE : fixa så man kan minimera sökningen ännu mer med ex, beds, guests
-                    var search = BookingRoom();
-                    List<Room> roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
-                    int roomID = PrintSearchedRooms(roomList);
-                    //Måste en kund vara ny? Kan ju finnas i DB :) Gör en sökning av customers, finns email eller telefonnummer
-                    // läggs inte kunden in som ny kund.
-                    //Fråga om kund är ny, om ja skapa ny, annars sök upp i databas.
-                    customer = AddCustomer();
-                    MakeReservation(custManager, reservations, customer, search.Item2, search.Item1);
+                case 0: // empty
+                default:
                     break;
 
                 case 1:
+                    EmployeeUI();
+                    break;
+                case 2:
                     //Enda exit, alla andra är return
                     ExitMenu();
-                    break;
-
-                default:
                     break;
             }
         }
@@ -97,6 +89,10 @@ internal class Program
                     break;
             }
         }
+    }
+    public static void GuestMenu()
+    {
+
     }
     public static void ReservationsMenu()
     {
@@ -463,11 +459,14 @@ internal class Program
     }
     private static string SearchReservation()
     {
-        while (true)
+        string search = string.Empty;
+        do
         {
             Header();
             Console.Write("Search reservation : ");
-        }
+            search = Console.ReadLine();
+        } while (string.IsNullOrEmpty(search));
+        return search;
     }
     private static void PrintReservations(List<Reservation> reservationsList)
     {
