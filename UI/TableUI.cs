@@ -47,6 +47,25 @@ class TableUI
         PrintRow("BOOKED BY", cust.Name);
         PrintLine();
     }
+     public void PrintReservations(List<Reservation> reservationList)
+    {
+        TableWidth = 85;
+        Console.Clear();
+        PrintLine();
+        foreach (var item in reservationList)
+        {
+            PrintRow("RESERVATION ID", item.id.ToString());
+            PrintLine();
+            PrintRow("BOOKED ROOM", item.room_id.ToString());
+            PrintLine();
+            PrintRow("CHECK-IN DATE", item.date_in.ToString("yyyy-MM-dd"));
+            PrintLine();
+            PrintRow("NUMBER OF NIGTHS", item.duration.ToString());
+            PrintLine();
+            PrintRow("BOOKED BY", item.customer_id.ToString());
+            PrintLine();
+        }
+    }
 
     public void PrintEmployees(List<Employee> objectList)
     {
