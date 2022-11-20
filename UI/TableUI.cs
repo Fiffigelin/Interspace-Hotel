@@ -5,7 +5,6 @@ class TableUI
     public void PrintRooms(List<Room> objectList)
     {
         TableWidth = 85;
-        Console.Clear();
         PrintLine();
         PrintRow("ID", "NAME", "BEDS", "GUESTS", "SIZE", "PRICE");
         PrintLine();
@@ -18,7 +17,6 @@ class TableUI
     public void PrintCustomers(List<Customer> objectList)
     {
         TableWidth = 70;
-        Console.Clear();
         PrintLine();
         PrintRow("ID", "NAME", "EMAIL", "PHONENUMBER");
         PrintLine();
@@ -32,7 +30,6 @@ class TableUI
     public void PrintReceipt(Reservation reserv, Customer cust)
     {
         TableWidth = 85;
-        Console.Clear();
         PrintLine();
         PrintRow("RESERVATION ID", reserv.id.ToString());
         PrintLine();
@@ -50,9 +47,6 @@ class TableUI
     public void PrintUpdatedReceipt(Reservation reservation, Customer customer)
     {
         TableWidth = 85;
-        Console.Clear();
-        PrintLine();
-        Console.Clear();
         PrintLine();
         PrintRow("RESERVATION ID", reservation.id.ToString());
         PrintLine();
@@ -70,7 +64,6 @@ class TableUI
     public void PrintReservations(List<Reservation> reservationList)
     {
         TableWidth = 85;
-        Console.Clear();
         PrintLine();
         foreach (var item in reservationList)
         {
@@ -90,7 +83,6 @@ class TableUI
     public void PrintEmployees(List<Employee> objectList)
     {
         TableWidth = 50;
-        Console.Clear();
         PrintLine();
         PrintRow("ID", "NAME");
         PrintLine();

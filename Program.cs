@@ -99,7 +99,7 @@ internal class Program
         while (true)
         {
             string prompt = "";
-            string[] options = { "Add reservation", "Update reservation", "Remove reservation", "Exit" };
+            string[] options = { "Add reservation", "Update reservation", "Remove reservation", "Return", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
@@ -111,6 +111,7 @@ internal class Program
                     roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
                     PrintRooms(roomList);
                     room = roomDB.GetRoomByid(ChooseRoom());
+                    NumberOFGuests(room);
                     customer = AddCustomer();
                     reservation = new(customer, room, search.Item2, search.Item1);
                     MakeReservation(custManager, reservationDB, customer, room, reservation);
@@ -143,6 +144,10 @@ internal class Program
                 case 3: // return to main()
                     return;
 
+                case 4:
+                    ExitMenu();
+                    break;
+
                 default:
                     break;
             }
@@ -154,7 +159,7 @@ internal class Program
         while (true)
         {
             string prompt = "";
-            string[] options = { "Add guest", "Update guest", "Remove guest", "Exit" };
+            string[] options = { "Add guest", "Update guest", "Remove guest", "Return", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
@@ -187,6 +192,10 @@ internal class Program
 
                 case 3:
                     return;
+
+                case 4:
+                    ExitMenu();
+                    break;
             }
         }
     }
@@ -196,7 +205,7 @@ internal class Program
         {
             Header();
             string prompt = "";
-            string[] options = { "Add room", "Update room", "Print rooms", "Remove room", "Exit" };
+            string[] options = { "Add room", "Update room", "Print rooms", "Remove room", "Return", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
@@ -221,11 +230,16 @@ internal class Program
                     break;
 
                 case 3: // remove
+                    roomList = roomDB.GetRooms();
+                    PrintRooms(roomList);
                     break;
 
                 case 4: // exit
                     return;
 
+                case 5:
+                    ExitMenu();
+                    break;
                 default:
                     break;
             }
@@ -385,11 +399,20 @@ internal class Program
             stringRoom = Console.ReadLine();
         } while (!IsStringNumeric(stringRoom));
         return Convert.ToInt32(stringRoom);
-
-
-        Console.Write("Price : ");
-        string totalSum = Console.ReadLine();
-        int totalSumConvert = Convert.ToInt32(totalSum);
+    }
+    public static int NumberOFGuests(Room room)
+    {
+        int guests = 0;
+        do
+        {
+            Console.WriteLine($"Max guests : {room.guests}");
+            Console.Write("Guests : ");
+            if (guests > room.guests || guests == 0)
+            {
+                Console.WriteLine("Wrong input of guests");
+            }
+        } while (guests > room.guests || guests == 0);
+        return guests;
     }
     private static void SearchRooms()
     {
@@ -686,34 +709,6 @@ internal class Program
         reservation.duration = duration;
         return (reservation, startDate, endDate);
     }
-    private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, int reservationID)
-    {
-        while (true)
-        {
-            Header();
-            DateTime sD = DateTime.Parse(startDate);
-            string stringRoom = string.Empty;
-            do
-            {
-                Console.Write($"\nChoose rooms-id to book : ");
-                stringRoom = Console.ReadLine();
-            } while (!IsStringNumeric(stringRoom) && !string.IsNullOrEmpty(stringRoom));
-            int roomID = Convert.ToInt32(stringRoom);
-
-            Console.Write("Price : ");
-            string totalSum = Console.ReadLine();
-            int totalSumConvert = Convert.ToInt32(totalSum);
-
-            reservation = new(reservationID, roomID, customer.ID, totalSumConvert, sD, reservation.duration);
-            reservations.UpdateReservation(reservation);
-
-            Console.WriteLine("Here is your receipt to your reservation");
-            TableUI table = new();
-            table.PrintUpdatedReceipt(reservation, customer);
-            Console.ReadLine();
-            return;
-        }
-    }
     private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, Customer cust, Room room, Reservation reserv)
     {
         try
@@ -787,9 +782,16 @@ internal class Program
             }
         }
     }
-    private static void CalculateReservationPrice() // EJ PÅBÖRJAD!
+    private static void CalculateReservationPrice(Reservation reservation, Room room, int guests) // EJ PÅBÖRJAD!
     {
-
+        int economy = 0;
+        if(reservation.room_id == room.id)
+        {
+            if(room.name == "Singleroom")
+            {
+                economy = ((room.price * reservation.duration) * guests);
+            }
+        }
     }
     private static bool IsEmailValid(string s)
     {
