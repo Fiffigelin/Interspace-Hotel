@@ -520,17 +520,22 @@ internal class Program
             int roomID = Convert.ToInt32(Console.ReadLine());
             DateTime dateTime = Convert.ToDateTime(startDate);
             // Detta skall ske automatiskt. Skapa en funktion som räknar ut kostnaden beroende på antal nätter, gästantal och valt rum
-            Console.Write("Price : ");
-            string totalSum = Console.ReadLine();
-            int totalSumConvert = Convert.ToInt32(totalSum);
+            Console.Write("Number of guests : ");
+            string totalGuests = Console.ReadLine();
+            int totalG = Convert.ToInt32(totalGuests);
+
+            int economy = 1; // ÄNDRA MIG 
+            int totalCosts = totalG*duration*economy; // Här skapade Emelie en metod för uträkningen ?
+                                                // I DB heter det economy = pris, guests = antal gäster, duration = antalet nätter.
+                                                // 
 
             int customerID = custM.AddCustomer(cust);
             Console.WriteLine(cust); //skapa en snyggare utskrift där inte id visas
-            int reservationID = reservations.CreateRoomReservation(roomID, customerID, dateTime, duration, totalSumConvert);
+            int reservationID = reservations.CreateRoomReservation(roomID, customerID, dateTime, duration, totalG); // här stod det int totalSumConvert innan Emelie pillade 
 
             Console.WriteLine("Here is your receipt to your reservation");
             TableUI table = new();
-            table.PrintReceipt(roomID, dateTime, duration, totalSumConvert, cust, reservationID);
+            table.PrintReceipt(roomID, dateTime, duration, totalG, cust, reservationID); // här stod det int totalSumConvert innan Emelie pillade 
             Console.ReadLine();
         }
         catch (System.Exception e)

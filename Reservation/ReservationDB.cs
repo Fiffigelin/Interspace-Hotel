@@ -9,7 +9,7 @@ class ReservationDB
         _sqlconnection = connection;
     }
 
-    public int CreateRoomReservation(int roomID, int customerID, DateTime dateIn, int duration, int economy)
+    public int CreateRoomReservation(int roomID, int customerID, DateTime dateIn, int duration, int economy) // här stod det int totalSumConvert innan Emelie pillade i main
     {
         string sql = @$"INSERT INTO reservation(room_id,customer_id,date_in,duration,economy)
         VALUES({roomID}, {customerID}, '{dateIn.ToString("yyyy-MM-dd")}', {duration}, {economy});SELECT LAST_INSERT_ID();";
