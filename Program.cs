@@ -28,7 +28,7 @@ internal class Program
         {
             string prompt = @"
             Welcome to Interspace Hotel ADMIN";
-            string[] options = { "Guest", "Employee", "Exit"};
+            string[] options = { "Guest", "Employee", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
             //Vårt mål är att vi strävar mot att ha två ingångar, personal eller gäst
@@ -254,45 +254,61 @@ internal class Program
         bool isEDCorrect = false;
         string startDate = String.Empty;
         string endDate = String.Empty;
+        DateOnly sD;
+        DateOnly eD;
+       
         string pattern = @"\d{4}(-)\d{2}(-)\d{2}";
 
         Header();
-        
+
         while (!isSDCorrect)
         {
-            Console.Write("Start date for your stay : ");
-            startDate = Console.ReadLine();
+            Console.Write("Start date for your stay [YYYY-MM-DD] : ");
+            startDate = Console.ReadLine()!;
 
             MatchCollection matches = Regex.Matches(startDate, pattern);
             int match = matches.Count;
             if (match == 1)
             {
-                isSDCorrect = true;
+                try
+                {
+                    sD = DateOnly.Parse(startDate);
+                    isSDCorrect = true;
+                }
+                catch (System.Exception)
+                {
+                    Console.WriteLine(" Please try again, enter valid dates.");
+                }
             }
             else
             {
-                Console.WriteLine("Please try again, enter YYYY-MM-DD.");
+                Console.WriteLine("Please try again.");
             }
         }
         while (!isEDCorrect)
         {
-            Console.Write("End date for your stay : ");
-            endDate= Console.ReadLine();
+            Console.Write("End date for your stay [YYYY-MM-DD] : ");
+            endDate = Console.ReadLine();
 
             MatchCollection matching = Regex.Matches(endDate, pattern);
             int match = matching.Count;
             if (match == 1)
             {
-                isEDCorrect = true;
+                try
+                {
+                    eD = DateOnly.Parse(endDate);
+                    isEDCorrect = true;
+                }
+                catch (System.Exception)
+                {
+                    Console.WriteLine(" Please try again, enter valid dates.");
+                }
             }
             else
             {
-                Console.WriteLine("Please try again, enter YYYY-MM-DD.");
+                Console.WriteLine("Please try again.");
             }
         }
-
-        DateOnly sD = DateOnly.Parse(startDate);
-        DateOnly eD = DateOnly.Parse(endDate);
         int duration = (eD.DayNumber - sD.DayNumber);
         return (duration, startDate, endDate);
     }
@@ -526,9 +542,9 @@ internal class Program
             int totalG = Convert.ToInt32(totalGuests);
 
             int economy = 1; // ÄNDRA MIG 
-            int totalCosts = totalG*duration*economy; // Här skapade Emelie en metod för uträkningen ?
-                                                // I DB heter det economy = pris, guests = antal gäster, duration = antalet nätter.
-                                                // 
+            int totalCosts = totalG * duration * economy; // Här skapade Emelie en metod för uträkningen ?
+                                                          // I DB heter det economy = pris, guests = antal gäster, duration = antalet nätter.
+                                                          // 
 
             int customerID = custM.AddCustomer(cust);
             Console.WriteLine(cust); //skapa en snyggare utskrift där inte id visas
