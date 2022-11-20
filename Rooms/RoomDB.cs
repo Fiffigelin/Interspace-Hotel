@@ -30,7 +30,7 @@ class RoomDB
     }
     public List<Room> GetRooms()
     {
-        string sql = $"SELECT price, beds, size FROM room;";
+        string sql = $"SELECT * FROM room;";
         var rooms = _sqlConnection.Query<Room>(sql).ToList();
         return rooms;
     }

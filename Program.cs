@@ -215,6 +215,9 @@ internal class Program
                     break;
 
                 case 2: // print
+                    roomList = roomDB.GetRooms();
+                    PrintRooms(roomList);
+                    Console.ReadKey();
                     break;
 
                 case 3: // remove
@@ -304,7 +307,6 @@ internal class Program
                 default:
                     break;
             }
-            Console.WriteLine($"New {room.name} added");
             List<Room> outputList = new();
             outputList.Add(room);
             return outputList;
