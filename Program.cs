@@ -111,7 +111,7 @@ internal class Program
                     roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
                     PrintRooms(roomList);
                     room = roomDB.GetRoomByid(ChooseRoom());
-                    NumberOFGuests(room);
+                    reservation = CalculateReservationPrice(reservation, room, NumberOFGuests(room));
                     customer = AddCustomer();
                     reservation = new(customer, room, search.Item2, search.Item1);
                     MakeReservation(custManager, reservationDB, customer, room, reservation);
@@ -124,9 +124,11 @@ internal class Program
                     int updateID = ChooseReservationID();
                     int custID = custManager.GetIDFromReservation(updateID);
                     reservation = reservationDB.GetReservationById(updateID);
-                    var update = UpdateReservationInfo(reservation); // ändra till updateCustomer
+                    var update = UpdateReservationRoom(reservation);
                     roomList = roomDB.GetAvailableRooms(update.Item2, update.Item3);
                     PrintRooms(roomList);
+                    room = roomDB.GetRoomByid(updateID);
+                    reservation = CalculateReservationPrice(reservation, room, UpdateGuests(reservation, room));
                     customer = custManager.GetCustomerFromReservationID(updateID);
                     Console.ReadLine();
                     reservation = reservationDB.GetReservationById(updateID);
@@ -407,6 +409,7 @@ internal class Program
         {
             Console.WriteLine($"Max guests : {room.guests}");
             Console.Write("Guests : ");
+            guests = Convert.ToInt32(Console.ReadLine());
             if (guests > room.guests || guests == 0)
             {
                 Console.WriteLine("Wrong input of guests");
@@ -637,7 +640,7 @@ internal class Program
         } while (!IsStringNumeric(input));
         return Convert.ToInt32(input);
     }
-    private static (Reservation, string, string) UpdateReservationInfo(Reservation reservation)
+    private static (Reservation, string, string) UpdateReservationRoom(Reservation reservation)
     {
         bool isSDCorrect = false;
         bool isEDCorrect = false;
@@ -709,18 +712,69 @@ internal class Program
         reservation.duration = duration;
         return (reservation, startDate, endDate);
     }
-    private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, Customer cust, Room room, Reservation reserv)
+    public static int UpdateGuests(Reservation reservation, Room room)
+    {
+        bool update = false;
+        string guests = string.Empty;
+        int convert;
+        do
+        {
+            Console.WriteLine($"Max guests : {room.guests}");
+            Console.Write("Guests : ");
+            guests = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(guests))
+            {
+                update = true;
+            }
+            else if (IsStringNumeric(guests))
+            {
+                convert = Convert.ToInt32(guests);
+                if(convert < room.guests && convert > 0)
+                {
+                    room.guests = convert;
+                    update = true;
+                }
+            }
+        } while (update == false);
+        return room.guests;
+    }
+    private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, int reservationID)
+    {
+        while (true)
+        {
+            Header();
+            DateTime sD = DateTime.Parse(startDate);
+            string stringRoom = string.Empty;
+            do
+            {
+                Console.Write($"\nChoose rooms-id to book : ");
+                stringRoom = Console.ReadLine();
+            } while (!IsStringNumeric(stringRoom) && !string.IsNullOrEmpty(stringRoom));
+            int roomID = Convert.ToInt32(stringRoom);
+
+            reservation = new(reservationID, roomID, customer.ID, reservation.economy, sD, reservation.duration);
+            reservations.UpdateReservation(reservation);
+
+            Console.WriteLine("Here is your receipt to your reservation");
+            TableUI table = new();
+            table.PrintUpdatedReceipt(reservation, customer);
+            Console.ReadLine();
+            return;
+        }
+    }
+    private static void MakeReservation(CustomerManagement custM, ReservationDB reservationDB, Customer cust, Room room, Reservation reservation)
     {
         try
         {
             Header();
             int customerID = custM.AddCustomer(cust);
-            reserv.customer_id = customerID;
-            reserv.id = reservations.CreateRoomReservation(reserv);
+            reservation.customer_id = customerID;
+            reservation.id = reservationDB.CreateRoomReservation(reservation);
 
             Console.WriteLine("Here is your receipt to your reservation");
             TableUI table = new();
-            table.PrintReceipt(reserv, cust);
+            table.PrintReceipt(reservation, cust);
             Console.ReadLine();
         }
         catch (System.Exception e)
@@ -782,16 +836,15 @@ internal class Program
             }
         }
     }
-    private static void CalculateReservationPrice(Reservation reservation, Room room, int guests) // EJ PÅBÖRJAD!
+    private static Reservation CalculateReservationPrice(Reservation reservation, Room room, int guests)
     {
         int economy = 0;
-        if(reservation.room_id == room.id)
+        if (reservation.room_id == room.id)
         {
-            if(room.name == "Singleroom")
-            {
                 economy = ((room.price * reservation.duration) * guests);
-            }
+                reservation.economy = economy;
         }
+        return reservation;
     }
     private static bool IsEmailValid(string s)
     {
