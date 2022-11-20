@@ -65,14 +65,14 @@ internal class Program
         {
             string prompt = @"
         Welcome to Interspace Hotel ADMIN";
-            string[] options = { "Bookings", "Customers", "Room", "Employees", "Exit" };
+            string[] options = { "Reservations", "Customers", "Room", "Employees", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
             switch (selectedIndex)
             {
                 case 0:
-                    BookingsMenu();
+                    ReservationsMenu();
                     break;
 
                 case 1:
@@ -95,13 +95,13 @@ internal class Program
             }
         }
     }
-    public static void BookingsMenu()
+    public static void ReservationsMenu()
     {
         while (true)
         {
             string prompt = @"
         Welcome to Interspace Hotel ADMIN";
-            string[] options = { "Add booking", "Update booking", "Remove update", "Exit" };
+            string[] options = { "Add reservation", "Update reservation", "Remove reservation", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
@@ -141,7 +141,7 @@ internal class Program
         while (true)
         {
             string prompt = @"
-        Welcome to Interspace Hotel ADMIN";
+        Welcome to Interspace Hotel";
             string[] options = { "Add guest", "Update guest", "Remove guest", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
