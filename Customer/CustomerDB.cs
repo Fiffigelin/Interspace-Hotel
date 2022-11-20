@@ -78,4 +78,32 @@ class CustomerDB
         OR phonenumber LIKE '%{search}%'").ToList();
         return customerList;
     }
+
+    public int CustomerIDFromReservation(int id)
+    {
+        return _sqlConnection.Execute($@"SELECT reservation.customer_id FROM reservation WHERE reservation.id = '{id}'");
+    }
+
+    public Customer GetCustomerByReservation(int id)
+    {
+        Customer cu = new();
+        string sql = ($@" SELECT * FROM customer
+        LEFT JOIN reservation
+        ON reservation.customer_id = customer.id
+        WHERE reservation.id LIKE '%{id}%'");
+        _sqlConnection.Open();
+        MySqlCommand cmd = new MySqlCommand(sql, _sqlConnection);
+        using (MySqlDataReader reader = cmd.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                cu.ID = Convert.ToInt32(reader["id"].ToString());
+                cu.Email = reader["email"].ToString();
+                cu.Name = reader["name"].ToString();
+                cu.Phonenumber = reader["phonenumber"].ToString();
+            }
+            _sqlConnection.Close();
+            return cu;
+        }
+    }
 }

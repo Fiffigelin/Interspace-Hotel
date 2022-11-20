@@ -6,10 +6,12 @@ internal class Program
 {
     const string CONNECTIONSTRING = "Server = localhost;Database = interspace_hotel;Uid=root; Convert Zero Datetime=True";
     public static MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
+    public static Room room = new();
     public static RoomDB roomDB = new(connection);
     //RoomManagement roomManager = new(roomDB);
     public static EmployeeDB employeeDB = new(connection);
     public static EmployeeManagement empManager = new(employeeDB);
+    public static Reservation reserv = new();
     public static ReservationDB reservations = new(connection);
     public static HotelDB hotelDB = new HotelDB(connection);
     public static HotelManagement hotelM = new(hotelDB);
@@ -110,18 +112,28 @@ internal class Program
                 case 0:
                     // UPDATE : fixa så man kan minimera sökningen ännu mer med ex, beds, guests
                     var search = BookingRoom();
-                    List<Room> roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
-                    int roomID = PrintSearchedRooms(roomList);
-                    //Måste en kund vara ny? Kan ju finnas i DB :) Gör en sökning av customers, finns email eller telefonnummer
-                    // läggs inte kunden in som ny kund.
-                    //Fråga om kund är ny, om ja skapa ny, annars sök upp i databas.
+                    roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
+                    PrintSearchedRooms(roomList);
+                    room = roomDB.GetRoomByid(ChooseRoom());
                     customer = AddCustomer();
-                    MakeReservation(custManager, reservations, customer, search.Item2, search.Item1);
+                    reserv = new(customer, room, search.Item2, search.Item1);
+                    MakeReservation(custManager, reservations, customer, room, reserv);
                     break;
 
                 case 1: // update reservation
                     reservationList = reservations.SearchReservationByString(SearchReservation());
+                    reservationList = reservations.SelectReservations(reservationList);
                     PrintReservations(reservationList);
+                    int updateID = UpdateReservationID();
+                    int custID = custManager.GetIDFromReservation(updateID);
+                    var update = UpdateReservationInfo();
+                    roomList = roomDB.GetAvailableRooms(update.Item2, update.Item3);
+                    PrintSearchedRooms(roomList);
+                    customer = custManager.GetCustomerFromReservationID(custID);
+                    Console.WriteLine(customer);
+                    Console.ReadLine();
+                    reserv = reservations.GetReservationById(updateID);
+                    UpdateReservation(reservations, reserv, customer, update.Item2, update.Item1, updateID);
                     break;
 
                 case 2: // remove reservation
@@ -292,6 +304,21 @@ internal class Program
         int duration = (eD.DayNumber - sD.DayNumber);
         return (duration, startDate, endDate);
     }
+    public static int ChooseRoom()
+    {
+        string stringRoom = string.Empty;
+        do
+        {
+            Console.Write($"\nChoose rooms-id to book : ");
+            stringRoom = Console.ReadLine();
+        } while (!IsStringNumeric(stringRoom));
+        return Convert.ToInt32(stringRoom);
+
+
+        Console.Write("Price : ");
+        string totalSum = Console.ReadLine();
+        int totalSumConvert = Convert.ToInt32(totalSum);
+    }
     private static void SearchRooms()
     {
         Header();
@@ -336,10 +363,10 @@ internal class Program
         }
         roomDB.UpdateRoom(updateRoom);
     }
-    private static int PrintSearchedRooms(List<Room> roomList)
+    private static void PrintSearchedRooms(List<Room> roomList)
     {
         Header();
-        if (roomList.Count >= 1)
+        if (roomList.Count > 0)
         {
             TableUI table = new();
             table.PrintRooms(roomList);
@@ -348,7 +375,6 @@ internal class Program
         {
             Console.WriteLine("No rooms found");
         }
-        return 0;
     }
     private static void RemoveRoombyID(RoomDB roomDB)
     {
@@ -466,82 +492,154 @@ internal class Program
         int deleteConvert = Convert.ToInt32(deleteReservation);
         reservations.DeleteReservation(deleteConvert);
     }
-    private static void UpdateReservation(ReservationDB reservations)
+    private static int UpdateReservationID()
     {
-        try
+        string input = String.Empty;
+        do
         {
-            Header();
-            Console.WriteLine("Please state reservation ID:");
-            string reservationid = Console.ReadLine();
-            int idConvert = Convert.ToInt32(reservationid);
-            Reservation reservation = reservations.GetReservationById(idConvert);
-
-            Console.WriteLine("Please state the new room ID that you would like to move the guest to:");
-            string updateRoom = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(updateRoom))
-            {
-                reservation.room_id = Convert.ToInt32(updateRoom);
-            }
-
-            Console.WriteLine("Please state dates that need to be changed:");
-            string date = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(date))
-            {
-                reservation.date_in = DateTime.Parse(date);
-            }
-
-            Console.WriteLine("Please change durations of days:");
-            string duration = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(duration))
-            {
-                reservation.duration = Convert.ToInt32(duration);
-            }
-
-            Console.WriteLine("Ange nytt pris - Denna måste ändras");
-            string price = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(price))
-            {
-                reservation.economy = Convert.ToInt32(price);
-            }
-
-            reservations.UpdateReservation(reservation);
-        }
-        catch (System.Exception e)
-        {
-            Console.WriteLine(e);
-        }
+            Console.Write("Update reservation with ID : ");
+            input = Console.ReadLine();
+        } while (!IsStringNumeric(input));
+        return Convert.ToInt32(input);
     }
-    private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, Customer cust, string startDate, int duration)
+    private static (int, string, string) UpdateReservationInfo()
     {
-        try
+        bool isSDCorrect = false;
+        bool isEDCorrect = false;
+        string startDate = String.Empty;
+        string endDate = String.Empty;
+        string pattern = @"\d{4}(-)\d{2}(-)\d{2}";
+
+        Header();
+
+        while (!isSDCorrect)
         {
-            Header();
-            Console.Write($"\nChoose rooms-id to book : ");
-            int roomID = Convert.ToInt32(Console.ReadLine());
-            DateTime dateTime = Convert.ToDateTime(startDate);
-            // Detta skall ske automatiskt. Skapa en funktion som räknar ut kostnaden beroende på antal nätter, gästantal och valt rum
-            Console.Write("Number of guests : ");
-            string totalGuests = Console.ReadLine();
-            int totalG = Convert.ToInt32(totalGuests);
+            Console.Write("Start date for your stay : ");
+            startDate = Console.ReadLine();
 
-            int economy = 1; // ÄNDRA MIG 
-            int totalCosts = totalG*duration*economy; // Här skapade Emelie en metod för uträkningen ?
-                                                // I DB heter det economy = pris, guests = antal gäster, duration = antalet nätter.
-                                                // 
+            MatchCollection matches = Regex.Matches(startDate, pattern);
+            int match = matches.Count;
+            if (match == 1)
+            {
+                isSDCorrect = true;
+            }
+            else
+            {
+                Console.WriteLine("Please try again, enter YYYY-MM-DD.");
+            }
+        }
+        while (!isEDCorrect)
+        {
+            Console.Write("End date for your stay : ");
+            endDate = Console.ReadLine();
 
-            int customerID = custM.AddCustomer(cust);
-            Console.WriteLine(cust); //skapa en snyggare utskrift där inte id visas
-            int reservationID = reservations.CreateRoomReservation(roomID, customerID, dateTime, duration, totalG); // här stod det int totalSumConvert innan Emelie pillade 
+            MatchCollection matching = Regex.Matches(endDate, pattern);
+            int match = matching.Count;
+            if (match == 1)
+            {
+                isEDCorrect = true;
+            }
+            else
+            {
+                Console.WriteLine("Please try again, enter YYYY-MM-DD.");
+            }
+        }
+
+        DateOnly sD = DateOnly.Parse(startDate);
+        DateOnly eD = DateOnly.Parse(endDate);
+        int duration = (eD.DayNumber - sD.DayNumber);
+        return (duration, startDate, endDate);
+    }
+    private static void UpdateReservation(ReservationDB reservations, Reservation reserv, Customer customer, string startDate, int duration, int reservationID)
+    {
+        while (true)
+        {
+            DateTime sD = DateTime.Parse(startDate);
+            string stringRoom = string.Empty;
+            do
+            {
+                Console.Write($"\nChoose rooms-id to book : ");
+                stringRoom = Console.ReadLine();
+            } while (!IsStringNumeric(stringRoom) && !string.IsNullOrEmpty(stringRoom));
+            int roomID = Convert.ToInt32(stringRoom);
+
+            Console.Write("Price : ");
+            string totalSum = Console.ReadLine();
+            int totalSumConvert = Convert.ToInt32(totalSum);
+
+            reserv = new(reservationID, roomID, customer.ID, totalSumConvert, sD, duration);
+            reservations.UpdateReservation(reserv);
 
             Console.WriteLine("Here is your receipt to your reservation");
             TableUI table = new();
-            table.PrintReceipt(roomID, dateTime, duration, totalG, cust, reservationID); // här stod det int totalSumConvert innan Emelie pillade 
+            table.PrintUpdatedReceipt(reserv, customer);
+            Console.ReadLine();
+            return;
+        }
+    }
+
+    // private static void UpdateReservation(ReservationDB reservations)
+    // {
+    //     try
+    //     {
+    //         Console.Write("Update reservation with ID :");
+    //         string reservationid = Console.ReadLine();
+    //         int idConvert = Convert.ToInt32(reservationid);
+    //         Reservation reservation = reservations.GetReservationById(idConvert);
+
+    //         Console.WriteLine("Check-in date:");
+    //         string date = Console.ReadLine();
+    //         if (!string.IsNullOrWhiteSpace(date))
+    //         {
+    //             reservation.date_in = DateTime.Parse(date);
+    //         }
+
+    //         Console.WriteLine("Durations of nights:");
+    //         string duration = Console.ReadLine();
+    //         if (!string.IsNullOrWhiteSpace(duration))
+    //         {
+    //             reservation.duration = Convert.ToInt32(duration);
+    //         }
+
+    //         // Console.WriteLine("Ange nytt pris - Denna måste ändras");
+    //         // string price = Console.ReadLine();
+    //         // if (!string.IsNullOrWhiteSpace(price))
+    //         // {
+    //         //     reservation.economy = Convert.ToInt32(price);
+    //         // }
+
+    //         // Console.WriteLine("Please state the new room ID that you would like to move the guest to:");
+    //         // string updateRoom = Console.ReadLine();
+    //         // if (!string.IsNullOrWhiteSpace(updateRoom))
+    //         // {
+    //         //     reservation.room_id = Convert.ToInt32(updateRoom);
+    //         // }
+
+    //         reservations.UpdateReservation(reservation);
+    //     }
+    //     catch (System.Exception e)
+    //     {
+    //         Console.WriteLine(e);
+    //     }
+    // }
+    private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, Customer cust, Room room, Reservation reserv)
+    {
+        try
+        {
+            int customerID = custM.AddCustomer(cust);
+            reserv.customer_id = customerID;
+            reserv.id = reservations.CreateRoomReservation(reserv); 
+
+            Console.WriteLine("Here is your receipt to your reservation");
+            TableUI table = new();
+            table.PrintReceipt(reserv, cust);
             Console.ReadLine();
         }
         catch (System.Exception e)
         {
 
             Console.WriteLine("Error: " + e);
+            Console.ReadKey();
         }
     }
     private static void UpdateEmployee(EmployeeDB employeeDB)
@@ -602,6 +700,15 @@ internal class Program
                 return false;
         }
         return true;
+    }
+    private static bool IsString(string s)
+    {
+        foreach (char c in s)
+        {
+            if (c < '0' || c > '9')
+                return true;
+        }
+        return false;
     }
     private static void Header()
     {

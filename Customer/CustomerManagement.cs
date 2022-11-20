@@ -9,6 +9,10 @@ class CustomerManagement
     {
         return customerDB.SelectCustomer(id);
     }
+    public Customer GetCustomerFromReservationID(int id)
+    {
+        return customerDB.GetCustomerByReservation(id);
+    }
     public int AddCustomer(Customer cust)
     {
             return customerDB.InsertCustomer(cust);
@@ -57,6 +61,10 @@ class CustomerManagement
     public List<Customer> GetAllCustomers()
     {
         return customerDB.GetCustomers();
+    }
+    public int GetIDFromReservation(int id)
+    {
+        return customerDB.CustomerIDFromReservation(id);
     }
 
     private bool IsStringNumeric(string s)
