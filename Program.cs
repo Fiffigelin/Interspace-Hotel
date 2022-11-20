@@ -32,12 +32,6 @@ internal class Program
             string[] options = { "Guest", "Employee", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
-            //Vårt mål är att vi strävar mot att ha två ingångar, personal eller gäst
-            //Huvudmeny: Customer, Employee, Exit
-            //Ha en metod för CustomerUI och en för EmployeeUI.
-            //Customer UI blir det som är i switchen nedan.
-            //Employee UI blir lik den nedan, fast personalen måste logga för att kunna komma åt administrering utav rum och bokning osv.
-            //Dvs innan de kommer in i switch med menyval. Hellre fler menyval än att man behöver gå djupt ner i undermenyer.
             switch (selectedIndex)
             {
                 case 0: // empty
