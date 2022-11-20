@@ -11,9 +11,13 @@ internal class Program
     public static ReservationDB reservations = new(connection);
     public static HotelDB hotelDB = new HotelDB(connection);
     public static HotelManagement hotelM = new(hotelDB);
-    public static Customer cust = new();
+    public static Customer customer = new();
     public static CustomerDB cDB = new CustomerDB();
     public static CustomerManagement custManager = new(cDB);
+    public static List<Room> roomList = new();
+    public static List<Reservation> reservationList = new();
+    public static List<Customer> customerList = new();
+    public static List<Employee> employeeList = new();
 
     private static void Main(string[] args)
     {
@@ -41,8 +45,8 @@ internal class Program
                     //Måste en kund vara ny? Kan ju finnas i DB :) Gör en sökning av customers, finns email eller telefonnummer
                     // läggs inte kunden in som ny kund.
                     //Fråga om kund är ny, om ja skapa ny, annars sök upp i databas.
-                    cust = AddCustomer();
-                    MakeReservation(custManager, reservations, roomID, cust, search.Item2, search.Item1);
+                    customer = AddCustomer();
+                    MakeReservation(custManager, reservations, customer, search.Item2, search.Item1);
                     break;
 
                 case 1:
@@ -111,8 +115,8 @@ internal class Program
                     //Måste en kund vara ny? Kan ju finnas i DB :) Gör en sökning av customers, finns email eller telefonnummer
                     // läggs inte kunden in som ny kund.
                     //Fråga om kund är ny, om ja skapa ny, annars sök upp i databas.
-                    cust = AddCustomer();
-                    MakeReservation(custManager, reservations, roomID, cust, search.Item2, search.Item1);
+                    customer = AddCustomer();
+                    MakeReservation(custManager, reservations, customer, search.Item2, search.Item1);
                     break;
 
                 case 1:
@@ -182,6 +186,8 @@ internal class Program
                     break;
 
                 case 1:
+                    SearchRooms();
+
                     break;
 
                 case 2:
@@ -251,6 +257,15 @@ internal class Program
         int duration = (eD.DayNumber - sD.DayNumber);
         return (duration, startDate, endDate);
     }
+    private static void SearchRooms()
+    {
+        Console.Clear();
+        Console.WriteLine("----: : INTERSPACE HOTEL : :----");
+        Console.WriteLine($"Psst, nicer header here :)\n");
+        Console.Write("Search room : ");
+        string search = Console.ReadLine();
+        custManager.StringSearchCustomer(search);
+    }
     private static void UpdateRoom(RoomDB roomDB)
     {
         Console.WriteLine("type in room id");
@@ -296,8 +311,6 @@ internal class Program
         {
             TableUI table = new();
             table.PrintRooms(roomList);
-            Console.Write($"\nChoose rooms-id to book : ");
-            return Convert.ToInt32(Console.ReadLine());
         }
         else
         {
@@ -448,10 +461,12 @@ internal class Program
             Console.WriteLine(e);
         }
     }
-    private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, int roomID, Customer cust, string startDate, int duration)
+    private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, Customer cust, string startDate, int duration)
     {
         try
         {
+            Console.Write($"\nChoose rooms-id to book : ");
+            int roomID = Convert.ToInt32(Console.ReadLine());
             DateTime dateTime = Convert.ToDateTime(startDate);
             // Detta skall ske automatiskt. Skapa en funktion som räknar ut kostnaden beroende på antal nätter, gästantal och valt rum
             Console.Write("Price : ");
