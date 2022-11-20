@@ -1,4 +1,6 @@
-﻿using MySqlConnector;
+﻿
+using System.Text.RegularExpressions;
+using MySqlConnector;
 using Dapper;
 internal class Program
 {
@@ -248,12 +250,46 @@ internal class Program
     }
     private static (int, string, string) BookingRoom()
     {
+        bool isSDCorrect = false;
+        bool isEDCorrect = false;
+        string startDate = String.Empty;
+        string endDate = String.Empty;
+        string pattern = @"\d{4}(-)\d{2}(-)\d{2}";
+
         Header();
-        // FELHANTERING AV DATUM
-        Console.Write("Start date for your stay : ");
-        string startDate = Console.ReadLine();
-        Console.Write("End date for your stay : ");
-        string endDate = Console.ReadLine();
+        
+        while (!isSDCorrect)
+        {
+            Console.Write("Start date for your stay : ");
+            startDate = Console.ReadLine();
+
+            MatchCollection matches = Regex.Matches(startDate, pattern);
+            int match = matches.Count;
+            if (match == 1)
+            {
+                isSDCorrect = true;
+            }
+            else
+            {
+                Console.WriteLine("Please try again, enter YYYY-MM-DD.");
+            }
+        }
+        while (!isEDCorrect)
+        {
+            Console.Write("End date for your stay : ");
+            endDate= Console.ReadLine();
+
+            MatchCollection matching = Regex.Matches(endDate, pattern);
+            int match = matching.Count;
+            if (match == 1)
+            {
+                isEDCorrect = true;
+            }
+            else
+            {
+                Console.WriteLine("Please try again, enter YYYY-MM-DD.");
+            }
+        }
 
         DateOnly sD = DateOnly.Parse(startDate);
         DateOnly eD = DateOnly.Parse(endDate);
