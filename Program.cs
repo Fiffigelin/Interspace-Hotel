@@ -31,12 +31,6 @@ internal class Program
             //Customer UI blir det som är i switchen nedan.
             //Employee UI blir lik den nedan, fast personalen måste logga för att kunna komma åt administrering utav rum och bokning osv.
             //Dvs innan de kommer in i switch med menyval. Hellre fler menyval än att man behöver gå djupt ner i undermenyer.
-            //Då blir det istället en stor switch men fördelen blir att man slipper gå så långt ner i en eventuell felsökning.
-            //Exempel på many innehåll: ta bort kund, lägg till kund, ändra kund,  
-            //                          ta bort bokning, lägg till bokning, ändra bokning.
-            //                          ta bort rum (tar även bort alla dess reservationer), lägg till rum, ändra rum.
-            //                          ta bort anställd, lägg till anstäld, ändra anställd
-            //Eventuell ordningsföljd i personalmenyn: Customers, Bookings, Rooms, Employees sen menyerna ovan.
             switch (selectedIndex)
             {
                 case 0:
@@ -237,6 +231,10 @@ internal class Program
             }
         }
     }
+    private static void AddRoom() // Tomt
+    {
+
+    }
     private static (int, string, string) BookingRoom()
     {
         Console.Clear();
@@ -252,6 +250,42 @@ internal class Program
         DateOnly eD = DateOnly.Parse(endDate);
         int duration = (eD.DayNumber - sD.DayNumber);
         return (duration, startDate, endDate);
+    }
+    private static void UpdateRoom(RoomDB roomDB)
+    {
+        Console.WriteLine("type in room id");
+        string id = Console.ReadLine();
+        int idconvert = Convert.ToInt32(id);
+        Room updateRoom = roomDB.GetRoomByid(idconvert);
+
+        Console.WriteLine("type in number of beds");
+        string Beds = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(Beds))
+        {
+            updateRoom.beds = Convert.ToInt32(Beds);
+        }
+
+        Console.WriteLine("Type in max amount of guests");
+        string guests = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(guests))
+        {
+            updateRoom.guests = Convert.ToInt32(guests);
+        }
+
+        Console.WriteLine("type in size");
+        string size = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(size))
+        {
+            updateRoom.size = Convert.ToInt32(size);
+        }
+
+        Console.WriteLine("type in price");
+        string price = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(price))
+        {
+            updateRoom.price = Convert.ToInt32(price);
+        }
+        roomDB.UpdateRoom(updateRoom);
     }
     private static int PrintSearchedRooms(List<Room> roomList)
     {
@@ -270,6 +304,13 @@ internal class Program
             Console.WriteLine("No rooms found");
         }
         return 0;
+    }
+    private static void RemoveRoombyID(RoomDB roomDB)
+    {
+        Console.WriteLine("Please state the ID of the room you would like to delete:");
+        string idRemove = Console.ReadLine();
+        int idRemoveConvert = Convert.ToInt32(idRemove);
+        roomDB.DeleteRoom(idRemoveConvert);
     }
     private static Customer AddCustomer()
     {
@@ -300,11 +341,8 @@ internal class Program
                 Console.Write("Phonenumber : ");
                 phoneNumber = Console.ReadLine();
             } while (!IsStringNumeric(phoneNumber));
-
             return new(email, firstName + " " + lastName, phoneNumber);
-
         }
-
     }
     private static void UpdateCustomer(CustomerManagement customerM, int id)
     {
@@ -465,55 +503,6 @@ internal class Program
         var createEmployee = employeeDB.CreateEmployee(nameInput, passwordInput);
         Console.WriteLine($"Adding new employee {nameInput}");
     }
-    private static void RemoveRoombyID(RoomDB roomDB)
-    {
-        Console.WriteLine("Please state the ID of the room you would like to delete:");
-        string idRemove = Console.ReadLine();
-        int idRemoveConvert = Convert.ToInt32(idRemove);
-        roomDB.DeleteRoom(idRemoveConvert);
-    }
-    private static void UpdateRoom(RoomDB roomDB)
-    {
-        Console.WriteLine("type in room id");
-        string id = Console.ReadLine();
-        int idconvert = Convert.ToInt32(id);
-        Room updateRoom = roomDB.GetRoomByid(idconvert);
-
-        Console.WriteLine("type in number of beds");
-        string Beds = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(Beds))
-        {
-            updateRoom.beds = Convert.ToInt32(Beds);
-        }
-
-        Console.WriteLine("Type in max amount of guests");
-        string guests = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(guests))
-        {
-            updateRoom.guests = Convert.ToInt32(guests);
-        }
-
-        Console.WriteLine("type in size");
-        string size = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(size))
-        {
-            updateRoom.size = Convert.ToInt32(size);
-        }
-
-        Console.WriteLine("type in price");
-        string price = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(price))
-        {
-            updateRoom.price = Convert.ToInt32(price);
-        }
-        roomDB.UpdateRoom(updateRoom);
-    }
-    private static void ExitMenu()
-    {
-        Console.WriteLine("Please press any key to exit.");
-        Console.ReadKey(true);
-        Environment.Exit(0);
-    }
     private static bool IsEmailValid(string s)
     {
         if (string.IsNullOrEmpty(s) || !s.Contains("@"))
@@ -541,5 +530,10 @@ internal class Program
         }
         return true;
     }
-
+    private static void ExitMenu()
+    {
+        Console.WriteLine("Please press any key to exit.");
+        Console.ReadKey(true);
+        Environment.Exit(0);
+    }
 }
