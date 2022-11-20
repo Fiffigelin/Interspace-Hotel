@@ -120,7 +120,7 @@ internal class Program
                     reservationList = reservations.SearchReservationByString(SearchReservation());
                     reservationList = reservations.SelectReservations(reservationList);
                     PrintReservations(reservationList);
-                    int updateID = UpdateReservationID();
+                    int updateID = ChooseReservationID();
                     int custID = custManager.GetIDFromReservation(updateID);
                     var update = UpdateReservationInfo();
                     roomList = roomDB.GetAvailableRooms(update.Item2, update.Item3);
@@ -132,6 +132,11 @@ internal class Program
                     break;
 
                 case 2: // remove reservation
+                    reservationList = reservations.SearchReservationByString(SearchReservation());
+                    reservationList = reservations.SelectReservations(reservationList);
+                    PrintReservations(reservationList);
+                    int removeID = ChooseReservationID();
+                    DeleteReservation(removeID);
                     break;
 
                 case 3: // return to main()
@@ -479,19 +484,18 @@ internal class Program
         table.PrintReservations(reservationList);
         Console.ReadLine();
     }
-    private static void DeleteReservation(ReservationDB reservations)
+    private static void DeleteReservation(int removeID)
     {
-        Console.WriteLine("Please state wich reservation you would like to delete, specify by ID.");
-        string deleteReservation = Console.ReadLine();
-        int deleteConvert = Convert.ToInt32(deleteReservation);
-        reservations.DeleteReservation(deleteConvert);
+        reservations.DeleteReservation(removeID);
+        Console.WriteLine($"Reservation with ID : {removeID} has been deleted");
+        Console.ReadKey();
     }
-    private static int UpdateReservationID()
+    private static int ChooseReservationID()
     {
         string input = String.Empty;
         do
         {
-            Console.Write("Update reservation with ID : ");
+            Console.Write("Choose reservation with ID : ");
             input = Console.ReadLine();
         } while (!IsStringNumeric(input));
         return Convert.ToInt32(input);
