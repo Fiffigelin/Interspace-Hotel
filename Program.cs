@@ -19,7 +19,7 @@ internal class Program
         CustomerDB cDB = new CustomerDB();
         CustomerManagement custManager = new(cDB);
 
-Console.WriteLine(hotelM.GetValues());
+        Console.WriteLine(hotelM.GetValues());
         while (true)
         {
             string prompt = @"
@@ -66,6 +66,36 @@ Console.WriteLine(hotelM.GetValues());
                 default:
                     break;
             }
+        }
+    }
+    public static void EmployeeUI()
+    {
+        // Customers, Bookings, Rooms, Employees sen menyerna ovan.
+        string prompt = @"
+        Welcome to Interspace Hotel ADMIN";
+        string[] options = { "Bookings","Customers","Room","Employees","Exit" };
+        Menu mainMenu = new Menu(prompt, options);
+        int selectedIndex = mainMenu.Run();
+
+        switch (selectedIndex)
+        {
+            case 0:
+            break;
+
+            case 1:
+            break;
+
+            case 2:
+            break;
+
+            case 3:
+            break;
+
+            case 4:
+            break;
+            
+            default:
+            break;
         }
     }
     private static (int, string, string) BookingRoom()
@@ -137,7 +167,6 @@ Console.WriteLine(hotelM.GetValues());
         }
 
     }
-
     private static void UpdateCustomer(CustomerManagement customerM, int id)
     {
         // HEADER
@@ -152,7 +181,6 @@ Console.WriteLine(hotelM.GetValues());
         string phoneNumber = Console.ReadLine();
         Console.WriteLine(customerM.UpdateCustomer(email, firstName, lastName, phoneNumber, id));
     }
-
     private static int GetCustomer(CustomerManagement customerM)
     {
         // HEADER
@@ -170,14 +198,12 @@ Console.WriteLine(hotelM.GetValues());
         Console.WriteLine(customerM.GetCustomer(id));
         return id;
     }
-
     private static void PrintCustomers(List<Customer> customerList)
     {
-       TableUI table = new();
-       table.PrintCustomers(customerList);
-       Console.ReadLine();
+        TableUI table = new();
+        table.PrintCustomers(customerList);
+        Console.ReadLine();
     }
-
     private static void RemoveCustomer(CustomerManagement customerM)
     {
         // HEADER
@@ -194,7 +220,6 @@ Console.WriteLine(hotelM.GetValues());
         }
         Console.WriteLine(customerM.RemoveCustomer(id));
     }
-
     private static void DeleteReservation(ReservationDB reservations)
     {
         Console.WriteLine("Please state wich reservation you would like to delete, specify by ID.");
@@ -202,7 +227,6 @@ Console.WriteLine(hotelM.GetValues());
         int deleteConvert = Convert.ToInt32(deleteReservation);
         reservations.DeleteReservation(deleteConvert);
     }
-
     private static void UpdateReservation(ReservationDB reservations)
     {
         try
@@ -247,59 +271,6 @@ Console.WriteLine(hotelM.GetValues());
             Console.WriteLine(e);
         }
     }
-
-    private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, int roomID, Customer cust)
-    {
-        //Behöver ses över med felhantering då det finns mycket ReadLines samt punkt2. då det just nu kräver användaren att ange ett ID.
-        //skulle även behövas en form av validering som kollar ifall rummet är ledigt eller ej.
-        try
-        {
-            // Console.WriteLine("Välj rummet du vill boka");
-            // string roomChoice = Console.ReadLine();
-            // int roomChoiceConvert = Convert.ToInt32(roomChoice);
-
-            // Console.WriteLine("Ange ditt id.");
-            // string customerID = Console.ReadLine();
-            // int customerIDConvert = Convert.ToInt32(customerID);
-
-            Console.WriteLine("Choose time-span. Ex 2022-11-25");
-            Console.Write("Start date :  ");
-            string dateInput = Console.ReadLine();
-            DateTime fromDate = DateTime.Parse(dateInput);
-
-            // Console.WriteLine("Du har bokat: " + fromDate);
-            Console.Write("How many nights : ");
-            string duration = Console.ReadLine();
-            int durationConvert = Convert.ToInt32(duration);
-
-            Console.Write("Price : ");
-            string totalSum = Console.ReadLine();
-            int totalSumConvert = Convert.ToInt32(totalSum);
-            // Console.WriteLine(reservations.ToString());
-            Console.WriteLine(cust);
-            int customerID = custM.AddCustomer(cust);
-            Console.WriteLine(customerID);
-            Console.ReadKey();
-            int resultat = reservations.CreateRoomReservation(roomID, customerID, fromDate, durationConvert, totalSumConvert);
-            Console.WriteLine("Reservationid : " + resultat);
-
-            Console.WriteLine($@"
-            Here is your receipt to your reservation:
-            Booked room : {roomID}
-            Check-in date: {fromDate}
-            Durations of nights: {duration}
-            Total costs : {totalSumConvert}
-            Booked by : {customerID}
-            
-            With contact needed for changes or cancellation, please state {resultat}");
-        }
-        catch (System.Exception e)
-        {
-
-            Console.WriteLine("Error: " + e);
-        }
-    }
-
     private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, int roomID, Customer cust, string startDate, int duration)
     {
         try
@@ -346,7 +317,6 @@ Console.WriteLine(hotelM.GetValues());
         }
         employeeDB.UpdateEmployee(updateEmployee);
     }
-
     private static void CreateEmployee(EmployeeDB employeeDB)
     {
         Console.WriteLine("Enter name");
@@ -356,7 +326,6 @@ Console.WriteLine(hotelM.GetValues());
         var createEmployee = employeeDB.CreateEmployee(nameInput, passwordInput);
         Console.WriteLine($"Adding new employee {nameInput}");
     }
-
     private static void RemoveRoombyID(RoomDB roomDB)
     {
         Console.WriteLine("Please state the ID of the room you would like to delete:");
@@ -364,7 +333,6 @@ Console.WriteLine(hotelM.GetValues());
         int idRemoveConvert = Convert.ToInt32(idRemove);
         roomDB.DeleteRoom(idRemoveConvert);
     }
-
     private static void UpdateRoom(RoomDB roomDB)
     {
         Console.WriteLine("type in room id");
@@ -416,7 +384,6 @@ Console.WriteLine(hotelM.GetValues());
 
         return true;
     }
-
     private static bool IsStringValid(string s)
     {
         if (string.IsNullOrEmpty(s))
@@ -426,7 +393,6 @@ Console.WriteLine(hotelM.GetValues());
 
         return true;
     }
-
     private static bool IsStringNumeric(string s)
     {
         foreach (char c in s)
