@@ -44,6 +44,7 @@ internal class Program
                     break;
 
                 case 1:
+                    EmployeePWCheck();
                     EmployeeUI();
                     break;
                 case 2:
@@ -201,6 +202,28 @@ internal class Program
             }
         }
     }
+    private static void EmployeePWCheck()
+        {
+            bool isPWCorrect = false;
+            string correctPW = "SuvNet22";
+
+            while (!isPWCorrect)
+            {
+                Console.Write("Please enter your password : ");
+                string pw = Console.ReadLine()!;
+
+                if (pw == correctPW)
+                {
+                    Console.WriteLine("Correct");
+                    isPWCorrect = true;
+                    Thread.Sleep(2000);
+                }
+                else
+                {
+                    Console.Write("Sorry, that is not correct. ");
+                }
+            }
+        }
     public static void EmployeeMenu()
     {
         while (true)
