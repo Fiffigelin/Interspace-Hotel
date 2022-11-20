@@ -28,8 +28,7 @@ internal class Program
         // Console.WriteLine(hotelM.GetValues()); // HAR INTE REVIEWS I DB
         while (true)
         {
-            string prompt = @"
-            Welcome to Interspace Hotel ADMIN";
+            string prompt = "";
             string[] options = { "Guest", "Employee", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
@@ -60,8 +59,7 @@ internal class Program
     {
         while (true)
         {
-            string prompt = @"
-        Welcome to Interspace Hotel ADMIN";
+            string prompt = "";
             string[] options = { "Reservations", "Customers", "Room", "Employees", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
@@ -100,8 +98,7 @@ internal class Program
     {
         while (true)
         {
-            string prompt = @"
-        Welcome to Interspace Hotel ADMIN";
+            string prompt = "";
             string[] options = { "Add reservation", "Update reservation", "Remove reservation", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
@@ -128,8 +125,7 @@ internal class Program
                     var update = UpdateReservationInfo();
                     roomList = roomDB.GetAvailableRooms(update.Item2, update.Item3);
                     PrintSearchedRooms(roomList);
-                    customer = custManager.GetCustomerFromReservationID(custID);
-                    Console.WriteLine(customer);
+                    customer = custManager.GetCustomerFromReservationID(updateID);
                     Console.ReadLine();
                     reserv = reservations.GetReservationById(updateID);
                     UpdateReservation(reservations, reserv, customer, update.Item2, update.Item1, updateID);
@@ -150,8 +146,7 @@ internal class Program
     {
         while (true)
         {
-            string prompt = @"
-        Welcome to Interspace Hotel";
+            string prompt = "";
             string[] options = { "Add guest", "Update guest", "Remove guest", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
@@ -183,8 +178,7 @@ internal class Program
     {
         while (true)
         {
-            string prompt = @"
-        Welcome to Interspace Hotel ADMIN";
+            string prompt = "";
             string[] options = { "Add room", "Update room", "Remove room", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
@@ -214,34 +208,11 @@ internal class Program
             }
         }
     }
-    private static void EmployeePWCheck()
-        {
-            bool isPWCorrect = false;
-            string correctPW = "SuvNet22";
-
-            while (!isPWCorrect)
-            {
-                Console.Write("Please enter your password : ");
-                string pw = Console.ReadLine()!;
-
-                if (pw == correctPW)
-                {
-                    Console.WriteLine("Correct");
-                    isPWCorrect = true;
-                    Thread.Sleep(2000);
-                }
-                else
-                {
-                    Console.Write("Sorry, that is not correct. ");
-                }
-            }
-        }
     public static void EmployeeMenu()
     {
         while (true)
         {
-            string prompt = @"
-        Welcome to Interspace Hotel ADMIN";
+            string prompt = "";
             string[] options = { "Add employee", "Update employee", "Remove employee", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
@@ -417,6 +388,7 @@ internal class Program
         int id = 0;
         while (true)
         {
+            Header();
             string firstName;
             string lastName;
             string email;
@@ -603,58 +575,13 @@ internal class Program
             return;
         }
     }
-
-    // private static void UpdateReservation(ReservationDB reservations)
-    // {
-    //     try
-    //     {
-    //         Console.Write("Update reservation with ID :");
-    //         string reservationid = Console.ReadLine();
-    //         int idConvert = Convert.ToInt32(reservationid);
-    //         Reservation reservation = reservations.GetReservationById(idConvert);
-
-    //         Console.WriteLine("Check-in date:");
-    //         string date = Console.ReadLine();
-    //         if (!string.IsNullOrWhiteSpace(date))
-    //         {
-    //             reservation.date_in = DateTime.Parse(date);
-    //         }
-
-    //         Console.WriteLine("Durations of nights:");
-    //         string duration = Console.ReadLine();
-    //         if (!string.IsNullOrWhiteSpace(duration))
-    //         {
-    //             reservation.duration = Convert.ToInt32(duration);
-    //         }
-
-    //         // Console.WriteLine("Ange nytt pris - Denna måste ändras");
-    //         // string price = Console.ReadLine();
-    //         // if (!string.IsNullOrWhiteSpace(price))
-    //         // {
-    //         //     reservation.economy = Convert.ToInt32(price);
-    //         // }
-
-    //         // Console.WriteLine("Please state the new room ID that you would like to move the guest to:");
-    //         // string updateRoom = Console.ReadLine();
-    //         // if (!string.IsNullOrWhiteSpace(updateRoom))
-    //         // {
-    //         //     reservation.room_id = Convert.ToInt32(updateRoom);
-    //         // }
-
-    //         reservations.UpdateReservation(reservation);
-    //     }
-    //     catch (System.Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //     }
-    // }
     private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, Customer cust, Room room, Reservation reserv)
     {
         try
         {
             int customerID = custM.AddCustomer(cust);
             reserv.customer_id = customerID;
-            reserv.id = reservations.CreateRoomReservation(reserv); 
+            reserv.id = reservations.CreateRoomReservation(reserv);
 
             Console.WriteLine("Here is your receipt to your reservation");
             TableUI table = new();
@@ -698,6 +625,28 @@ internal class Program
         var createEmployee = employeeDB.CreateEmployee(nameInput, passwordInput);
         Console.WriteLine($"Adding new employee {nameInput}");
     }
+    private static void EmployeePWCheck()
+    {
+        bool isPWCorrect = false;
+        string correctPW = "SuvNet22";
+
+        while (!isPWCorrect)
+        {
+            Console.Write("Please enter your password : ");
+            string pw = Console.ReadLine()!;
+
+            if (pw == correctPW)
+            {
+                Console.WriteLine("Correct");
+                isPWCorrect = true;
+                Thread.Sleep(2000);
+            }
+            else
+            {
+                Console.Write("Sorry, that is not correct. ");
+            }
+        }
+    }
     private static bool IsEmailValid(string s)
     {
         if (string.IsNullOrEmpty(s) || !s.Contains("@"))
@@ -725,15 +674,6 @@ internal class Program
         }
         return true;
     }
-    private static bool IsString(string s)
-    {
-        foreach (char c in s)
-        {
-            if (c < '0' || c > '9')
-                return true;
-        }
-        return false;
-    }
     private static void Header()
     {
         Console.Clear();
@@ -745,7 +685,6 @@ internal class Program
 ██║██║ ╚████║   ██║   ███████╗██║  ██║███████║██║     ██║  ██║╚██████╗███████╗    ██║  ██║╚██████╔╝   ██║   ███████╗███████╗
 ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝    ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝
  "); // http://patorjk.com/software/taag
-        Console.WriteLine($"Psst, nicer header here :)\n");
     }
     private static void ExitMenu()
     {
