@@ -10,9 +10,9 @@ class RoomDB
         _sqlConnection = connection;
     }
 
-    public int CreateRoom(string name, int price, int beds, int size)
+    public int CreateRoom(Room room)
     {
-        string sql = @$"INSERT INTO room(room.name, room.price ,room.beds, room.size) VALUES ('{name}', {price}, {beds}, {size});SELECT LAST_INSERT_ID();";
+        string sql = @$"INSERT INTO room(room.name, room.price ,room.beds, room.size) VALUES ('{room.name}', {room.price}, {room.beds}, {room.size});SELECT LAST_INSERT_ID();";
         System.Console.WriteLine(sql);
         int create = _sqlConnection.QuerySingle<int>(sql);
         return create;

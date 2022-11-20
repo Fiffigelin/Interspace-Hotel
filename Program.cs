@@ -109,7 +109,7 @@ internal class Program
                     // UPDATE : fixa så man kan minimera sökningen ännu mer med ex, beds, guests
                     var search = BookingRoom();
                     roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
-                    PrintSearchedRooms(roomList);
+                    PrintRooms(roomList);
                     room = roomDB.GetRoomByid(ChooseRoom());
                     customer = AddCustomer();
                     reservation = new(customer, room, search.Item2, search.Item1);
@@ -125,7 +125,7 @@ internal class Program
                     reservation = reservationDB.GetReservationById(updateID);
                     var update = UpdateReservationInfo(reservation); // ändra till updateCustomer
                     roomList = roomDB.GetAvailableRooms(update.Item2, update.Item3);
-                    PrintSearchedRooms(roomList);
+                    PrintRooms(roomList);
                     customer = custManager.GetCustomerFromReservationID(updateID);
                     Console.ReadLine();
                     reservation = reservationDB.GetReservationById(updateID);
@@ -203,7 +203,10 @@ internal class Program
             switch (selectedIndex)
             {
                 case 0: // add
-
+                    roomList = AddRoom(room);
+                    room.id = roomDB.CreateRoom(room);
+                    PrintRooms(roomList);
+                    Console.ReadKey();
                     break;
 
                 case 1: // update
@@ -433,7 +436,7 @@ internal class Program
         }
         roomDB.UpdateRoom(updateRoom);
     }
-    private static void PrintSearchedRooms(List<Room> roomList)
+    private static void PrintRooms(List<Room> roomList)
     {
         Header();
         if (roomList.Count > 0)
