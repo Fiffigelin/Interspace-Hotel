@@ -23,6 +23,13 @@ class Customer
         Name = name;
         Phonenumber = phonenumber;
     }
+    public Customer(Customer cust)
+    {
+        ID = cust.ID;
+        Email = cust.Email;
+        Name = cust.Name;
+        Phonenumber = cust.Phonenumber;
+    }
 
     public Customer()
     {
