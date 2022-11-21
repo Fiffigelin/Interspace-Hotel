@@ -656,4 +656,8 @@ internal class Program
             Console.ReadKey(true);
             Environment.Exit(0);
         }
+<<<<<<< HEAD
     }
+=======
+    }
+>>>>>>> parent of eab11a8 (skräp)
