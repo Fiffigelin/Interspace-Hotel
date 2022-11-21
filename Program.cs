@@ -157,7 +157,7 @@ internal class Program
         while (true)
         {
             string prompt = "";
-            string[] options = { "Add guest", "Update guest", "Remove guest", "Return", "Exit" };
+            string[] options = { "Add guest", "Update guest", "Return", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
@@ -181,17 +181,9 @@ internal class Program
                     break;
 
                 case 2:
-                    customerList = custManager.StringSearchCustomer(SearchCustomer());
-                    PrintCustomers(customerList);
-                    customer = custManager.GetCustomer(ChooseCustomer());
-                    custManager.DeleteCustomer(customer.ID);
-                    RemoveCustomer(customer.ID);
-                    break;
-
-                case 3:
                     return;
 
-                case 4:
+                case 3:
                     ExitMenu();
                     break;
             }
