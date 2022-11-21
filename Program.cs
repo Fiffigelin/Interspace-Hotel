@@ -54,7 +54,7 @@ internal class Program
         while (true)
         {
             string prompt = "";
-            string[] options = { "Reservations", "Customers", "Room", "Employees", "Exit" };
+            string[] options = { "Reservations", "Customers", "Room", "Employees", "Return", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
@@ -78,7 +78,9 @@ internal class Program
 
                 case 4:
                     return;
-
+                case 5:
+                    ExitMenu();
+                    break;
                 default:
                     break;
             }
@@ -724,7 +726,7 @@ internal class Program
             else if (IsStringNumeric(guests))
             {
                 convert = Convert.ToInt32(guests);
-                if(convert < room.guests && convert > 0)
+                if (convert < room.guests && convert > 0)
                 {
                     room.guests = convert;
                     update = true;
@@ -835,8 +837,8 @@ internal class Program
         int economy = 0;
         if (reservation.room_id == room.id)
         {
-                economy = ((room.price * reservation.duration) * guests);
-                reservation.economy = economy;
+            economy = ((room.price * reservation.duration) * guests);
+            reservation.economy = economy;
         }
         return reservation;
     }
