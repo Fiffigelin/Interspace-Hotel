@@ -9,10 +9,10 @@ class ReservationDB
         _sqlconnection = connection;
     }
 
-    public int CreateRoomReservation(int roomID, int customerID, DateTime dateIn, int duration, int economy) // här stod det int totalSumConvert innan Emelie pillade i main
+    public int CreateRoomReservation(Reservation reserv) // här stod det int totalSumConvert innan Emelie pillade i main
     {
         string sql = @$"INSERT INTO reservation(room_id,customer_id,date_in,duration,economy)
-        VALUES({roomID}, {customerID}, '{dateIn.ToString("yyyy-MM-dd")}', {duration}, {economy});SELECT LAST_INSERT_ID();";
+        VALUES({reserv.room_id}, {reserv.customer_id}, '{reserv.date_in.ToString("yyyy-MM-dd")}', {reserv.duration}, {reserv.economy});SELECT LAST_INSERT_ID();";
         int reservation = _sqlconnection.QuerySingle<int>(sql);
         return reservation;
     }
@@ -57,5 +57,33 @@ class ReservationDB
         OR room.name LIKE '%{search}%'
         OR room.id LIKE '%{search}%'").ToList();
         return reservationList;
+    }
+    public List<Reservation> SelectReservations(List<Reservation> reservList)
+    {
+        // https://stackoverflow.com/questions/14171794/how-to-retrieve-data-from-a-sql-server-database-in-c
+        Reservation reservation = new();
+        string sql = string.Empty;
+        foreach (var item in reservList)
+        {
+            sql = $@"SELECT * FROM reservation WHERE reservation.customer_id= {item.customer_id}";
+        }
+        MySqlCommand cmd = new MySqlCommand(sql, _sqlconnection);
+        _sqlconnection.Open();
+        using (MySqlDataReader reader = cmd.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                reservation.id = Convert.ToInt32(reader["id"].ToString());
+                reservation.room_id = Convert.ToInt32(reader["room_id"].ToString());
+                reservation.customer_id = Convert.ToInt32(reader["customer_id"].ToString());
+                reservation.date_in = Convert.ToDateTime(reader["date_in"].ToString());
+                reservation.duration = Convert.ToInt32(reader["duration"].ToString());
+                reservation.economy = Convert.ToInt32(reader["economy"].ToString());
+            }
+            _sqlconnection.Close();
+        }
+        List<Reservation> objectReserv = new();
+        objectReserv.Add(reservation);
+        return objectReserv;
     }
 }
