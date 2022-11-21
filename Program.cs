@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using MySqlConnector;
 using Dapper;
+using program;
 internal class Program
 {
     const string CONNECTIONSTRING = "Server = localhost;Database = interspace_hotel;Uid=root; Convert Zero Datetime=True";
@@ -203,6 +204,10 @@ internal class Program
             }
         }
     }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 97687d1faa73d4e92660ec79b68c25a40869a785
     private static void EmployeePWCheck()
     {
         bool isPWCorrect = false;
@@ -225,6 +230,11 @@ internal class Program
             }
         }
     }
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> b269a8aeb72dc024885b833fff80ca06a43052c0
+>>>>>>> 97687d1faa73d4e92660ec79b68c25a40869a785
     public static void EmployeeMenu()
     {
         while (true)
@@ -276,7 +286,21 @@ internal class Program
 
         while (!isDateCoorect)
         {
+<<<<<<< HEAD
             while (!isSDCorrect)
+=======
+<<<<<<< HEAD
+            while (!isSDCorrect)
+=======
+            Header();
+            Console.Write("Start date for your stay [YYYY-MM-DD] : ");
+            startDate = Console.ReadLine()!;
+
+            MatchCollection matches = Regex.Matches(startDate, pattern);
+            int match = matches.Count;
+            if (match == 1)
+>>>>>>> b269a8aeb72dc024885b833fff80ca06a43052c0
+>>>>>>> 97687d1faa73d4e92660ec79b68c25a40869a785
             {
                 Console.Write("Start date for your stay [YYYY-MM-DD] : ");
                 startDate = Console.ReadLine()!;
