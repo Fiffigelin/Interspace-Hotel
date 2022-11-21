@@ -668,8 +668,7 @@ internal class Program
             Header();
             Console.Write("Start date for your stay : ");
             startDate = Console.ReadLine();
-
-            if()
+            
             MatchCollection matches = Regex.Matches(startDate, pattern);
             int match = matches.Count;
             if (match == 1)

@@ -1,16 +1,15 @@
-class Reservation
+ class Reservation
 {
     public int id { get; set; }
     public int room_id { get; set; }
     public int customer_id { get; set; }
     public int economy { get; set; }
     public DateTime date_in { get; set; }
-    // public DateOnly FromDate { get; set; }
     public int duration { get; set; }
 
     public Reservation()
     {
-
+        
     }
     public Reservation(int id, int roomid, int customerid, int economy, DateTime datein, int duration)
     {
@@ -30,6 +29,7 @@ class Reservation
         date_in = Convert.ToDateTime(startDate);
         this.duration = duration;
     }
+
     public override string ToString()
     {
         return

@@ -58,7 +58,7 @@ class ReservationDB
         OR room.id LIKE '%{search}%'").ToList();
         return reservationList;
     }
-    public List<Reservation> SelectReservations(List<Reservation> reservList)
+     public List<Reservation> SelectReservations(List<Reservation> reservList)
     {
         // https://stackoverflow.com/questions/14171794/how-to-retrieve-data-from-a-sql-server-database-in-c
         Reservation reservation = new();
@@ -86,4 +86,5 @@ class ReservationDB
         objectReserv.Add(reservation);
         return objectReserv;
     }
+
 }
