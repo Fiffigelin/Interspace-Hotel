@@ -326,64 +326,93 @@ internal class Program
     {
         bool isSDCorrect = false;
         bool isEDCorrect = false;
+        bool isDateCorrect = false;
         string startDate = String.Empty;
         string endDate = String.Empty;
+        int duration = 0;
+        DateTime fromToday = DateTime.Today;
+        DateOnly testing;
         DateOnly sD;
         DateOnly eD;
 
         string pattern = @"\d{4}(-)\d{2}(-)\d{2}";
 
-
-        while (!isSDCorrect)
+        while (!isDateCorrect)
         {
-            Header();
-            Console.Write("Start date for your stay [YYYY-MM-DD] : ");
-            startDate = Console.ReadLine()!;
-
-            MatchCollection matches = Regex.Matches(startDate, pattern);
-            int match = matches.Count;
-            if (match == 1)
+            while (!isSDCorrect)
             {
-                try
+                Console.Write("Start date for your stay [YYYY-MM-DD] : ");
+                startDate = Console.ReadLine()!;
+
+                MatchCollection matches = Regex.Matches(startDate, pattern);
+                int match = matches.Count;
+                if (match == 1)
                 {
-                    sD = DateOnly.Parse(startDate);
-                    isSDCorrect = true;
+
+                    try
+                    {
+                        sD = DateOnly.Parse(startDate);
+                        try
+                        {
+                            testing = DateOnly.FromDateTime(fromToday);
+                        }
+                        catch (System.Exception)
+                        {
+                        }
+                        if (sD > testing)
+                        {
+                            isSDCorrect = true;
+                        }
+
+                    }
+                    catch (System.Exception)
+                    {
+                        Console.WriteLine(" Please try again, enter valid dates.");
+                    }
                 }
-                catch (System.Exception)
+                else
                 {
-                    Console.WriteLine(" Please try again, enter valid dates.");
+                    Console.WriteLine("Please try again.");
                 }
+            }
+            while (!isEDCorrect)
+            {
+                Console.Write("End date for your stay [YYYY-MM-DD] : ");
+                endDate = Console.ReadLine();
+
+                MatchCollection matching = Regex.Matches(endDate, pattern);
+                int match = matching.Count;
+                if (match == 1)
+                {
+                    try
+                    {
+                        eD = DateOnly.Parse(endDate);
+                        isEDCorrect = true;
+                    }
+                    catch (System.Exception)
+                    {
+                        Console.WriteLine(" Please try again, enter valid dates.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Please try again.");
+                }
+            }
+            duration = (eD.DayNumber - sD.DayNumber);
+            if (duration >= 1)
+            {
+                isDateCorrect = true;
             }
             else
             {
-                Console.WriteLine("Please try again.");
+                Console.WriteLine("Please try again, type the dates in right order.");
+                isSDCorrect = false;
+                isEDCorrect = false;
             }
+            Thread.Sleep(2000);
         }
-        while (!isEDCorrect)
-        {
-            Console.Write("End date for your stay [YYYY-MM-DD] : ");
-            endDate = Console.ReadLine();
 
-            MatchCollection matching = Regex.Matches(endDate, pattern);
-            int match = matching.Count;
-            if (match == 1)
-            {
-                try
-                {
-                    eD = DateOnly.Parse(endDate);
-                    isEDCorrect = true;
-                }
-                catch (System.Exception)
-                {
-                    Console.WriteLine(" Please try again, enter valid dates.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Please try again.");
-            }
-        }
-        int duration = (eD.DayNumber - sD.DayNumber);
         return (duration, startDate, endDate);
     }
     public static int ChooseRoom() // NO HEADER!!
@@ -724,7 +753,7 @@ internal class Program
             else if (IsStringNumeric(guests))
             {
                 convert = Convert.ToInt32(guests);
-                if(convert < room.guests && convert > 0)
+                if (convert < room.guests && convert > 0)
                 {
                     room.guests = convert;
                     update = true;
@@ -835,8 +864,8 @@ internal class Program
         int economy = 0;
         if (reservation.room_id == room.id)
         {
-                economy = ((room.price * reservation.duration) * guests);
-                reservation.economy = economy;
+            economy = ((room.price * reservation.duration) * guests);
+            reservation.economy = economy;
         }
         return reservation;
     }
