@@ -9,22 +9,45 @@ class CustomerManagement
     {
         return customerDB.SelectCustomer(id);
     }
-    public Customer GetCustomerFromReservationID(int id)
+    public int AddCustomer(Customer cust)
     {
-        return customerDB.GetCustomerByReservation(id);
-    }
-    public int AddCustomer(Customer customer)
-    {
-        return customerDB.InsertCustomer(customer);
+            return customerDB.InsertCustomer(cust);
     }
 
-    public int UpdateCustomer(Customer customer)
+    public string UpdateCustomer(string email, string firstName, string lastName, string phonenumber, int id)
     {
-        return customerDB.UpdateCustomer(customer);
+        if (!IsEmailValid(email)) return "Invalid input of email";
+        if (!IsStringValid(firstName)) return "Invalid input of first name";
+        if (!IsStringValid(lastName)) return "Invalid input of last name";
+        if (!IsStringNumeric(phonenumber)) return "Invalid input of phonenumber";
+
+        // Customer cu = new(email, firstName, lastName, phonenumber);
+        // try
+        // {
+        //     Customer cu;
+        //     cu = customerDB.SelectCustomer(id);
+
+        //     return cu;
+        // }
+        // catch (System.Exception)
+        // {
+
+        //     return $"ERROR MODYFYING CUSTOMER";
+        // }
+
+        return $"MODIFIED CUSTOMER WITH ID : {id}";
     }
-    public void DeleteCustomer(int id)
+    public string RemoveCustomer(int id)
     {
-        customerDB.DeleteCustomer(id);
+        try
+        {
+            customerDB.DeleteCustomer(id);
+            return $"CUSTOMER WITH ID : {id} REMOVED";
+        }
+        catch (System.Exception)
+        {
+            return $"NO CUSTOMER FOUND WITH ID : {id}";
+        }
     }
     public List<Customer> StringSearchCustomer(string search)
     {
@@ -35,9 +58,34 @@ class CustomerManagement
     {
         return customerDB.GetCustomers();
     }
-    public int GetIDFromReservation(int id)
+
+    private bool IsStringNumeric(string s)
     {
-        return customerDB.CustomerIDFromReservation(id);
+        foreach (char c in s)
+        {
+            if (c < '0' || c > '9')
+                return false;
+        }
+        return true;
+    }
+    private bool IsEmailValid(string s)
+    {
+        if (string.IsNullOrEmpty(s) || !s.Contains("@"))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool IsStringValid(string s)
+    {
+        if (string.IsNullOrEmpty(s))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private bool IsCustomerListed(List<Customer> customerList)

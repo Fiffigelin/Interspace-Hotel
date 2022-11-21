@@ -6,13 +6,11 @@ internal class Program
 {
     const string CONNECTIONSTRING = "Server = localhost;Database = interspace_hotel;Uid=root; Convert Zero Datetime=True";
     public static MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
-    public static Room room = new();
     public static RoomDB roomDB = new(connection);
     //RoomManagement roomManager = new(roomDB);
     public static EmployeeDB employeeDB = new(connection);
     public static EmployeeManagement empManager = new(employeeDB);
-    public static Reservation reservation = new();
-    public static ReservationDB reservationDB = new(connection);
+    public static ReservationDB reservations = new(connection);
     public static HotelDB hotelDB = new HotelDB(connection);
     public static HotelManagement hotelM = new(hotelDB);
     public static Customer customer = new();
@@ -28,10 +26,17 @@ internal class Program
         // Console.WriteLine(hotelM.GetValues()); // HAR INTE REVIEWS I DB
         while (true)
         {
-            string prompt = "";
+            string prompt = @"
+            Welcome to Interspace Hotel ADMIN";
             string[] options = { "Guest", "Employee", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
+            //Vårt mål är att vi strävar mot att ha två ingångar, personal eller gäst
+            //Huvudmeny: Customer, Employee, Exit
+            //Ha en metod för CustomerUI och en för EmployeeUI.
+            //Customer UI blir det som är i switchen nedan.
+            //Employee UI blir lik den nedan, fast personalen måste logga för att kunna komma åt administrering utav rum och bokning osv.
+            //Dvs innan de kommer in i switch med menyval. Hellre fler menyval än att man behöver gå djupt ner i undermenyer.
             switch (selectedIndex)
             {
                 case 0: // empty
@@ -53,7 +58,8 @@ internal class Program
     {
         while (true)
         {
-            string prompt = "";
+            string prompt = @"
+        Welcome to Interspace Hotel ADMIN";
             string[] options = { "Reservations", "Customers", "Room", "Employees", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
@@ -88,12 +94,13 @@ internal class Program
     {
 
     }
-    public static void ReservationsMenu() // FUNKAR!! 
+    public static void ReservationsMenu()
     {
         while (true)
         {
-            string prompt = "";
-            string[] options = { "Add reservation", "Update reservation", "Remove reservation", "Return", "Exit" };
+            string prompt = @"
+        Welcome to Interspace Hotel ADMIN";
+            string[] options = { "Add reservation", "Update reservation", "Remove reservation", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
@@ -102,95 +109,60 @@ internal class Program
                 case 0:
                     // UPDATE : fixa så man kan minimera sökningen ännu mer med ex, beds, guests
                     var search = BookingRoom();
-                    roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
-                    PrintRooms(roomList);
-                    room = roomDB.GetRoomByid(ChooseRoom());
-                    reservation = CalculateReservationPrice(reservation, room, NumberOFGuests(room));
+                    List<Room> roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
+                    int roomID = PrintSearchedRooms(roomList);
+                    //Måste en kund vara ny? Kan ju finnas i DB :) Gör en sökning av customers, finns email eller telefonnummer
+                    // läggs inte kunden in som ny kund.
+                    //Fråga om kund är ny, om ja skapa ny, annars sök upp i databas.
                     customer = AddCustomer();
-                    reservation = new(customer, room, search.Item2, search.Item1);
-                    MakeReservation(custManager, reservationDB, customer, room, reservation);
+                    MakeReservation(custManager, reservations, customer, search.Item2, search.Item1);
                     break;
 
                 case 1: // update reservation
-                    reservationList = reservationDB.SearchReservationByString(SearchReservation());
-                    reservationList = reservationDB.SelectReservations(reservationList);
+                    reservationList = reservations.SearchReservationByString(SearchReservation());
                     PrintReservations(reservationList);
-                    int updateID = ChooseReservationID();
-                    int custID = custManager.GetIDFromReservation(updateID);
-                    reservation = reservationDB.GetReservationById(updateID);
-                    var update = UpdateReservationRoom(reservation);
-                    roomList = roomDB.GetAvailableRooms(update.Item2, update.Item3);
-                    PrintRooms(roomList);
-                    room = roomDB.GetRoomByid(updateID);
-                    reservation = CalculateReservationPrice(reservation, room, UpdateGuests(reservation, room));
-                    customer = custManager.GetCustomerFromReservationID(updateID);
-                    Console.ReadLine();
-                    reservation = reservationDB.GetReservationById(updateID);
-                    UpdateReservation(reservationDB, reservation, customer, update.Item2, updateID);
                     break;
 
                 case 2: // remove reservation
-                    reservationList = reservationDB.SearchReservationByString(SearchReservation());
-                    reservationList = reservationDB.SelectReservations(reservationList);
-                    PrintReservations(reservationList);
-                    int removeID = ChooseReservationID();
-                    DeleteReservation(removeID);
                     break;
 
                 case 3: // return to main()
                     return;
-
-                case 4:
-                    ExitMenu();
-                    break;
 
                 default:
                     break;
             }
         }
     }
-    public static void CustomersMenu() // UPDATE CUSTOMER FUNGERAR EJ!!
+    public static void CustomersMenu()
     {
-        int custID = 0;
         while (true)
         {
-            string prompt = "";
-            string[] options = { "Add guest", "Update guest", "Remove guest", "Return", "Exit" };
+            string prompt = @"
+        Welcome to Interspace Hotel";
+            string[] options = { "Add guest", "Update guest", "Remove guest", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
             switch (selectedIndex)
             {
                 case 0:
-                    customer = AddCustomer();
-                    custID = custManager.AddCustomer(customer);
-                    customerList.Add(custManager.GetCustomer(custID));
-                    PrintCustomers(customerList);
-                    CustomerAddedSuccess(custID);
+
                     break;
 
                 case 1:
-                    // FUNKAR EJ!!!
-                    customerList = custManager.StringSearchCustomer(SearchCustomer());
-                    PrintCustomers(customerList);
-                    customer = UpdateCustomer(customer, ChooseCustomer());
-                    custID = custManager.UpdateCustomer(customer);
-                    UpdateCustomerSuccess(custID);
                     break;
 
                 case 2:
-                    customerList = custManager.StringSearchCustomer(SearchCustomer());
-                    PrintCustomers(customerList);
-                    customer = custManager.GetCustomer(ChooseCustomer());
-                    custManager.DeleteCustomer(customer.ID);
-                    RemoveCustomer(customer.ID);
                     break;
 
                 case 3:
-                    return;
+                    break;
 
                 case 4:
-                    ExitMenu();
+                    break;
+
+                default:
                     break;
 
                 default:
@@ -202,35 +174,27 @@ internal class Program
     {
         while (true)
         {
-            Header();
-            string prompt = "";
-            string[] options = { "Add room", "Update room", "Print rooms", "Remove room", "Return", "Exit" };
+            string prompt = @"
+        Welcome to Interspace Hotel ADMIN";
+            string[] options = { "Add room", "Update room", "Remove room", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
 
             switch (selectedIndex)
             {
-                case 0: // add
-                    roomList = AddRoom(room);
-                    room.id = roomDB.CreateRoom(room);
-                    PrintRooms(roomList);
-                    Console.ReadKey();
+                case 0:
+
                     break;
 
-                case 1: // update
+                case 1:
                     SearchRooms();
 
                     break;
 
-                case 2: // print
-                    roomList = roomDB.GetRooms();
-                    PrintRooms(roomList);
-                    Console.ReadKey();
+                case 2:
                     break;
 
-                case 3: // remove
-                    roomList = roomDB.GetRooms();
-                    PrintRooms(roomList);
+                case 3:
                     break;
 
                 case 4:
@@ -241,12 +205,34 @@ internal class Program
             }
         }
     }
+    private static void EmployeePWCheck()
+    {
+        bool isPWCorrect = false;
+        string correctPW = "SuvNet22";
+
+        while (!isPWCorrect)
+        {
+            Console.Write("Please enter your password : ");
+            string pw = Console.ReadLine()!;
+
+            if (pw == correctPW)
+            {
+                Console.WriteLine("Correct");
+                isPWCorrect = true;
+                Thread.Sleep(2000);
+            }
+            else
+            {
+                Console.Write("Sorry, that is not correct. ");
+            }
+        }
+    }
     public static void EmployeeMenu()
     {
         while (true)
         {
-            Header();
-            string prompt = "";
+            string prompt = @"
+        Welcome to Interspace Hotel ADMIN";
             string[] options = { "Add employee", "Update employee", "Remove employee", "Exit" };
             Menu mainMenu = new Menu(prompt, options);
             int selectedIndex = mainMenu.Run();
@@ -274,53 +260,8 @@ internal class Program
             }
         }
     }
-    private static List<Room> AddRoom(Room room) // Tomt
+    private static void AddRoom() // Tomt
     {
-        string input = string.Empty;
-        while (true)
-        {
-            Header();
-            string prompt = "";
-            string[] options = { "Singleroom", "Familyroom", "Deluxeroom", "Penthouse" };
-            Menu roomNames = new Menu(prompt, options);
-            int selectedIndex = roomNames.Run();
-            switch (selectedIndex)
-            {
-                case 0:
-                    room.name = "Singleroom";
-                    room.beds = 1;
-                    room.guests = 1;
-                    room.size = 24;
-                    room.price = 800;
-                    break;
-                case 1:
-                    room.name = "Familyroom";
-                    room.beds = 4;
-                    room.guests = 4;
-                    room.size = 65;
-                    room.price = 2200;
-                    break;
-                case 2:
-                    room.name = "Deluxeroom";
-                    room.beds = 3;
-                    room.guests = 3;
-                    room.size = 120;
-                    room.price = 5000;
-                    break;
-                case 3:
-                    room.name = "Penthouse";
-                    room.beds = 2;
-                    room.guests = 9;
-                    room.size = 155;
-                    room.price = 9999;
-                    break;
-                default:
-                    break;
-            }
-            List<Room> outputList = new();
-            outputList.Add(room);
-            return outputList;
-        }
     }
     private static (int, string, string) BookingRoom()
     {
@@ -341,15 +282,10 @@ internal class Program
             {
                 Console.Write("Start date for your stay [YYYY-MM-DD] : ");
                 startDate = Console.ReadLine()!;
-            Header();
-            Console.Write("Start date for your stay [YYYY-MM-DD] : ");
-            startDate = Console.ReadLine()!;
 
-            MatchCollection matches = Regex.Matches(startDate, pattern);
-            int match = matches.Count;
-            if (match == 1)
-            {
-                try
+                MatchCollection matches = Regex.Matches(startDate, pattern);
+                int match = matches.Count;
+                if (match == 1)
                 {
                     try
                     {
@@ -371,11 +307,9 @@ internal class Program
                 Console.Write("End date for your stay [YYYY-MM-DD] : ");
                 endDate = Console.ReadLine();
 
-            MatchCollection matching = Regex.Matches(endDate, pattern);
-            int match = matching.Count;
-            if (match == 1)
-            {
-                try
+                MatchCollection matching = Regex.Matches(endDate, pattern);
+                int match = matching.Count;
+                if (match == 1)
                 {
                     try
                     {
@@ -404,6 +338,7 @@ internal class Program
             }
             Thread.Sleep(2000);
         }
+<<<<<<< HEAD
         
             return (duration, startDate, endDate);
         }
@@ -462,6 +397,31 @@ internal class Program
                 Console.WriteLine("No rooms found");
             }
             return 0;
+=======
+        while (isDateCorrect == false);
+
+
+        return (duration, startDate, endDate);
+    }
+    private static void SearchRooms()
+    {
+        Console.Write("Search room : ");
+        string search = Console.ReadLine();
+        custManager.StringSearchCustomer(search);
+    }
+    private static void UpdateRoom(RoomDB roomDB)
+    {
+        Console.WriteLine("type in room id");
+        string id = Console.ReadLine();
+        int idconvert = Convert.ToInt32(id);
+        Room updateRoom = roomDB.GetRoomByid(idconvert);
+
+        Console.WriteLine("type in number of beds");
+        string Beds = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(Beds))
+        {
+            updateRoom.beds = Convert.ToInt32(Beds);
+>>>>>>> parent of 2117dca (Merge branch 'main' of https://github.com/Fiffigelin/Interspace-Hotel)
         }
         private static void RemoveRoombyID(RoomDB roomDB)
         {
@@ -512,6 +472,7 @@ internal class Program
             string phoneNumber = Console.ReadLine();
             Console.WriteLine(customerM.UpdateCustomer(email, firstName, lastName, phoneNumber, id));
         }
+<<<<<<< HEAD
         private static int GetCustomer(CustomerManagement customerM)
         {
             int id = 0;
@@ -529,6 +490,14 @@ internal class Program
             return id;
         }
         private static void PrintCustomers(List<Customer> customerList)
+=======
+        roomDB.UpdateRoom(updateRoom);
+    }
+    private static int PrintSearchedRooms(List<Room> roomList)
+    {
+        Header();
+        if (roomList.Count >= 1)
+>>>>>>> parent of 2117dca (Merge branch 'main' of https://github.com/Fiffigelin/Interspace-Hotel)
         {
             TableUI table = new();
             table.PrintCustomers(customerList);
@@ -536,6 +505,7 @@ internal class Program
         }
         private static void RemoveCustomer(CustomerManagement customerM)
         {
+<<<<<<< HEAD
             int id = 0;
             Console.WriteLine("SELECT CUSTOMER BY ID");
             Console.Write("ID : ");
@@ -670,6 +640,248 @@ internal class Program
             employeeDB.UpdateEmployee(updateEmployee);
         }
         private static void CreateEmployee(EmployeeDB employeeDB)
+=======
+            Console.WriteLine("No rooms found");
+        }
+        return 0;
+    }
+    private static void RemoveRoombyID(RoomDB roomDB)
+    {
+        Console.WriteLine("Please state the ID of the room you would like to delete:");
+        string idRemove = Console.ReadLine();
+        int idRemoveConvert = Convert.ToInt32(idRemove);
+        roomDB.DeleteRoom(idRemoveConvert);
+    }
+    private static Customer AddCustomer()
+    {
+        int id = 0;
+        while (true)
+        {
+            string firstName;
+            string lastName;
+            string email;
+            string phoneNumber;
+            do
+            {
+                Console.Write("Firstname : ");
+                firstName = Console.ReadLine();
+                Console.Write("Lastname : ");
+                lastName = Console.ReadLine();
+            } while (!IsStringValid(firstName) && !IsStringValid(lastName));
+            do
+            {
+                Console.Write("Email : ");
+                email = Console.ReadLine();
+            } while (!IsEmailValid(email));
+            do
+            {
+                Console.Write("Phonenumber : ");
+                phoneNumber = Console.ReadLine();
+            } while (!IsStringNumeric(phoneNumber));
+            return new(email, firstName + " " + lastName, phoneNumber);
+        }
+    }
+    private static void UpdateCustomer(CustomerManagement customerM, int id)
+    {
+        Console.WriteLine("UPDATE CUSTOMER");
+        Console.Write("Firstname : ");
+        string firstName = Console.ReadLine();
+        Console.Write("Lastname : ");
+        string lastName = Console.ReadLine();
+        Console.Write("Email : ");
+        string email = Console.ReadLine();
+        Console.Write("Phonenumber : ");
+        string phoneNumber = Console.ReadLine();
+        Console.WriteLine(customerM.UpdateCustomer(email, firstName, lastName, phoneNumber, id));
+    }
+    private static int GetCustomer(CustomerManagement customerM)
+    {
+        int id = 0;
+        Console.WriteLine("SELECT CUSTOMER BY ID");
+        Console.Write("ID : ");
+        try
+        {
+            id = Convert.ToInt32(Console.ReadLine());
+        }
+        catch (System.Exception)
+        {
+            Console.WriteLine("WRONG INPUT");
+        }
+        Console.WriteLine(customerM.GetCustomer(id));
+        return id;
+    }
+    private static void PrintCustomers(List<Customer> customerList)
+    {
+        TableUI table = new();
+        table.PrintCustomers(customerList);
+        Console.ReadLine();
+    }
+    private static void RemoveCustomer(CustomerManagement customerM)
+    {
+        int id = 0;
+        Console.WriteLine("SELECT CUSTOMER BY ID");
+        Console.Write("ID : ");
+        try
+        {
+            id = Convert.ToInt32(Console.ReadLine());
+        }
+        catch (System.Exception)
+        {
+            Console.WriteLine("WRONG INPUT");
+        }
+        Console.WriteLine(customerM.RemoveCustomer(id));
+    }
+    private static string SearchReservation()
+    {
+        string search = string.Empty;
+        do
+        {
+            Console.Write("Search reservation : ");
+            search = Console.ReadLine();
+        } while (string.IsNullOrEmpty(search));
+        return search;
+    }
+    private static void PrintReservations(List<Reservation> reservationsList)
+    {
+        TableUI table = new();
+        table.PrintReservations(reservationList);
+        Console.ReadLine();
+    }
+    private static void DeleteReservation(ReservationDB reservations)
+    {
+        Console.WriteLine("Please state wich reservation you would like to delete, specify by ID.");
+        string deleteReservation = Console.ReadLine();
+        int deleteConvert = Convert.ToInt32(deleteReservation);
+        reservations.DeleteReservation(deleteConvert);
+    }
+    private static void UpdateReservation(ReservationDB reservations)
+    {
+        try
+        {
+            Console.WriteLine("Please state reservation ID:");
+            string reservationid = Console.ReadLine();
+            int idConvert = Convert.ToInt32(reservationid);
+            Reservation reservation = reservations.GetReservationById(idConvert);
+
+            Console.WriteLine("Please state the new room ID that you would like to move the guest to:");
+            string updateRoom = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(updateRoom))
+            {
+                reservation.room_id = Convert.ToInt32(updateRoom);
+            }
+
+            Console.WriteLine("Please state dates that need to be changed:");
+            string date = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(date))
+            {
+                reservation.date_in = DateTime.Parse(date);
+            }
+
+            Console.WriteLine("Please change durations of days:");
+            string duration = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(duration))
+            {
+                reservation.duration = Convert.ToInt32(duration);
+            }
+
+            Console.WriteLine("Ange nytt pris - Denna måste ändras");
+            string price = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(price))
+            {
+                reservation.economy = Convert.ToInt32(price);
+            }
+
+            reservations.UpdateReservation(reservation);
+        }
+        catch (System.Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+    private static void MakeReservation(CustomerManagement custM, ReservationDB reservations, Customer cust, string startDate, int duration)
+    {
+        try
+        {
+            Console.Write($"\nChoose rooms-id to book : ");
+            int roomID = Convert.ToInt32(Console.ReadLine());
+            DateTime dateTime = Convert.ToDateTime(startDate);
+            // Detta skall ske automatiskt. Skapa en funktion som räknar ut kostnaden beroende på antal nätter, gästantal och valt rum
+            Console.Write("Number of guests : ");
+            string totalGuests = Console.ReadLine();
+            int totalG = Convert.ToInt32(totalGuests);
+
+            int economy = 1; // ÄNDRA MIG 
+            int totalCosts = totalG * duration * economy; // Här skapade Emelie en metod för uträkningen ?
+                                                          // I DB heter det economy = pris, guests = antal gäster, duration = antalet nätter.
+                                                          // 
+
+            int customerID = custM.AddCustomer(cust);
+            Console.WriteLine(cust); //skapa en snyggare utskrift där inte id visas
+            int reservationID = reservations.CreateRoomReservation(roomID, customerID, dateTime, duration, totalG); // här stod det int totalSumConvert innan Emelie pillade 
+
+            Console.WriteLine("Here is your receipt to your reservation");
+            TableUI table = new();
+            table.PrintReceipt(roomID, dateTime, duration, totalG, cust, reservationID); // här stod det int totalSumConvert innan Emelie pillade 
+            Console.ReadLine();
+        }
+        catch (System.Exception e)
+        {
+
+            Console.WriteLine("Error: " + e);
+        }
+    }
+    private static void UpdateEmployee(EmployeeDB employeeDB)
+    {
+        Console.WriteLine("Which employee would you like to update? Write the number ID by number, ex 1.");
+        string id = Console.ReadLine();
+        int employeeIDConvert = Convert.ToInt32(id);
+        Employee updateEmployee = employeeDB.GetEmployeeById(employeeIDConvert);
+
+        Console.WriteLine("Enter name:");
+        string employeeName = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(employeeName))
+        {
+            updateEmployee.name = employeeName;
+        }
+        Console.WriteLine("State password");
+        string employeePassword = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(employeePassword))
+        {
+            updateEmployee.password = employeePassword;
+        }
+        employeeDB.UpdateEmployee(updateEmployee);
+    }
+    private static void CreateEmployee(EmployeeDB employeeDB)
+    {
+        Console.WriteLine("Enter name");
+        string nameInput = Console.ReadLine();
+        Console.WriteLine("Enter password");
+        string passwordInput = Console.ReadLine();
+        var createEmployee = employeeDB.CreateEmployee(nameInput, passwordInput);
+        Console.WriteLine($"Adding new employee {nameInput}");
+    }
+    private static bool IsEmailValid(string s)
+    {
+        if (string.IsNullOrEmpty(s) || !s.Contains("@"))
+        {
+            return false;
+        }
+
+        return true;
+    }
+    private static bool IsStringValid(string s)
+    {
+        if (string.IsNullOrEmpty(s))
+        {
+            return false;
+        }
+
+        return true;
+    }
+    private static bool IsStringNumeric(string s)
+    {
+        foreach (char c in s)
+>>>>>>> parent of 2117dca (Merge branch 'main' of https://github.com/Fiffigelin/Interspace-Hotel)
         {
             Console.WriteLine("Enter name");
             string nameInput = Console.ReadLine();
@@ -716,6 +928,7 @@ internal class Program
 ██║██║ ╚████║   ██║   ███████╗██║  ██║███████║██║     ██║  ██║╚██████╗███████╗    ██║  ██║╚██████╔╝   ██║   ███████╗███████╗
 ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝    ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝
  "); // http://patorjk.com/software/taag
+<<<<<<< HEAD
             Console.WriteLine($"Psst, nicer header here :)\n");
         }
         private static void ExitMenu()
@@ -725,3 +938,14 @@ internal class Program
             Environment.Exit(0);
         }
     }
+=======
+        Console.WriteLine($"Psst, nicer header here :)\n");
+    }
+    private static void ExitMenu()
+    {
+        Console.WriteLine("Please press any key to exit.");
+        Console.ReadKey(true);
+        Environment.Exit(0);
+    }
+}
+>>>>>>> parent of 2117dca (Merge branch 'main' of https://github.com/Fiffigelin/Interspace-Hotel)

@@ -5,6 +5,7 @@ class TableUI
     public void PrintRooms(List<Room> objectList)
     {
         TableWidth = 85;
+        Console.Clear();
         PrintLine();
         PrintRow("ID", "NAME", "BEDS", "GUESTS", "SIZE", "PRICE");
         PrintLine();
@@ -17,6 +18,7 @@ class TableUI
     public void PrintCustomers(List<Customer> objectList)
     {
         TableWidth = 70;
+        Console.Clear();
         PrintLine();
         PrintRow("ID", "NAME", "EMAIL", "PHONENUMBER");
         PrintLine();
@@ -27,43 +29,28 @@ class TableUI
         }
     }
 
-    public void PrintReceipt(Reservation reserv, Customer cust)
+    public void PrintReceipt(int roomID, DateTime dateTime, int duration, int totalSumConvert, Customer cust, int reservationID)
     {
         TableWidth = 85;
+        Console.Clear();
         PrintLine();
-        PrintRow("RESERVATION ID", reserv.id.ToString());
+        PrintRow("RESERVATION ID",reservationID.ToString());
         PrintLine();
-        PrintRow("BOOKED ROOM", reserv.room_id.ToString());
+        PrintRow("BOOKED ROOM", roomID.ToString());
         PrintLine();
-        PrintRow("CHECK-IN DATE", reserv.date_in.ToString("yyyy-MM-dd"));
+        PrintRow("CHECK-IN DATE", dateTime.ToString("yyyy-MM-dd"));
         PrintLine();
-        PrintRow("NUMBER OF NIGTHS", reserv.duration.ToString());
+        PrintRow("NUMBER OF NIGTHS", duration.ToString());
         PrintLine();
-        PrintRow("TOTAL COST", reserv.economy.ToString());
+        PrintRow("TOTAL COST", totalSumConvert.ToString());
         PrintLine();
         PrintRow("BOOKED BY", cust.Name);
         PrintLine();
     }
-    public void PrintUpdatedReceipt(Reservation reservation, Customer customer)
+     public void PrintReservations(List<Reservation> reservationList)
     {
         TableWidth = 85;
-        PrintLine();
-        PrintRow("RESERVATION ID", reservation.id.ToString());
-        PrintLine();
-        PrintRow("BOOKED ROOM", reservation.room_id.ToString());
-        PrintLine();
-        PrintRow("CHECK-IN DATE", reservation.date_in.ToString("yyyy-MM-dd"));
-        PrintLine();
-        PrintRow("NUMBER OF NIGTHS", reservation.duration.ToString());
-        PrintLine();
-        PrintRow("TOTAL COST", reservation.economy.ToString());
-        PrintLine();
-        PrintRow("BOOKED BY", customer.Name);
-        PrintLine();
-    }
-    public void PrintReservations(List<Reservation> reservationList)
-    {
-        TableWidth = 85;
+        Console.Clear();
         PrintLine();
         foreach (var item in reservationList)
         {
@@ -83,6 +70,7 @@ class TableUI
     public void PrintEmployees(List<Employee> objectList)
     {
         TableWidth = 50;
+        Console.Clear();
         PrintLine();
         PrintRow("ID", "NAME");
         PrintLine();
@@ -123,11 +111,6 @@ class TableUI
         {
             return text.PadRight(width - (width - text.Length) / 2).PadLeft(width);
         }
-    }
-
-    internal void PrintReceipt(int roomID, DateTime sD, int duration, int totalSumConvert, int custID, int reservationID)
-    {
-        throw new NotImplementedException();
     }
 }
 
