@@ -27,21 +27,21 @@ class TableUI
         }
     }
 
-    public void PrintReceipt(Reservation reserv, Customer cust)
+    public void PrintReceipt(Reservation reservation, Customer customer)
     {
-        TableWidth = 85;
+        TableWidth = 100;
         PrintLine();
-        PrintRow("RESERVATION ID", reserv.id.ToString());
+        PrintRow("RESERVATION ID", reservation.id.ToString());
         PrintLine();
-        PrintRow("BOOKED ROOM", reserv.room_id.ToString());
+        PrintRow("BOOKED ROOM", reservation.room_id.ToString());
         PrintLine();
-        PrintRow("CHECK-IN DATE", reserv.date_in.ToString("yyyy-MM-dd"));
+        PrintRow("CHECK-IN DATE", reservation.date_in.ToString("yyyy-MM-dd"));
         PrintLine();
-        PrintRow("NUMBER OF NIGTHS", reserv.duration.ToString());
+        PrintRow("NUMBER OF NIGTHS", reservation.duration.ToString());
         PrintLine();
-        PrintRow("TOTAL COST", reserv.economy.ToString());
+        PrintRow("TOTAL COST", reservation.economy.ToString());
         PrintLine();
-        PrintRow("BOOKED BY", cust.Name);
+        PrintRow("BOOKED BY", customer.Name);
         PrintLine();
     }
     public void PrintUpdatedReceipt(Reservation reservation, Customer customer)

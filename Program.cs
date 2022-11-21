@@ -8,11 +8,12 @@ internal class Program
     public static MySqlConnection connection = new MySqlConnection(CONNECTIONSTRING);
     public static Room room = new();
     public static RoomDB roomDB = new(connection);
-    //RoomManagement roomManager = new(roomDB);
+    public static RoomManagement roomManager = new(roomDB);
     public static EmployeeDB employeeDB = new(connection);
     public static EmployeeManagement empManager = new(employeeDB);
     public static Reservation reservation = new();
     public static ReservationDB reservationDB = new(connection);
+    public static ReservationManager reservationManager = new(reservationDB);
     public static HotelDB hotelDB = new HotelDB(connection);
     public static HotelManagement hotelM = new(hotelDB);
     public static Customer customer = new();
@@ -43,7 +44,6 @@ internal class Program
                     EmployeeUI();
                     break;
                 case 2:
-                    //Enda exit, alla andra är return
                     ExitMenu();
                     break;
             }
@@ -102,31 +102,41 @@ internal class Program
             switch (selectedIndex)
             {
                 case 0:
-                    // UPDATE : fixa så man kan minimera sökningen ännu mer med ex, beds, guests
                     var search = BookingRoom();
-                    roomList = roomDB.GetAvailableRooms(search.Item2, search.Item3);
+                    reservation.duration = search.Item1;
+                    DateTime startDate = Convert.ToDateTime(search.Item2);
+                    reservation.date_in = startDate;
+                    int bookGuests = NumberOFGuests();
+
+                    roomList = roomManager.GetAvailableRoomsForBooking(bookGuests,search.Item2, search.Item3);
                     PrintRooms(roomList);
-                    room = roomDB.GetRoomByid(ChooseRoom());
-                    reservation = CalculateReservationPrice(reservation, room, NumberOFGuests(room));
+                    int roomID = ChooseRoom();
+                    room = roomManager.GetRoomByID(roomID);
+                    reservation.room_id = room.id;
+                    reservation.economy= reservationManager.CalculateTotalCost(reservation, room, bookGuests);
+
                     customer = AddCustomer();
-                    reservation = new(customer, room, search.Item2, search.Item1);
-                    MakeReservation(custManager, reservationDB, customer, room, reservation);
+                    customer.ID = custManager.AddCustomer(customer);
+                    reservation.customer_id = customer.ID;
+                    reservation.id = reservationManager.Reservation(reservation);
+                    PrintReservation(customer, reservation);
                     break;
 
                 case 1: // update reservation
-                    reservationList = reservationDB.SearchReservationByString(SearchReservation());
-                    reservationList = reservationDB.SelectReservations(reservationList);
+                    reservationList = reservationManager.GetReservationByString(SearchReservation());
+                    reservationList = reservationManager.GetReservationByCustomerID(reservationList);
                     PrintReservations(reservationList);
-                    int updateID = ChooseReservationID();
+
+                    int updateID = ChooseReservationID(reservationList);
                     int custID = custManager.GetIDFromReservation(updateID);
                     reservation = reservationDB.GetReservationById(updateID);
+
                     var update = UpdateReservationRoom(reservation);
                     roomList = roomDB.GetAvailableRooms(update.Item2, update.Item3);
                     PrintRooms(roomList);
-                    room = roomDB.GetRoomByid(updateID);
-                    reservation = CalculateReservationPrice(reservation, room, UpdateGuests(reservation, room));
+                    int guests = UpdateGuests(roomList);
+                    reservation = CalculateReservationPrice(reservation, room, guests);
                     customer = custManager.GetCustomerFromReservationID(updateID);
-                    Console.ReadLine();
                     reservation = reservationDB.GetReservationById(updateID);
                     UpdateReservation(reservationDB, reservation, customer, update.Item2, updateID);
                     break;
@@ -135,7 +145,7 @@ internal class Program
                     reservationList = reservationDB.SearchReservationByString(SearchReservation());
                     reservationList = reservationDB.SelectReservations(reservationList);
                     PrintReservations(reservationList);
-                    int removeID = ChooseReservationID();
+                    int removeID = ChooseReservationID(reservationList);
                     DeleteReservation(removeID);
                     break;
 
@@ -209,7 +219,15 @@ internal class Program
                     break;
 
                 case 1: // update
-                    SearchRooms();
+                    roomList = roomDB.GetRooms();
+                    PrintRooms(roomList);
+
+                    int ID = SearchRooms();
+                    room = roomDB.GetRoomByid(ID);
+
+                    room = UpdateRoom(room);
+                    roomDB.UpdateRoom(room);
+                    UpdateRoomSuccess(ID);
 
                     break;
 
@@ -318,17 +336,17 @@ internal class Program
     }
     private static (int, string, string) BookingRoom()
     {
-        bool isSDCorrect = false;
-        bool isEDCorrect = false;
+        bool isStartDateCorrect = false;
+        bool isEndDateCorrect = false;
         string startDate = String.Empty;
         string endDate = String.Empty;
-        DateOnly sD;
-        DateOnly eD;
+        DateOnly fromDate;
+        DateOnly toDate;
 
         string pattern = @"\d{4}(-)\d{2}(-)\d{2}";
 
 
-        while (!isSDCorrect)
+        while (!isStartDateCorrect)
         {
             Header();
             Console.Write("Start date for your stay [YYYY-MM-DD] : ");
@@ -340,8 +358,8 @@ internal class Program
             {
                 try
                 {
-                    sD = DateOnly.Parse(startDate);
-                    isSDCorrect = true;
+                    fromDate = DateOnly.Parse(startDate);
+                    isStartDateCorrect = true;
                 }
                 catch (System.Exception)
                 {
@@ -353,7 +371,7 @@ internal class Program
                 Console.WriteLine("Please try again.");
             }
         }
-        while (!isEDCorrect)
+        while (!isEndDateCorrect)
         {
             Console.Write("End date for your stay [YYYY-MM-DD] : ");
             endDate = Console.ReadLine();
@@ -364,8 +382,8 @@ internal class Program
             {
                 try
                 {
-                    eD = DateOnly.Parse(endDate);
-                    isEDCorrect = true;
+                    toDate = DateOnly.Parse(endDate);
+                    isEndDateCorrect = true;
                 }
                 catch (System.Exception)
                 {
@@ -377,7 +395,7 @@ internal class Program
                 Console.WriteLine("Please try again.");
             }
         }
-        int duration = (eD.DayNumber - sD.DayNumber);
+        int duration = (toDate.DayNumber - fromDate.DayNumber);
         return (duration, startDate, endDate);
     }
     public static int ChooseRoom() // NO HEADER!!
@@ -390,22 +408,17 @@ internal class Program
         } while (!IsStringNumeric(stringRoom));
         return Convert.ToInt32(stringRoom);
     }
-    public static int NumberOFGuests(Room room)
+    public static int NumberOFGuests()
     {
-        int guests = 0;
+        string userInput = string.Empty;
         do
         {
-            Console.WriteLine($"Max guests : {room.guests}");
             Console.Write("Guests : ");
-            guests = Convert.ToInt32(Console.ReadLine());
-            if (guests > room.guests || guests == 0)
-            {
-                Console.WriteLine("Wrong input of guests");
-            }
-        } while (guests > room.guests || guests == 0);
-        return guests;
+            userInput = Console.ReadLine();
+        } while (!IsStringNumeric(userInput));
+        return Convert.ToInt32(userInput);
     }
-    private static void SearchRooms()
+    private static int SearchRooms()
     {
         string search = string.Empty;
         do
@@ -414,43 +427,39 @@ internal class Program
             Console.Write("Search room : ");
             search = Console.ReadLine();
         } while (string.IsNullOrEmpty(search));
-        custManager.StringSearchCustomer(search);
+        return Convert.ToInt32(search);
     }
-    private static void UpdateRoom(RoomDB roomDB) // MODIFIERA!!
+    private static Room UpdateRoom(Room room) // MODIFIERA!!
     {
-        Console.WriteLine("type in room id");
-        string id = Console.ReadLine();
-        int idconvert = Convert.ToInt32(id);
-        Room updateRoom = roomDB.GetRoomByid(idconvert);
-
-        Console.WriteLine("type in number of beds");
+        Console.Write("Beds : ");
         string Beds = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(Beds))
         {
-            updateRoom.beds = Convert.ToInt32(Beds);
+            room.beds = Convert.ToInt32(Beds);
         }
 
-        Console.WriteLine("Type in max amount of guests");
+        Console.Write("Max amount of guests : ");
         string guests = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(guests))
         {
-            updateRoom.guests = Convert.ToInt32(guests);
+            room.guests = Convert.ToInt32(guests);
         }
 
-        Console.WriteLine("type in size");
+        Console.WriteLine("Roomsize : ");
         string size = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(size))
         {
-            updateRoom.size = Convert.ToInt32(size);
+            room.size = Convert.ToInt32(size);
         }
 
-        Console.WriteLine("type in price");
+        Console.WriteLine("Price : ");
         string price = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(price))
         {
-            updateRoom.price = Convert.ToInt32(price);
+            room.price = Convert.ToInt32(price);
         }
-        roomDB.UpdateRoom(updateRoom);
+
+        return room;
     }
     private static void PrintRooms(List<Room> roomList)
     {
@@ -471,6 +480,11 @@ internal class Program
         string idRemove = Console.ReadLine();
         int idRemoveConvert = Convert.ToInt32(idRemove);
         roomDB.DeleteRoom(idRemoveConvert);
+    }
+    public static void UpdateRoomSuccess(int ID) // NO HEADER!!
+    {
+        Console.WriteLine($"Room updated with ID : {ID}");
+        Console.ReadLine();
     }
     private static Customer AddCustomer()
     {
@@ -618,15 +632,26 @@ internal class Program
         Console.WriteLine($"Reservation with ID : {removeID} has been deleted");
         Console.ReadKey();
     }
-    private static int ChooseReservationID() // NO HEADER!!
+    private static int ChooseReservationID(List<Reservation> reservationList) // NO HEADER!!
     {
         string input = String.Empty;
-        do
+        int convert = 0;
+        while(true)
         {
             Console.Write("Choose reservation with ID : ");
             input = Console.ReadLine();
-        } while (!IsStringNumeric(input));
-        return Convert.ToInt32(input);
+            if (IsStringNumeric(input))
+            {
+               convert = Convert.ToInt32(input);
+               foreach (var reservation in reservationList)
+               {
+                    if (reservation.id == convert)
+                    {
+                        return convert;
+                    }
+               }
+            }
+        }
     }
     private static (Reservation, string, string) UpdateReservationRoom(Reservation reservation)
     {
@@ -644,6 +669,7 @@ internal class Program
             Console.Write("Start date for your stay : ");
             startDate = Console.ReadLine();
 
+            if()
             MatchCollection matches = Regex.Matches(startDate, pattern);
             int match = matches.Count;
             if (match == 1)
@@ -668,17 +694,13 @@ internal class Program
         {
             Console.Write("End date for your stay : ");
             endDate = Console.ReadLine();
-            // int economy = 1; // ÄNDRA MIG 
-            // int totalCosts = totalG * duration * economy; // Här skapade Emelie en metod för uträkningen ?
-            //                                               // I DB heter det economy = pris, guests = antal gäster, duration = antalet nätter.
-            //                                               // 
 
             MatchCollection matching = Regex.Matches(endDate, pattern);
             int match = matching.Count;
             if (match == 1)
             {
                 isEDCorrect = true;
-                if (!string.IsNullOrWhiteSpace(startDate))
+                if (!string.IsNullOrWhiteSpace(endDate))
                 {
                     DateTime updateEndDate = Convert.ToDateTime(endDate);
                     reservation.date_in = updateEndDate;
@@ -700,38 +722,34 @@ internal class Program
         reservation.duration = duration;
         return (reservation, startDate, endDate);
     }
-    public static int UpdateGuests(Reservation reservation, Room room)
+    public static int UpdateGuests(List<Room> roomList)
     {
         bool update = false;
         string guests = string.Empty;
-        int convert;
+        int convert = 0;
         do
         {
-            Console.WriteLine($"Max guests : {room.guests}");
             Console.Write("Guests : ");
             guests = Console.ReadLine();
 
-            if (string.IsNullOrWhiteSpace(guests))
-            {
-                update = true;
-            }
-            else if (IsStringNumeric(guests))
+            if (!string.IsNullOrWhiteSpace(guests) && IsStringNumeric(guests))
             {
                 convert = Convert.ToInt32(guests);
-                if (convert < room.guests && convert > 0)
+                foreach (var room in roomList)
                 {
-                    room.guests = convert;
-                    update = true;
+                    if (0 < convert && convert < (room.guests + 4))
+                    {
+                        update = true;
+                    }
                 }
             }
         } while (update == false);
-        return room.guests;
+        return convert;
     }
     private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, int reservationID)
     {
         while (true)
         {
-            Header();
             DateTime sD = DateTime.Parse(startDate);
             string stringRoom = string.Empty;
             do
@@ -751,26 +769,13 @@ internal class Program
             return;
         }
     }
-    private static void MakeReservation(CustomerManagement custM, ReservationDB reservationDB, Customer cust, Room room, Reservation reservation)
+    private static void PrintReservation(Customer customer, Reservation reservation)
     {
-        try
-        {
             Header();
-            int customerID = custM.AddCustomer(cust);
-            reservation.customer_id = customerID;
-            reservation.id = reservationDB.CreateRoomReservation(reservation);
-
             Console.WriteLine("Here is your receipt to your reservation");
             TableUI table = new();
-            table.PrintReceipt(reservation, cust);
+            table.PrintReceipt(reservation, customer);
             Console.ReadLine();
-        }
-        catch (System.Exception e)
-        {
-
-            Console.WriteLine("Error: " + e);
-            Console.ReadKey();
-        }
     }
     private static void UpdateEmployee(EmployeeDB employeeDB) // MODIFIERA!!
     {

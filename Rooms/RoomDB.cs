@@ -12,7 +12,7 @@ class RoomDB
 
     public int CreateRoom(Room room)
     {
-        string sql = @$"INSERT INTO room(room.name, room.price ,room.beds, room.size) VALUES ('{room.name}', {room.price}, {room.beds}, {room.size});SELECT LAST_INSERT_ID();";
+        string sql = @$"INSERT INTO room(room.name, room.price ,room.beds, room.size) VALUES ('{room.name}', {room.price}, {room.beds}, {room.size}, {room.guests});SELECT LAST_INSERT_ID();";
         System.Console.WriteLine(sql);
         int create = _sqlConnection.QuerySingle<int>(sql);
         return create;
