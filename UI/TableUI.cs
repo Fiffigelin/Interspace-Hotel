@@ -130,4 +130,3 @@ class TableUI
         throw new NotImplementedException();
     }
 }
-
