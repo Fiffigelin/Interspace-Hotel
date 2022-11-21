@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using MySqlConnector;
 using Dapper;
+using program;
 internal class Program
 {
     const string CONNECTIONSTRING = "Server = localhost;Database = interspace_hotel;Uid=root; Convert Zero Datetime=True";
