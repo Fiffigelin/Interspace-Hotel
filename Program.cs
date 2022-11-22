@@ -605,6 +605,9 @@ internal class Program
         string lastName;
         string email;
         string phoneNumber;
+        string pattern = @"\d{10}";
+        bool isPhoneNrValid = false;
+        
         while (true)
         {
             Header();
@@ -635,15 +638,23 @@ internal class Program
                 }
             } while (string.IsNullOrWhiteSpace(email) || !IsEmailValid(email));
 
-            do
+            while (isPhoneNrValid == false)
             {
                 Console.Write("Phonenumber : ");
-                phoneNumber = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(phoneNumber) && IsStringNumeric(phoneNumber))
+                phoneNumber = Console.ReadLine()!;
+
+                MatchCollection matches = Regex.Matches(phoneNumber, pattern);
+                int match = matches.Count;
+                if (!string.IsNullOrWhiteSpace(phoneNumber) && IsStringNumeric(phoneNumber) && match == 1)
                 {
                     customer.Phonenumber = phoneNumber;
+                    isPhoneNrValid = true;
                 }
-            } while (string.IsNullOrWhiteSpace(phoneNumber) || !IsStringNumeric(phoneNumber));
+                else
+                {
+                    Console.WriteLine("Please enter a valid phonenumber, 10 digits.");
+                }
+            }
             return customer;
         }
     }
