@@ -88,6 +88,46 @@ internal class Program
     }
     public static void GuestMenu()
     {
+        while (true)
+        {
+            string prompt = "";
+            string[] options = { "Make reservation", "List all rooms", "Return" };
+            Menu mainMenu = new Menu(prompt, options);
+            int selectedIndex = mainMenu.Run();
+
+            switch (selectedIndex)
+            {
+                case 0:
+                    var search = BookingRoom();
+                    reservation.duration = search.Item1;
+                    DateTime startDate = Convert.ToDateTime(search.Item2);
+                    reservation.date_in = startDate;
+                    int bookGuests = NumberOFGuests();
+
+                    roomList = roomManager.GetAvailableRoomsForBooking(bookGuests, search.Item2, search.Item3);
+                    PrintRooms(roomList);
+                    int roomID = ChooseRoom();
+                    room = roomManager.GetRoomByID(roomID);
+                    reservation.room_id = room.id;
+                    reservation.economy = reservationManager.CalculateTotalCost(reservation, room, bookGuests);
+
+                    customer = AddCustomer();
+                    customer.ID = custManager.AddCustomer(customer);
+                    reservation.customer_id = customer.ID;
+                    reservation.id = reservationManager.Reservation(reservation);
+                    PrintReservation(customer, reservation);
+                    break;
+
+                case 1:
+                    roomList = roomDB.GetRooms();
+                    PrintRooms(roomList);
+                    Console.ReadKey();
+                    break;
+
+                case 2:
+                    return;
+            }
+        }
 
     }
     public static void ReservationsMenu() // FUNKAR!! 
@@ -108,12 +148,12 @@ internal class Program
                     reservation.date_in = startDate;
                     int bookGuests = NumberOFGuests();
 
-                    roomList = roomManager.GetAvailableRoomsForBooking(bookGuests,search.Item2, search.Item3);
+                    roomList = roomManager.GetAvailableRoomsForBooking(bookGuests, search.Item2, search.Item3);
                     PrintRooms(roomList);
                     int roomID = ChooseRoom();
                     room = roomManager.GetRoomByID(roomID);
                     reservation.room_id = room.id;
-                    reservation.economy= reservationManager.CalculateTotalCost(reservation, room, bookGuests);
+                    reservation.economy = reservationManager.CalculateTotalCost(reservation, room, bookGuests);
 
                     customer = AddCustomer();
                     customer.ID = custManager.AddCustomer(customer);
@@ -131,14 +171,16 @@ internal class Program
                     int custID = custManager.GetIDFromReservation(updateID);
                     reservation = reservationDB.GetReservationById(updateID);
 
-                    var update = UpdateReservationRoom(reservation);
-                    roomList = roomDB.GetAvailableRooms(update.Item2, update.Item3);
+                    reservation = UpdateReservationRoom(reservation);
+                    string updateDate = reservation.date_in.ToString();
+                    roomList = roomDB.GetAvailableRooms();
                     PrintRooms(roomList);
-                    int guests = UpdateGuests(roomList);
-                    reservation = CalculateReservationPrice(reservation, room, guests);
+                    int updateGuests = NumberOFGuests();
+
+                    reservation.economy = reservationManager.CalculateTotalCost(reservation, room, updateGuests);
                     customer = custManager.GetCustomerFromReservationID(updateID);
                     reservation = reservationDB.GetReservationById(updateID);
-                    UpdateReservation(reservationDB, reservation, customer, update.Item2, updateID);
+                    UpdateReservation(reservationDB, reservation, customer, updateDate, updateID);
                     break;
 
                 case 2: // remove reservation
@@ -418,6 +460,18 @@ internal class Program
         } while (!IsStringNumeric(userInput));
         return Convert.ToInt32(userInput);
     }
+    public static int UpdateNumberOfGuests()
+    {
+        int update = 0;
+        string userInput = string.Empty;
+        Console.Write("Guests : ");
+        if (IsStringNumeric(userInput))
+        {
+            update = Convert.ToInt32(userInput);
+        }
+        userInput = Console.ReadLine();
+        return Convert.ToInt32(userInput);
+    }
     private static int SearchRooms()
     {
         string search = string.Empty;
@@ -636,78 +690,83 @@ internal class Program
     {
         string input = String.Empty;
         int convert = 0;
-        while(true)
+        while (true)
         {
             Console.Write("Choose reservation with ID : ");
             input = Console.ReadLine();
             if (IsStringNumeric(input))
             {
-               convert = Convert.ToInt32(input);
-               foreach (var reservation in reservationList)
-               {
+                convert = Convert.ToInt32(input);
+                foreach (var reservation in reservationList)
+                {
                     if (reservation.id == convert)
                     {
                         return convert;
                     }
-               }
+                }
             }
         }
     }
-    private static (Reservation, string, string) UpdateReservationRoom(Reservation reservation)
+    private static Reservation UpdateReservationRoom(Reservation reservation)
     {
-        bool isSDCorrect = false;
-        bool isEDCorrect = false;
+        bool isStartDateCorrect = false;
+        bool isEndDateCorrect = false;
         string startDate = String.Empty;
         string endDate = String.Empty;
         string updatedStartDate = string.Empty;
         string updatedEndDate = string.Empty;
+        DateOnly fromDate;
+        DateOnly toDate;
+        int duration = 0;
         string pattern = @"\d{4}(-)\d{2}(-)\d{2}";
 
-        while (!isSDCorrect)
+        while (!isStartDateCorrect)
         {
             Header();
             Console.Write("Start date for your stay : ");
             startDate = Console.ReadLine();
-            
+            ConsoleKeyInfo key = Console.ReadKey();
+
             MatchCollection matches = Regex.Matches(startDate, pattern);
             int match = matches.Count;
             if (match == 1)
             {
-                isSDCorrect = true;
+                isStartDateCorrect = true;
                 if (!string.IsNullOrWhiteSpace(startDate))
                 {
                     DateTime updateStartDate = Convert.ToDateTime(startDate);
                     reservation.date_in = updateStartDate;
                 }
             }
-            else if (string.IsNullOrEmpty(startDate))
+            else if (string.IsNullOrEmpty(startDate) && (key.Key.Equals(ConsoleKey.Enter)))
             {
-                isSDCorrect = true;
+                isStartDateCorrect = true;
             }
             else
             {
                 Console.WriteLine("Please try again, enter YYYY-MM-DD.");
             }
         }
-        while (!isEDCorrect)
+        while (!isEndDateCorrect)
         {
             Console.Write("End date for your stay : ");
             endDate = Console.ReadLine();
+            ConsoleKeyInfo key = Console.ReadKey();
 
             MatchCollection matching = Regex.Matches(endDate, pattern);
             int match = matching.Count;
             if (match == 1)
             {
-                isEDCorrect = true;
+                isEndDateCorrect = true;
                 if (!string.IsNullOrWhiteSpace(endDate))
                 {
                     DateTime updateEndDate = Convert.ToDateTime(endDate);
                     reservation.date_in = updateEndDate;
                 }
             }
-            else if (string.IsNullOrEmpty(endDate))
+            else if (string.IsNullOrWhiteSpace(endDate) && (key.Key.Equals(ConsoleKey.Enter)))
             {
-                isSDCorrect = true;
+                isEndDateCorrect = true;
             }
             else
             {
@@ -715,35 +774,23 @@ internal class Program
             }
         }
 
-        DateOnly sD = DateOnly.Parse(startDate);
-        DateOnly eD = DateOnly.Parse(endDate);
-        int duration = (eD.DayNumber - sD.DayNumber);
-        reservation.duration = duration;
-        return (reservation, startDate, endDate);
-    }
-    public static int UpdateGuests(List<Room> roomList)
-    {
-        bool update = false;
-        string guests = string.Empty;
-        int convert = 0;
-        do
+        if (string.IsNullOrWhiteSpace(startDate) && !string.IsNullOrWhiteSpace(endDate))
         {
-            Console.Write("Guests : ");
-            guests = Console.ReadLine();
-
-            if (!string.IsNullOrWhiteSpace(guests) && IsStringNumeric(guests))
-            {
-                convert = Convert.ToInt32(guests);
-                foreach (var room in roomList)
-                {
-                    if (0 < convert && convert < (room.guests + 4))
-                    {
-                        update = true;
-                    }
-                }
-            }
-        } while (update == false);
-        return convert;
+            updatedStartDate = reservation.date_in.ToString();
+            fromDate = DateOnly.Parse(startDate);
+            toDate = DateOnly.Parse(endDate);
+            duration = (toDate.DayNumber - fromDate.DayNumber);
+            reservation.duration = duration;
+        }
+        if (!string.IsNullOrWhiteSpace(startDate) && string.IsNullOrWhiteSpace(endDate))
+        {
+            updatedStartDate = reservation.date_in.ToString();
+            duration = (Convert.ToInt32(endDate) - Convert.ToInt32(startDate));
+            DateTime newStartDate = Convert.ToDateTime(startDate);
+            reservation.date_in = newStartDate;
+            reservation.duration = duration;
+        }
+        return reservation;
     }
     private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, int reservationID)
     {
@@ -770,11 +817,11 @@ internal class Program
     }
     private static void PrintReservation(Customer customer, Reservation reservation)
     {
-            Header();
-            Console.WriteLine("Here is your receipt to your reservation");
-            TableUI table = new();
-            table.PrintReceipt(reservation, customer);
-            Console.ReadLine();
+        Header();
+        Console.WriteLine("Here is your receipt to your reservation");
+        TableUI table = new();
+        table.PrintReceipt(reservation, customer);
+        Console.ReadLine();
     }
     private static void UpdateEmployee(EmployeeDB employeeDB) // MODIFIERA!!
     {
