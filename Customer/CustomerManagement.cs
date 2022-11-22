@@ -18,9 +18,9 @@ class CustomerManagement
         return customerDB.InsertCustomer(customer);
     }
 
-    public int UpdateCustomer(Customer customer)
+    public void UpdateCustomer(Customer customer)
     {
-        return customerDB.UpdateCustomer(customer);
+        customerDB.UpdateCustomer(customer);
     }
     public void DeleteCustomer(int id)
     {

@@ -51,15 +51,14 @@ class CustomerDB
         return customer;
     }
 
-    public int UpdateCustomer(Customer customer)
+    public void UpdateCustomer(Customer customer)
     {
         string sql = $@"UPDATE customer SET customer.email = '{customer.Email}',
         customer.name = '{customer.Name}',
         customer.phonenumber = '{customer.Phonenumber}'
-        WHERE id = '{customer.ID}';
-        SELECT LAST_INSERT_ID()";
+        WHERE id = '{customer.ID}'";
 
-        return _sqlconnection.QuerySingle<int>(sql);
+        _sqlconnection.Execute(sql);
     }
 
     public void DeleteCustomer(int id)

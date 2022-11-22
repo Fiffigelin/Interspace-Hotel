@@ -127,7 +127,7 @@ internal class Program
         }
 
     }
-    public static void ReservationsMenu() // FUNKAR!! 
+    public static void ReservationsMenu()
     {
         while (true)
         {
@@ -207,7 +207,7 @@ internal class Program
             }
         }
     }
-    public static void CustomersMenu() // UPDATE CUSTOMER FUNGERAR EJ!!
+    public static void CustomersMenu()
     {
         int custID = 0;
         while (true)
@@ -228,12 +228,16 @@ internal class Program
                     break;
 
                 case 1:
-                    // FUNKAR EJ!!!
                     customerList = custManager.StringSearchCustomer(SearchCustomer());
-                    PrintCustomers(customerList);
-                    customer = UpdateCustomer(customer, ChooseCustomer());
-                    custID = custManager.UpdateCustomer(customer);
-                    UpdateCustomerSuccess(custID);
+                    bool found = PrintCustomers(customerList);
+                    if (found == false) break;
+
+                    int customerID = ChooseCustomer(customerList);
+                    customer = custManager.GetCustomer(customerID);
+
+                    customer = UpdateCustomer(customer);
+                    custManager.UpdateCustomer(customer);
+                    UpdateCustomerSuccess(customerID);
                     break;
 
                 case 2:
@@ -577,54 +581,73 @@ internal class Program
         Console.WriteLine($"Customer added with ID : {ID}");
         Console.ReadLine();
     }
-    public static int ChooseCustomer() // NO HEADER!!
+    public static int ChooseCustomer(List<Customer> customerList) // NO HEADER!!
     {
-        string stringCustomer = string.Empty;
-        do
+        string input = String.Empty;
+        int convert = 0;
+        while (true)
         {
-            Console.Write($"\nChoose customer by ID : ");
-            stringCustomer = Console.ReadLine();
-        } while (!IsStringNumeric(stringCustomer));
-        return Convert.ToInt32(stringCustomer);
+            Console.Write("Choose guest with ID : ");
+            input = Console.ReadLine();
+            if (IsStringNumeric(input))
+            {
+                convert = Convert.ToInt32(input);
+                foreach (var customer in customerList)
+                {
+                    if (customer.ID == convert)
+                    {
+                        return convert;
+                    }
+                }
+            }
+        }
     }
-    private static Customer UpdateCustomer(Customer customer, int id) // DENNA ÄR KNAS! TITTA PÅ DEN!
+    private static Customer UpdateCustomer(Customer customer) // DENNA ÄR KNAS! TITTA PÅ DEN!
     {
         string firstName;
         string lastName;
         string email;
         string phoneNumber;
+
+        int index = customer.Name.IndexOf(" ");
+        string fullName = customer.Name;
+        string beforeIndex = fullName.Substring(0, index);
+        string afterIndex = fullName.Substring(index + 1);
+
         string pattern = @"\d{10}";
         bool isPhoneNrValid = false;
+
 
         while (true)
         {
             Header();
-            do
+            Console.Write("Firstname : ");
+            firstName = Console.ReadLine();
+            if (!string.IsNullOrEmpty(firstName))
             {
-                Console.Write("Firstname : ");
-                firstName = Console.ReadLine();
-                Console.Write("Lastname : ");
-                lastName = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName))
-                {
-                    customer.Name = (firstName + " " + lastName);
-                }
-            } while (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName)
-                    || string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName)
-                    || !string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName)
-                    || string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName));
-            // DENNA ÄR JÄTTE KNAS! MAN SKA ALLTSÅ KOMMA UR LOOPEN,
-            // OM : Båda variablerna är tomma
+                beforeIndex = firstName;
+            }
 
-            do
+            Console.Write("Lastname : ");
+            lastName = Console.ReadLine();
+            if (!string.IsNullOrEmpty(lastName))
+            {
+                afterIndex = lastName;
+            }
+
+            customer.Name = $"{beforeIndex} {afterIndex}";
+
+            while (true)
             {
                 Console.Write("Email : ");
                 email = Console.ReadLine();
                 if (!string.IsNullOrWhiteSpace(email) && IsEmailValid(email))
                 {
                     customer.Email = email;
+                    break;
                 }
-            } while (string.IsNullOrWhiteSpace(email) || !IsEmailValid(email));
+                else if (string.IsNullOrWhiteSpace(email)) break;
+            }
 
             while (isPhoneNrValid == false)
             {
@@ -638,6 +661,7 @@ internal class Program
                     customer.Phonenumber = phoneNumber;
                     isPhoneNrValid = true;
                 }
+                else if (string.IsNullOrWhiteSpace(phoneNumber)) isPhoneNrValid = true;
                 else
                 {
                     Console.WriteLine("Please enter a valid phonenumber, 10 digits.");
@@ -646,9 +670,9 @@ internal class Program
             return customer;
         }
     }
-    public static void UpdateCustomerSuccess(int ID) // NO HEADER!!
+    public static void UpdateCustomerSuccess(int id) // NO HEADER!!
     {
-        Console.WriteLine($"Customer added with ID : {ID}");
+        Console.WriteLine($"Guest updated with ID : {id}");
         Console.ReadLine();
     }
     private static string SearchCustomer()
@@ -662,12 +686,21 @@ internal class Program
         } while (string.IsNullOrEmpty(search));
         return search;
     }
-    private static void PrintCustomers(List<Customer> customerList)
+    private static bool PrintCustomers(List<Customer> customerList)
     {
         Header();
-        TableUI table = new();
-        table.PrintCustomers(customerList);
-        Console.ReadLine();
+        if (customerList.Count > 0)
+        {
+            TableUI table = new();
+            table.PrintCustomers(customerList);
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("No customers found");
+            Console.ReadLine();
+            return false;
+        }
     }
     private static string SearchReservation()
     {
