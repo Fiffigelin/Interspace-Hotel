@@ -522,18 +522,6 @@ internal class Program
         } while (!IsStringNumeric(userInput));
         return Convert.ToInt32(userInput);
     }
-    public static int UpdateNumberOfGuests()
-    {
-        int update = 0;
-        string userInput = string.Empty;
-        Console.Write("Guests : ");
-        if (IsStringNumeric(userInput))
-        {
-            update = Convert.ToInt32(userInput);
-        }
-        userInput = Console.ReadLine();
-        return Convert.ToInt32(userInput);
-    }
     private static Customer AddCustomer()
     {
         int id = 0;
@@ -607,7 +595,7 @@ internal class Program
         string phoneNumber;
         string pattern = @"\d{10}";
         bool isPhoneNrValid = false;
-        
+
         while (true)
         {
             Header();
