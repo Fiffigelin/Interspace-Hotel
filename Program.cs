@@ -174,16 +174,8 @@ internal class Program
                     string endDate = reservationManager.CalculateEndDate(reservation);
                     reservation = UpdateStartDate(reservation);
                     reservation = UpdateEndDate(reservation, endDate);
-                    Console.WriteLine("Funkar");
-                    Console.ReadLine();
                     string updateEndDate = reservationManager.CalculateEndDate(reservation);
                     string updateDate = reservation.date_in.ToString();
-
-                    // --------------------------------------------------------
-                    Console.WriteLine(updateDate);
-                    Console.WriteLine(reservation.duration);
-                    Console.ReadLine();
-                    // --------------------------------------------------------
 
                     int updateGuests = NumberOFGuests();
                     roomList = roomManager.GetAvailableRoomsForBooking(updateGuests, updateDate, updateEndDate);
