@@ -29,18 +29,4 @@
         date_in = Convert.ToDateTime(startDate);
         this.duration = duration;
     }
-
-    public override string ToString()
-    {
-        return
-        @$"
-        Reservation id: {id}
-        Room id: {room_id}
-        Customer id: {customer_id}
-        Date: {date_in}
-        Number of Days: {duration}
-        Total: {economy}
-        ";
-    }
-
 }

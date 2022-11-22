@@ -9,7 +9,7 @@ class ReservationDB
         _sqlconnection = connection;
     }
 
-    public int CreateRoomReservation(Reservation reserv) // här stod det int totalSumConvert innan Emelie pillade i main
+    public int CreateRoomReservation(Reservation reserv)
     {
         string sql = @$"INSERT INTO reservation(room_id,customer_id,date_in,duration,economy)
         VALUES({reserv.room_id}, {reserv.customer_id}, '{reserv.date_in.ToString("yyyy-MM-dd")}', {reserv.duration}, {reserv.economy});SELECT LAST_INSERT_ID();";
@@ -18,11 +18,9 @@ class ReservationDB
     }
     public List<Reservation> ListReservations()
     {
-        // behöver ses över med lösning för parse customer_to_room.date_in så programmet inte kraschar
         var reservations = _sqlconnection.Query<Reservation>(@$"SELECT * FROM reservation;").ToList();
         return reservations;
     }
-
     public Reservation GetReservationById(int id)
     {
         string sql = @$"SELECT * FROM reservation WHERE reservation.id = {id};";
@@ -41,7 +39,6 @@ class ReservationDB
         string sql = @$"DELETE FROM reservation WHERE reservation.id = {ID};";
         _sqlconnection.Query<Reservation>(sql);
     }
-
     public List<Reservation> SearchReservationByString(string search)
     {
         var reservationList = _sqlconnection.Query<Reservation>($@"
