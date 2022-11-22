@@ -701,6 +701,47 @@ internal class Program
             }
         }
     }
+        private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, int reservationID)
+    {
+        while (true)
+        {
+            DateTime sD = DateTime.Parse(startDate);
+            string stringRoom = string.Empty;
+            do
+            {
+                Console.Write($"\nChoose rooms-id to book : ");
+                stringRoom = Console.ReadLine();
+            } while (!IsStringNumeric(stringRoom) && !string.IsNullOrEmpty(stringRoom));
+            int roomID = Convert.ToInt32(stringRoom);
+
+            reservation = new(reservationID, roomID, customer.ID, reservation.economy, sD, reservation.duration);
+            reservations.UpdateReservation(reservation);
+
+            Console.WriteLine("Here is your receipt to your reservation");
+            TableUI table = new();
+            table.PrintUpdatedReceipt(reservation, customer);
+            Console.ReadLine();
+            return;
+        }
+    }
+    private static void PrintReservation(Customer customer, Reservation reservation)
+    {
+        Header();
+        Console.WriteLine("Here is your receipt to your reservation");
+        TableUI table = new();
+        table.PrintReceipt(reservation, customer);
+        Console.ReadLine();
+    }
+    private static Reservation CalculateReservationPrice(Reservation reservation, Room room, int guests)
+    {
+        int economy = 0;
+        if (reservation.room_id == room.id)
+        {
+            economy = ((room.price * reservation.duration) * guests);
+            reservation.economy = economy;
+        }
+        return reservation;
+    }
     private static Reservation UpdateStartDate(Reservation reservation)
     {
         bool isStartDateCorrect = false;
@@ -819,47 +860,6 @@ internal class Program
             }
         }
     }
-        return reservation;
-    }
-    private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, int reservationID)
-    {
-        while (true)
-        {
-            DateTime sD = DateTime.Parse(startDate);
-            string stringRoom = string.Empty;
-            do
-            {
-                Console.Write($"\nChoose rooms-id to book : ");
-                stringRoom = Console.ReadLine();
-            } while (!IsStringNumeric(stringRoom) && !string.IsNullOrEmpty(stringRoom));
-            int roomID = Convert.ToInt32(stringRoom);
-
-            reservation = new(reservationID, roomID, customer.ID, reservation.economy, sD, reservation.duration);
-            reservations.UpdateReservation(reservation);
-
-            Console.WriteLine("Here is your receipt to your reservation");
-            TableUI table = new();
-            table.PrintUpdatedReceipt(reservation, customer);
-            Console.ReadLine();
-            return;
-        }
-    }
-    private static void PrintReservation(Customer customer, Reservation reservation)
-    {
-        Header();
-        Console.WriteLine("Here is your receipt to your reservation");
-        TableUI table = new();
-        table.PrintReceipt(reservation, customer);
-        Console.ReadLine();
-    }
-    private static Reservation CalculateReservationPrice(Reservation reservation, Room room, int guests)
-    {
-        int economy = 0;
-        if (reservation.room_id == room.id)
-        {
-            economy = ((room.price * reservation.duration) * guests);
-            reservation.economy = economy;
-        }
         return reservation;
     }
     private static void UpdateEmployee(EmployeeDB employeeDB) // MODIFIERA!!
