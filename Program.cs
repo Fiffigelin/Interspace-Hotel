@@ -701,20 +701,11 @@ internal class Program
             }
         }
     }
-        private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, int reservationID)
+        private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, Room room)
     {
         while (true)
         {
-            DateTime sD = DateTime.Parse(startDate);
-            string stringRoom = string.Empty;
-            do
-            {
-                Console.Write($"\nChoose rooms-id to book : ");
-                stringRoom = Console.ReadLine();
-            } while (!IsStringNumeric(stringRoom) && !string.IsNullOrEmpty(stringRoom));
-            int roomID = Convert.ToInt32(stringRoom);
-
-            reservation = new(reservationID, roomID, customer.ID, reservation.economy, sD, reservation.duration);
+            reservation = new(reservation.id, room.id, customer.ID, reservation.economy, reservation.date_in, reservation.duration);
             reservations.UpdateReservation(reservation);
 
             Console.WriteLine("Here is your receipt to your reservation");
