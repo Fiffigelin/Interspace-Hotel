@@ -1,10 +1,8 @@
 class Hotel
 {
-    public int value {get; set;}
-    // Om vi vill se alla unika röster får vi skapa ID ?
+    public int value { get; set; }
 
-
-        public override string ToString()
+    public override string ToString()
     {
         return
         @$"Review : {value}

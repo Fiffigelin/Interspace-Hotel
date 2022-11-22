@@ -15,16 +15,10 @@ class HotelDB
     {
         int sql = _sqlConnection.Execute(@$"INSERT INTO reviews (value) VALUES ('{i}')");
     }
-
-
-// För att skapa en lista med alla betyg.
+    
     public List<Hotel> PrintReview()
     {
         var values = _sqlConnection.Query<Hotel>($"SELECT value FROM reviews;").ToList();
         return values;
     }
-
-
-    // Skapa nya röster genom metod för användaren. Denna ska in i UI. 
-    // Fixa felhantering. (Måste vara mellan siffran 1-5)
 }

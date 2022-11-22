@@ -46,15 +46,3 @@ class HotelManagement
     }
 
 }
-
-    /* För att hantera reviews just nu
-    Console.WriteLine(hotelManagement.GetValues());
-    hotelDB.AddReview(25);
-    
-            Console.WriteLine("Vänligen ange antalet stjärnor. ");
-        int userStars = Convert.ToInt32(Console.ReadLine());
-        hotelDB.AddReview(userStars);
-    */
-
-        // HotelDB hotelDB = new(connection);
-        // HotelManagement hotelManagement = new(hotelDB);
