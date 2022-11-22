@@ -361,6 +361,9 @@ internal class Program
         bool isStartDateCorrect = false;
         bool isEndDateCorrect = false;
         bool isDateCorrect = false;
+
+        DateTime fromToday = DateTime.Today;
+        DateOnly testing;
         int duration = 0;
         string startDate = String.Empty;
         string endDate = String.Empty;
@@ -384,16 +387,23 @@ internal class Program
                     try
                     {
                         fromDate = DateOnly.Parse(startDate);
-                        isStartDateCorrect = true;
+                        testing = DateOnly.FromDateTime(fromToday);
+
+                        if (fromDate >= testing)
+                        {
+                            isStartDateCorrect = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Please try again, enter valid dates.");
+                            Console.ReadLine();
+                        }
                     }
                     catch (System.Exception)
                     {
-                        Console.WriteLine(" Please try again, enter valid dates.");
+                        Console.WriteLine("Please try again, enter valid dates.");
+                        Console.ReadLine();
                     }
-                }
-                else
-                {
-                    Console.WriteLine("Please try again.");
                 }
             }
             while (!isEndDateCorrect)
@@ -778,6 +788,9 @@ internal class Program
         string endDate = String.Empty;
         string updatedStartDate = string.Empty;
         string updatedEndDate = string.Empty;
+
+        DateTime fromToday = DateTime.Today;
+        DateOnly testing;
         DateTime fromDate;
         DateTime toDate;
         string pattern = @"\d{4}(-)\d{2}(-)\d{2}";
@@ -785,8 +798,8 @@ internal class Program
         while (!isStartDateCorrect)
         {
             Header();
-            Console.WriteLine(reservation.date_in.ToString("yyyy-MM-dd"));
-            Console.Write("Update Start date for your stay : ");
+            Console.WriteLine("Booked date : " + reservation.date_in.ToString("yyyy-MM-dd"));
+            Console.Write("Update incheck for your stay : ");
             startDate = Console.ReadLine();
             ConsoleKeyInfo key = Console.ReadKey();
 
@@ -797,28 +810,41 @@ internal class Program
                 isStartDateCorrect = true;
                 if (!string.IsNullOrWhiteSpace(startDate))
                 {
-                    DateTime updateStartDate = Convert.ToDateTime(startDate);
-                    reservation.date_in = updateStartDate;
+                    try
+                    {
+                        DateOnly newDate = DateOnly.Parse(startDate);
+                        testing = DateOnly.FromDateTime(fromToday);
+
+                        if (newDate >= testing)
+                        {
+                            DateTime updateStartDate = Convert.ToDateTime(startDate);
+                            reservation.date_in = updateStartDate;
+                            isStartDateCorrect = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Please try again, enter valid dates.");
+                            Console.ReadLine();
+                            isStartDateCorrect = false;
+                        }
+                    }
+                    catch (System.Exception)
+                    {
+                        Console.WriteLine("Please try again, enter valid dates.");
+                        Console.ReadLine();
+                        isStartDateCorrect = false;
+                    }
                 }
             }
             else if (string.IsNullOrEmpty(startDate) && (key.Key.Equals(ConsoleKey.Enter)))
             {
+                return reservation.date_in;
                 isStartDateCorrect = true;
             }
             else
             {
                 Console.WriteLine("Please try again, enter YYYY-MM-DD.");
             }
-        }
-
-        if (string.IsNullOrWhiteSpace(startDate))
-        {
-            return reservation.date_in;
-        }
-        if (!string.IsNullOrWhiteSpace(startDate))
-        {
-            fromDate = Convert.ToDateTime(startDate);
-            reservation.date_in = fromDate;
         }
         return reservation.date_in;
     }
@@ -842,7 +868,7 @@ internal class Program
                 DateTime bookedStartDate = reservation.date_in;
                 DateTime bookedEndDate = bookedStartDate.AddDays(reservation.duration);
 
-                Console.WriteLine(updateDate);
+                Console.WriteLine($"\nBooked check-out date : " + updateDate);
                 Console.Write("Update enddate for your stay : ");
                 endDate = Console.ReadLine();
                 ConsoleKeyInfo key = Console.ReadKey();
