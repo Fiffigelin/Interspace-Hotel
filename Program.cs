@@ -263,6 +263,7 @@ internal class Program
                 case 1: // update
                     roomList = roomDB.GetRooms();
                     PrintRooms(roomList);
+                    Console.ReadKey();
 
                     int ID = SearchRooms();
                     room = roomDB.GetRoomByid(ID);
@@ -282,6 +283,9 @@ internal class Program
                 case 3: // remove
                     roomList = roomDB.GetRooms();
                     PrintRooms(roomList);
+                    Console.ReadKey();
+                    RemoveRoombyID();
+                    
                     break;
 
                 case 4: // exit
@@ -290,6 +294,7 @@ internal class Program
                 case 5:
                     ExitMenu();
                     break;
+
                 default:
                     break;
             }
@@ -318,9 +323,7 @@ internal class Program
                     break;
 
                 case 3:
-                    break;
-
-                case 4:
+                    ExitMenu();
                     break;
 
                 default:
@@ -528,12 +531,14 @@ internal class Program
             Console.WriteLine("No rooms found");
         }
     }
-    private static void RemoveRoombyID(RoomDB roomDB) // NO HEADER!!
+    private static void RemoveRoombyID() // NO HEADER!!
     {
         Console.WriteLine("Please state the ID of the room you would like to delete:");
         string idRemove = Console.ReadLine();
         int idRemoveConvert = Convert.ToInt32(idRemove);
         roomDB.DeleteRoom(idRemoveConvert);
+        Console.WriteLine($"Room with ID : {idRemoveConvert} deleted:");
+        Console.ReadLine();
     }
     public static void UpdateRoomSuccess(int ID) // NO HEADER!!
     {
