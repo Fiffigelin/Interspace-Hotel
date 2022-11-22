@@ -40,15 +40,6 @@ class RoomDB
         _sqlConnection.Query<Room>(sql);
     }
 
-    public List<Room> GetAvailableRooms()
-    {
-        string sql = $@"SELECT * FROM room 
-        WHERE room.id NOT IN
-        (SELECT reservation.room_id FROM reservation)";
-        var availablerooms = _sqlConnection.Query<Room>(sql).ToList();
-        return availablerooms;
-    }
-
     public List<Room> GetAvailableRooms(string startDate, string endDate)
     {
         string sql = $@"SELECT * FROM room 

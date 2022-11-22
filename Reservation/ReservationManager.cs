@@ -32,4 +32,11 @@ class ReservationManager
     {
         return reservationDB.GetReservationById(id);
     }
+
+    public string CalculateEndDate(Reservation reservation)
+    {
+        DateTime endDate = reservation.date_in.AddDays(reservation.duration);
+        string toDate = endDate.ToString("yyyy-MM-dd");
+        return toDate;
+    }
 }
