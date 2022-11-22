@@ -304,7 +304,7 @@ internal class Program
             }
         }
     }
-    private static List<Room> AddRoom(Room room) // Tomt
+    private static List<Room> AddRoom(Room room)
     {
         string input = string.Empty;
         while (true)
@@ -544,6 +544,8 @@ internal class Program
             string lastName;
             string email;
             string phoneNumber;
+            string pattern = @"\d{10}";
+            bool isPhoneNrValid = false;
             do
             {
                 Console.Write("Firstname : ");
@@ -561,6 +563,24 @@ internal class Program
                 Console.Write("Phonenumber : ");
                 phoneNumber = Console.ReadLine();
             } while (!IsStringNumeric(phoneNumber));
+
+            while (isPhoneNrValid == false)
+            {
+                Console.Write("Phonenumber : ");
+                phoneNumber = Console.ReadLine()!;
+
+                MatchCollection matches = Regex.Matches(phoneNumber, pattern);
+                int match = matches.Count;
+                if (!string.IsNullOrWhiteSpace(phoneNumber) && IsStringNumeric(phoneNumber) && match == 1)
+                {
+                    customer.Phonenumber = phoneNumber;
+                    isPhoneNrValid = true;
+                }
+                else
+                {
+                    Console.WriteLine("Please enter a valid phonenumber, 10 digits.");
+                }
+            }
             return new(email, firstName + " " + lastName, phoneNumber);
         }
     }
