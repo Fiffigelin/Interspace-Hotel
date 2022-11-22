@@ -102,7 +102,9 @@ internal class Program
                     int bookGuests = NumberOFGuests();
 
                     roomList = roomManager.GetAvailableRoomsForBooking(bookGuests, search.Item2, search.Item3);
-                    PrintRooms(roomList);
+                    bool found = PrintRooms(roomList);
+                    if (found == false) break;
+
                     int roomID = ChooseRoom();
                     room = roomManager.GetRoomByID(roomID);
                     reservation.room_id = room.id;
@@ -117,7 +119,8 @@ internal class Program
 
                 case 1:
                     roomList = roomDB.GetRooms();
-                    PrintRooms(roomList);
+                    found = PrintRooms(roomList);
+                    if (found == false) break;
                     Console.ReadKey();
                     break;
 
@@ -146,7 +149,9 @@ internal class Program
                     int bookGuests = NumberOFGuests();
 
                     roomList = roomManager.GetAvailableRoomsForBooking(bookGuests, search.Item2, search.Item3);
-                    PrintRooms(roomList);
+                    bool found = PrintRooms(roomList);
+                    if (found == false) break;
+
                     int roomID = ChooseRoom();
                     room = roomManager.GetRoomByID(roomID);
                     reservation.room_id = room.id;
@@ -177,7 +182,9 @@ internal class Program
 
                     int updateGuests = NumberOFGuests();
                     roomList = roomManager.GetAvailableRoomsForBooking(updateGuests, updateDate, updateEndDate);
-                    PrintRooms(roomList);
+                    found = PrintRooms(roomList);
+                    if (found == false) break;
+
                     int updateRoomID = ChooseRoom();
                     room = roomManager.GetRoomByID(updateRoomID);
 
@@ -264,13 +271,15 @@ internal class Program
                 case 0: // add
                     roomList = AddRoom(room);
                     room.id = roomDB.CreateRoom(room);
-                    PrintRooms(roomList);
+                    bool found = PrintRooms(roomList);
+                    if (found == false) break;
                     Console.ReadKey();
                     break;
 
                 case 1: // update
                     roomList = roomDB.GetRooms();
-                    PrintRooms(roomList);
+                    found = PrintRooms(roomList);
+                    if (found == false) break;
                     Console.ReadKey();
 
                     int ID = SearchRooms();
@@ -284,16 +293,17 @@ internal class Program
 
                 case 2: // print
                     roomList = roomDB.GetRooms();
-                    PrintRooms(roomList);
+                    found = PrintRooms(roomList);
+                    if (found == false) break;
                     Console.ReadKey();
                     break;
 
                 case 3: // remove
                     roomList = roomDB.GetRooms();
-                    PrintRooms(roomList);
+                    found = PrintRooms(roomList);
+                    if (found == false) break;
                     Console.ReadKey();
                     RemoveRoombyID();
-
                     break;
 
                 case 4: // exit
@@ -499,17 +509,20 @@ internal class Program
 
         return room;
     }
-    private static void PrintRooms(List<Room> roomList)
+    private static bool PrintRooms(List<Room> roomList)
     {
         Header();
         if (roomList.Count > 0)
         {
             TableUI table = new();
             table.PrintRooms(roomList);
+            return true;
         }
         else
         {
-            Console.WriteLine("No rooms found");
+            Console.WriteLine("No customers found");
+            Console.ReadLine();
+            return false;
         }
     }
     private static void RemoveRoombyID() // NO HEADER!!
