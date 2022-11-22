@@ -1,5 +1,4 @@
-using Dapper;
-using MySqlConnector;
+
 class HotelManagement
 {
     HotelDB hotelDB;
