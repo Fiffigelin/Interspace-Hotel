@@ -180,10 +180,12 @@ internal class Program
                     int updateGuests = NumberOFGuests();
                     roomList = roomManager.GetAvailableRoomsForBooking(updateGuests, updateDate, updateEndDate);
                     PrintRooms(roomList);
-
-                    reservation.economy = reservationManager.CalculateTotalCost(reservation, room, updateGuests);
+                    int updateRoomID = ChooseRoom();
+                    room = roomManager.GetRoomByID(updateRoomID);
+                    
                     customer = custManager.GetCustomerFromReservationID(updateID);
                     reservation = reservationManager.GetReservationsByID(updateID);
+                    reservation.economy = reservationManager.CalculateTotalCost(reservation, room, updateGuests);
                     UpdateReservation(reservationDB, reservation, customer, updateDate, updateID);
                     break;
 
