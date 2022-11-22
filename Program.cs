@@ -169,10 +169,14 @@ internal class Program
                     reservation = reservationDB.GetReservationById(updateID);
 
                     string endDate = reservationManager.CalculateEndDate(reservation);
-                    reservation = UpdateStartDate(reservation);
+                    reservation.date_in = UpdateStartDate(reservation);
                     reservation = UpdateEndDate(reservation, endDate);
                     string updateEndDate = reservationManager.CalculateEndDate(reservation);
+                    Console.WriteLine(updateEndDate);
+                    Console.ReadKey();
                     string updateDate = reservation.date_in.ToString();
+                    Console.WriteLine(updateDate);
+                    Console.ReadKey();
 
                     int updateGuests = NumberOFGuests();
                     roomList = roomManager.GetAvailableRoomsForBooking(updateGuests, updateDate, updateEndDate);
@@ -303,7 +307,6 @@ internal class Program
             }
         }
     }
-
     private static List<Room> AddRoom(Room room) // Tomt
     {
         string input = string.Empty;
@@ -701,10 +704,13 @@ internal class Program
             }
         }
     }
-        private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, Room room)
+    private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, Room room)
     {
         while (true)
         {
+            Console.WriteLine (reservation.date_in);
+            Console.ReadKey();
+
             reservation = new(reservation.id, room.id, customer.ID, reservation.economy, reservation.date_in, reservation.duration);
             reservations.UpdateReservation(reservation);
 
@@ -733,7 +739,7 @@ internal class Program
         }
         return reservation;
     }
-    private static Reservation UpdateStartDate(Reservation reservation)
+    private static DateTime UpdateStartDate(Reservation reservation)
     {
         bool isStartDateCorrect = false;
         string startDate = String.Empty;
@@ -747,7 +753,7 @@ internal class Program
         while (!isStartDateCorrect)
         {
             Header();
-            Console.WriteLine(reservation.date_in.ToString());
+            Console.WriteLine(reservation.date_in.ToString("yyyy-MM-dd"));
             Console.Write("Update Start date for your stay : ");
             startDate = Console.ReadLine();
             ConsoleKeyInfo key = Console.ReadKey();
@@ -775,14 +781,14 @@ internal class Program
 
         if (string.IsNullOrWhiteSpace(startDate))
         {
-            return reservation;
+            return reservation.date_in;
         }
         if (!string.IsNullOrWhiteSpace(startDate))
         {
             fromDate = Convert.ToDateTime(startDate);
             reservation.date_in = fromDate;
         }
-        return reservation;
+        return reservation.date_in;
     }
     private static Reservation UpdateEndDate(Reservation reservation, string updateDate)
     {
@@ -887,6 +893,7 @@ internal class Program
     {
         bool isPWCorrect = false;
         string correctPW = "SuvNet22";
+        int countTry = 1;
 
         while (!isPWCorrect)
         {
@@ -899,13 +906,22 @@ internal class Program
                 isPWCorrect = true;
                 Thread.Sleep(1300);
             }
+            else if (countTry == 3)
+            {
+                Console.WriteLine("You have now tried 3 times and you will go back to the menu.");
+                Thread.Sleep(1300);
+                string prompt = "";
+                string[] options = { "Guest", "Employee", "Exit" };
+                Menu mainMenu = new Menu(prompt, options);
+                int selectedIndex = mainMenu.Run();
+            }
             else
             {
                 Console.Write("Sorry, that is not correct. ");
+                countTry++;
             }
         }
     }
-    
     private static bool IsEmailValid(string s)
     {
         if (string.IsNullOrEmpty(s) || !s.Contains("@"))
