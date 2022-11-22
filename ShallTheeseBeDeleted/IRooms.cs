@@ -1,4 +1,0 @@
-interface IRooms
-{
-    void RoomDescription();
-}
