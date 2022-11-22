@@ -167,7 +167,8 @@ internal class Program
                 case 1: // update reservation
                     reservationList = reservationManager.GetReservationByString(SearchReservation());
                     reservationList = reservationManager.GetReservationByCustomerID(reservationList);
-                    PrintReservations(reservationList);
+                    found = PrintReservations(reservationList);
+                    if (found == false) break;
 
                     int updateID = ChooseReservationID(reservationList);
                     int custID = custManager.GetIDFromReservation(updateID);
@@ -197,7 +198,8 @@ internal class Program
                 case 2: // remove reservation
                     reservationList = reservationDB.SearchReservationByString(SearchReservation());
                     reservationList = reservationDB.SelectReservations(reservationList);
-                    PrintReservations(reservationList);
+                    found = PrintReservations(reservationList);
+                    if (found == false) break;
                     int removeID = ChooseReservationID(reservationList);
                     DeleteReservation(removeID);
                     break;
@@ -736,12 +738,21 @@ internal class Program
         } while (string.IsNullOrEmpty(search));
         return search;
     }
-    private static void PrintReservations(List<Reservation> reservationsList)
+    private static bool PrintReservations(List<Reservation> reservationsList)
     {
         Header();
+        if (roomList.Count > 0)
+        {
         TableUI table = new();
         table.PrintReservations(reservationList);
-        Console.ReadLine();
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("No reservations found");
+            Console.ReadLine();
+            return false;
+        }
     }
     private static void DeleteReservation(int removeID) // NO HEADER!!
     {
