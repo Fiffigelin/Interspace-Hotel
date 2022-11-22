@@ -650,12 +650,6 @@ internal class Program
         table.PrintCustomers(customerList);
         Console.ReadLine();
     }
-    private static void RemoveCustomer(int removeID)
-    {
-        reservationDB.DeleteReservation(removeID);
-        Console.WriteLine($"Customer with ID : {removeID} has been deleted");
-        Console.ReadKey();
-    }
     private static string SearchReservation()
     {
         string search = string.Empty;
@@ -724,16 +718,6 @@ internal class Program
         TableUI table = new();
         table.PrintReceipt(reservation, customer);
         Console.ReadLine();
-    }
-    private static Reservation CalculateReservationPrice(Reservation reservation, Room room, int guests)
-    {
-        int economy = 0;
-        if (reservation.room_id == room.id)
-        {
-            economy = ((room.price * reservation.duration) * guests);
-            reservation.economy = economy;
-        }
-        return reservation;
     }
     private static DateTime UpdateStartDate(Reservation reservation)
     {
@@ -854,36 +838,6 @@ internal class Program
             }
         }
         return reservation;
-    }
-    private static void UpdateEmployee(EmployeeDB employeeDB) // MODIFIERA!!
-    {
-        Console.WriteLine("Which employee would you like to update? Write the number ID by number, ex 1.");
-        string id = Console.ReadLine();
-        int employeeIDConvert = Convert.ToInt32(id);
-        Employee updateEmployee = employeeDB.GetEmployeeById(employeeIDConvert);
-
-        Console.WriteLine("Enter name:");
-        string employeeName = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(employeeName))
-        {
-            updateEmployee.name = employeeName;
-        }
-        Console.WriteLine("State password");
-        string employeePassword = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(employeePassword))
-        {
-            updateEmployee.password = employeePassword;
-        }
-        employeeDB.UpdateEmployee(updateEmployee);
-    }
-    private static void CreateEmployee(EmployeeDB employeeDB) // MODIFIERA!!
-    {
-        Console.WriteLine("Enter name");
-        string nameInput = Console.ReadLine();
-        Console.WriteLine("Enter password");
-        string passwordInput = Console.ReadLine();
-        var createEmployee = employeeDB.CreateEmployee(nameInput, passwordInput);
-        Console.WriteLine($"Adding new employee {nameInput}");
     }
     private static void EmployeePWCheck()
     {
