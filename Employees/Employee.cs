@@ -21,12 +21,4 @@ class Employee
     {
 
     }
-
-    public override string ToString()
-    {
-        return
-        @$"
-        Employee id: {id}
-        Employee Name: {name}";
-    }
 }
