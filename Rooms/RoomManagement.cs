@@ -27,6 +27,11 @@ class RoomManagement
         return roomDB.GetRoomByid(id);
     }
 
+    public List<Room> GetRooms()
+    {
+        return roomDB.GetRooms();
+    }
+
     // public void CreateRoom(List<Room> roomList)
     // {
     //     //hotelRooms.Add(hotelRooms.Count + 1, room);

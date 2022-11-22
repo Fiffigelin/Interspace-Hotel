@@ -105,7 +105,7 @@ internal class Program
                     bool found = PrintRooms(roomList);
                     if (found == false) break;
 
-                    int roomID = ChooseRoom();
+                    int roomID = ChooseRoom(roomList);
                     room = roomManager.GetRoomByID(roomID);
                     reservation.room_id = room.id;
                     reservation.economy = reservationManager.CalculateTotalCost(reservation, room, bookGuests);
@@ -152,7 +152,7 @@ internal class Program
                     bool found = PrintRooms(roomList);
                     if (found == false) break;
 
-                    int roomID = ChooseRoom();
+                    int roomID = ChooseRoom(roomList);
                     room = roomManager.GetRoomByID(roomID);
                     reservation.room_id = room.id;
                     reservation.economy = reservationManager.CalculateTotalCost(reservation, room, bookGuests);
@@ -186,7 +186,7 @@ internal class Program
                     found = PrintRooms(roomList);
                     if (found == false) break;
 
-                    int updateRoomID = ChooseRoom();
+                    int updateRoomID = ChooseRoom(roomList);
                     room = roomManager.GetRoomByID(updateRoomID);
 
                     customer = custManager.GetCustomerFromReservationID(updateID);
@@ -279,12 +279,10 @@ internal class Program
                     break;
 
                 case 1: // update
-                    roomList = roomDB.GetRooms();
+                    roomList = roomManager.GetRooms();
                     found = PrintRooms(roomList);
                     if (found == false) break;
-                    Console.ReadKey();
-
-                    int ID = SearchRooms();
+                    int ID = SearchRooms(roomList);
                     room = roomDB.GetRoomByid(ID);
 
                     room = UpdateRoom(room);
@@ -458,26 +456,70 @@ internal class Program
         }
         return (duration, startDate, endDate);
     }
-    public static int ChooseRoom() // NO HEADER!!
+    public static int ChooseRoom(List<Room> roomList) // NO HEADER!!
     {
-        string stringRoom = string.Empty;
-        do
+        string input = String.Empty;
+        int convert = 0;
+        bool isReservationExisting = false;
+        while (!isReservationExisting)
         {
-            Console.Write($"\nChoose room by ID: ");
-            stringRoom = Console.ReadLine();
-        } while (!IsStringNumeric(stringRoom));
-        return Convert.ToInt32(stringRoom);
+            Console.Write("Choose room with ID : ");
+            input = Console.ReadLine();
+
+            try
+            {
+                if (IsStringNumeric(input))
+                {
+                    convert = Convert.ToInt32(input);
+                    foreach (var room in roomList)
+                    {
+                        if (room.id == convert)
+                        {
+                            isReservationExisting = true;
+                        }
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                Console.WriteLine("You need to write a number.");
+                isReservationExisting = false;
+            }
+        }
+
+        return convert;
     }
-    private static int SearchRooms()
+    private static int SearchRooms(List<Room> roomList)
     {
-        string search = string.Empty;
-        do
+        string input = String.Empty;
+        int convert = 0;
+        bool isReservationExisting = false;
+        while (!isReservationExisting)
         {
-            Header();
-            Console.Write("Search room : ");
-            search = Console.ReadLine();
-        } while (string.IsNullOrEmpty(search));
-        return Convert.ToInt32(search);
+            Console.Write("Choose room with ID : ");
+            input = Console.ReadLine();
+
+            try
+            {
+                if (IsStringNumeric(input))
+                {
+                    convert = Convert.ToInt32(input);
+                    foreach (var room in roomList)
+                    {
+                        if (room.id == convert)
+                        {
+                            isReservationExisting = true;
+                        }
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                Console.WriteLine("You need to write a number.");
+                isReservationExisting = false;
+            }
+        }
+        return convert;
     }
     private static Room UpdateRoom(Room room) // MODIFIERA!!
     {
@@ -610,22 +652,33 @@ internal class Program
     {
         string input = String.Empty;
         int convert = 0;
-        while (true)
+        bool isReservationExisting = false;
+        while (!isReservationExisting)
         {
-            Console.Write("Choose guest with ID : ");
+            Console.Write("Choose customer with ID : ");
             input = Console.ReadLine();
-            if (IsStringNumeric(input))
+
+            try
             {
-                convert = Convert.ToInt32(input);
-                foreach (var customer in customerList)
+                if (IsStringNumeric(input))
                 {
-                    if (customer.ID == convert)
+                    convert = Convert.ToInt32(input);
+                    foreach (var customer in customerList)
                     {
-                        return convert;
+                        if (customer.ID == convert)
+                        {
+                            isReservationExisting = true;
+                        }
                     }
                 }
             }
+            catch (System.Exception)
+            {
+                Console.WriteLine("You need to write a number.");
+                isReservationExisting = false;
+            }
         }
+        return convert;
     }
     private static Customer UpdateCustomer(Customer customer) // DENNA ÄR KNAS! TITTA PÅ DEN!
     {
@@ -741,10 +794,10 @@ internal class Program
     private static bool PrintReservations(List<Reservation> reservationsList)
     {
         Header();
-        if (roomList.Count > 0)
+        if (reservationList.Count > 0)
         {
-        TableUI table = new();
-        table.PrintReservations(reservationList);
+            TableUI table = new();
+            table.PrintReservations(reservationList);
             return true;
         }
         else
@@ -764,22 +817,34 @@ internal class Program
     {
         string input = String.Empty;
         int convert = 0;
-        while (true)
+        bool isReservationExisting = false;
+        while (!isReservationExisting)
         {
             Console.Write("Choose reservation with ID : ");
             input = Console.ReadLine();
-            if (IsStringNumeric(input))
+
+            try
             {
-                convert = Convert.ToInt32(input);
-                foreach (var reservation in reservationList)
+                if (IsStringNumeric(input))
                 {
-                    if (reservation.id == convert)
+                    convert = Convert.ToInt32(input);
+                    foreach (var reservation in reservationList)
                     {
-                        return convert;
+                        if (reservation.id == convert)
+                        {
+                            isReservationExisting = true;
+                        }
                     }
                 }
             }
+            catch (System.Exception)
+            {
+                Console.WriteLine("You need to write a number.");
+                isReservationExisting = false;
+            }
         }
+
+        return convert;
     }
     private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, Room room)
     {
