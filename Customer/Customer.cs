@@ -1,5 +1,3 @@
-using MySqlConnector;
-using Dapper;
 class Customer
 {
     public int ID { get; set; }
@@ -7,7 +5,6 @@ class Customer
     public string Name { get; set; }
     public string Phonenumber { get; set; }
 
-    // CREATING A OBJECT
     public Customer(string email, string name, string phonenumber)
     {
         Email = email;
@@ -15,7 +12,6 @@ class Customer
         Phonenumber = phonenumber;
     }
 
-    // MATERALIZING A OBJECT FROM DB
     public Customer(int id, string email, string name, string phonenumber)
     {
         ID = id;
@@ -28,14 +24,4 @@ class Customer
     {
 
     }
-
-    public override string ToString()
-    {
-        return $@"
-            ID          : {ID}
-            Email       : {Email}
-            Name        : {Name}
-            Phonenumber : {Phonenumber}";
-    }
-
 }

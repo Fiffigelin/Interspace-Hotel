@@ -1,7 +1,5 @@
 using Dapper;
 using MySqlConnector;
-
-// FRÅGA KRISTER : vill man uppdatera de unika id:n vid en delete? Vad kan det få för konsekvenser?
 class CustomerDB
 {
     private MySqlConnection _sqlconnection;
