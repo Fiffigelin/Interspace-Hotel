@@ -172,11 +172,8 @@ internal class Program
                     reservation.date_in = UpdateStartDate(reservation);
                     reservation = UpdateEndDate(reservation, endDate);
                     string updateEndDate = reservationManager.CalculateEndDate(reservation);
-                    Console.WriteLine(updateEndDate);
-                    Console.ReadKey();
+
                     string updateDate = reservation.date_in.ToString();
-                    Console.WriteLine(updateDate);
-                    Console.ReadKey();
 
                     int updateGuests = NumberOFGuests();
                     roomList = roomManager.GetAvailableRoomsForBooking(updateGuests, updateDate, updateEndDate);
@@ -187,7 +184,7 @@ internal class Program
                     customer = custManager.GetCustomerFromReservationID(updateID);
                     reservation = reservationManager.GetReservationsByID(updateID);
                     reservation.economy = reservationManager.CalculateTotalCost(reservation, room, updateGuests);
-                    UpdateReservation(reservationDB, reservation, customer, room);
+                    UpdateReservation(reservationDB, reservation, customer, updateDate, room);
                     break;
 
                 case 2: // remove reservation
@@ -704,14 +701,13 @@ internal class Program
             }
         }
     }
-    private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, Room room)
+    private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, Room room)
     {
         while (true)
         {
-            Console.WriteLine (reservation.date_in);
-            Console.ReadKey();
+            DateTime sD = DateTime.Parse(startDate);
 
-            reservation = new(reservation.id, room.id, customer.ID, reservation.economy, reservation.date_in, reservation.duration);
+            reservation = new(reservation.id, room.id, customer.ID, reservation.economy, sD, reservation.duration);
             reservations.UpdateReservation(reservation);
 
             Console.WriteLine("Here is your receipt to your reservation");
