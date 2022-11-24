@@ -9,5 +9,4 @@ class Hotel
         ";
     }
 }
-
 // Hann inte implementera nya reviews och var inte nöjda med designen och tiden gick...

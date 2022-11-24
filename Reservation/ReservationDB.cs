@@ -16,11 +16,13 @@ class ReservationDB
         int reservation = _sqlconnection.QuerySingle<int>(sql);
         return reservation;
     }
+
     public List<Reservation> ListReservations()
     {
         var reservations = _sqlconnection.Query<Reservation>(@$"SELECT * FROM reservation;").ToList();
         return reservations;
     }
+
     public Reservation GetReservationById(int id)
     {
         string sql = @$"SELECT * FROM reservation WHERE reservation.id = {id};";
@@ -34,11 +36,13 @@ class ReservationDB
         reservation.duration = {reservation.duration}, reservation.economy = {reservation.economy} WHERE reservation.id = {reservation.id};";
         _sqlconnection.Execute(sql);
     }
+
     public void DeleteReservation(int ID)
     {
         string sql = @$"DELETE FROM reservation WHERE reservation.id = {ID};";
         _sqlconnection.Query<Reservation>(sql);
     }
+
     public List<Reservation> SearchReservationByString(string search)
     {
         var reservationList = _sqlconnection.Query<Reservation>($@"
@@ -55,7 +59,8 @@ class ReservationDB
         OR room.id LIKE '%{search}%'").ToList();
         return reservationList;
     }
-     public List<Reservation> SelectReservations(List<Reservation> reservList)
+
+    public List<Reservation> SelectReservations(List<Reservation> reservList)
     {
         // https://stackoverflow.com/questions/14171794/how-to-retrieve-data-from-a-sql-server-database-in-c
         Reservation reservation = new();
@@ -83,5 +88,4 @@ class ReservationDB
         objectReserv.Add(reservation);
         return objectReserv;
     }
-
 }

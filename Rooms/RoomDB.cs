@@ -17,23 +17,27 @@ class RoomDB
         int create = _sqlConnection.QuerySingle<int>(sql);
         return create;
     }
+
     public void UpdateRoom(Room manageRoom)
     {
         string sql = $"UPDATE room SET room.beds = {manageRoom.beds}, room.guests = {manageRoom.guests}, room.size = {manageRoom.size}, room.price = {manageRoom.price} WHERE room.id = {manageRoom.id}";
         _sqlConnection.Query<Room>(sql);
     }
+
     public Room GetRoomByid(int id)
     {
         string sql = @$"SELECT * FROM room WHERE room.id = {id};";
         var query = _sqlConnection.QuerySingle<Room>(sql);
         return query;
     }
+
     public List<Room> GetRooms()
     {
         string sql = $"SELECT * FROM room;";
         var rooms = _sqlConnection.Query<Room>(sql).ToList();
         return rooms;
     }
+
     public void DeleteRoom(int ID)
     {
         string sql = $"DELETE FROM room WHERE room.id = {ID}";

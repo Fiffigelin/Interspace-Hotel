@@ -78,6 +78,7 @@ internal class Program
                 case 4:
                     ExitMenu();
                     break;
+
                 default:
                     break;
             }
@@ -141,7 +142,7 @@ internal class Program
 
             switch (selectedIndex)
             {
-                case 0:
+                case 0: //Add reservation
                     var search = BookingRoom();
                     reservation.duration = search.Item1;
                     DateTime startDate = Convert.ToDateTime(search.Item2);
@@ -337,6 +338,7 @@ internal class Program
                     room.size = 24;
                     room.price = 800;
                     break;
+
                 case 1:
                     room.name = "Familyroom";
                     room.beds = 4;
@@ -344,6 +346,7 @@ internal class Program
                     room.size = 65;
                     room.price = 2200;
                     break;
+
                 case 2:
                     room.name = "Deluxeroom";
                     room.beds = 3;
@@ -351,6 +354,7 @@ internal class Program
                     room.size = 120;
                     room.price = 5000;
                     break;
+
                 case 3:
                     room.name = "Penthouse";
                     room.beds = 2;
@@ -358,6 +362,7 @@ internal class Program
                     room.size = 155;
                     room.price = 9999;
                     break;
+
                 default:
                     break;
             }
@@ -440,6 +445,7 @@ internal class Program
                     Console.WriteLine("Please try again.");
                 }
             }
+
             duration = (toDate.DayNumber - fromDate.DayNumber);
 
             if (duration >= 1)
@@ -456,6 +462,7 @@ internal class Program
         }
         return (duration, startDate, endDate);
     }
+
     public static int ChooseRoom(List<Room> roomList) // NO HEADER!!
     {
         string input = String.Empty;
@@ -486,7 +493,6 @@ internal class Program
                 isReservationExisting = false;
             }
         }
-
         return convert;
     }
     private static int SearchRooms(List<Room> roomList)
@@ -550,7 +556,6 @@ internal class Program
         {
             room.price = Convert.ToInt32(price);
         }
-
         return room;
     }
     private static bool PrintRooms(List<Room> roomList)
@@ -612,11 +617,13 @@ internal class Program
                 Console.Write("Lastname : ");
                 lastName = Console.ReadLine();
             } while (string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName));
+
             do
             {
                 Console.Write("Email : ");
                 email = Console.ReadLine();
             } while (!IsEmailValid(email));
+
             do
             {
                 Console.Write("Phonenumber : ");
@@ -648,6 +655,7 @@ internal class Program
         Console.WriteLine($"Customer added with ID : {ID}");
         Console.ReadLine();
     }
+
     public static int ChooseCustomer(List<Customer> customerList) // NO HEADER!!
     {
         string input = String.Empty;
@@ -680,6 +688,7 @@ internal class Program
         }
         return convert;
     }
+
     private static Customer UpdateCustomer(Customer customer) // DENNA ÄR KNAS! TITTA PÅ DEN!
     {
         string firstName;
@@ -740,6 +749,7 @@ internal class Program
                     isPhoneNrValid = true;
                 }
                 else if (string.IsNullOrWhiteSpace(phoneNumber)) isPhoneNrValid = true;
+
                 else
                 {
                     Console.WriteLine("Please enter a valid phonenumber, 10 digits.");
@@ -748,11 +758,13 @@ internal class Program
             return customer;
         }
     }
+
     public static void UpdateCustomerSuccess(int id) // NO HEADER!!
     {
         Console.WriteLine($"Guest updated with ID : {id}");
         Console.ReadLine();
     }
+
     private static string SearchCustomer()
     {
         string search = string.Empty;
@@ -764,6 +776,7 @@ internal class Program
         } while (string.IsNullOrEmpty(search));
         return search;
     }
+
     private static bool PrintCustomers(List<Customer> customerList)
     {
         Header();
@@ -780,6 +793,7 @@ internal class Program
             return false;
         }
     }
+
     private static string SearchReservation()
     {
         string search = string.Empty;
@@ -791,6 +805,7 @@ internal class Program
         } while (string.IsNullOrEmpty(search));
         return search;
     }
+
     private static bool PrintReservations(List<Reservation> reservationsList)
     {
         Header();
@@ -807,12 +822,14 @@ internal class Program
             return false;
         }
     }
+
     private static void DeleteReservation(int removeID) // NO HEADER!!
     {
         reservationDB.DeleteReservation(removeID);
         Console.WriteLine($"Reservation with ID : {removeID} has been deleted");
         Console.ReadKey();
     }
+
     private static int ChooseReservationID(List<Reservation> reservationList) // NO HEADER!!
     {
         string input = String.Empty;
@@ -843,9 +860,9 @@ internal class Program
                 isReservationExisting = false;
             }
         }
-
         return convert;
     }
+
     private static void UpdateReservation(ReservationDB reservations, Reservation reservation, Customer customer, string startDate, Room room)
     {
         while (true)
@@ -862,6 +879,7 @@ internal class Program
             return;
         }
     }
+
     private static void PrintReservation(Customer customer, Reservation reservation)
     {
         Header();
@@ -870,6 +888,7 @@ internal class Program
         table.PrintReceipt(reservation, customer);
         Console.ReadLine();
     }
+
     private static DateTime UpdateStartDate(Reservation reservation)
     {
         bool isStartDateCorrect = false;
@@ -937,6 +956,7 @@ internal class Program
         }
         return reservation.date_in;
     }
+
     private static Reservation UpdateEndDate(Reservation reservation, string updateDate)
     {
         bool isDateCorrect = false;
@@ -1006,6 +1026,7 @@ internal class Program
         }
         return reservation;
     }
+
     private static void EmployeePWCheck()
     {
         bool isPWCorrect = false;
@@ -1039,6 +1060,7 @@ internal class Program
             }
         }
     }
+
     private static bool IsEmailValid(string s)
     {
         if (string.IsNullOrEmpty(s) || !s.Contains("@"))
@@ -1048,6 +1070,7 @@ internal class Program
 
         return true;
     }
+
     private static bool IsStringNumeric(string s)
     {
         foreach (char c in s)
@@ -1057,6 +1080,7 @@ internal class Program
         }
         return true;
     }
+
     private static void Header()
     {
         Console.Clear();
@@ -1069,6 +1093,7 @@ internal class Program
 ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝    ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝
  "); // http://patorjk.com/software/taag
     }
+
     private static void ExitMenu()
     {
         Console.WriteLine("Please press any key to exit.");

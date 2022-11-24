@@ -1,4 +1,4 @@
- class Reservation
+class Reservation
 {
     public int id { get; set; }
     public int room_id { get; set; }
@@ -9,8 +9,9 @@
 
     public Reservation()
     {
-        
+
     }
+
     public Reservation(int id, int roomid, int customerid, int economy, DateTime datein, int duration)
     {
         this.id = id;
